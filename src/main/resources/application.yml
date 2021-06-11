@@ -1,0 +1,47 @@
+spring:
+  profiles: 'dev, default'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+  ##datasource:
+     
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        ddl-auto: none
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+server:
+  port: 8090
+  servlet:
+    context-path: /dms-misura-service
+  tomcat:
+    accept-count: 0
+    max-connections: 200
+    max-threads: 200
+    min-spare-threads: 50
+jwt:
+  enabled: false
+  secret: f894d43095c5fe39cc915b4c56ecb332
+  profiler-url: http://localhost:8091/editable-fields-service/anagraficaUtenti/getProfiloUtente/
+  public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmAjLULRLI37iHqUTy8IZFXqR/EobjbyP1mYDsjbE3/0XoOXZVohiIeqDrRdwc9MSnQQ+vUV8BerN9aBsAhJTgzebwbZhdCGAD2I2Pl1wKXfrRn/HTaDpyE1OrOaJdGP015orrSy8WrirV4ZyS+xt/041yY/gJwVnTOyi6HqIc9VtN2TVv8keNO9Ev2PvaHBhmpOZcwI6xX63IQxTCjccIcVx1XCimnkvpWLLZ0ddv0WrSBepb/twLP1kxePxxk8qbvvOcZEkNm8fXtRtpvuooBRS5zJIj2xHdPuZbdYeofZP2kHRYdfNGyQLLOTNZ9W0Rg+lL6o0a98ZsGioZlV4qwIDAQAB
+
+logging.file.name: /work/logs/dms-misura-service/dms-misura-service.log
+logging:
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %clr(TID:){magenta}%black(%X{transactionId}) %clr({%p}) %cyan(%class{0}) - %msg%n"
+  level:
+    it.eng.snam.summer.dmsmisuraservice.security: INFO
+    it.eng.snam.summer.dmsmisuraservice.controller: INFO
+    it.eng.snam.summer.dmsmisuraservice.service: INFO
+    root: INFO
+  file: 
+    max-size: 50MB
+    dirPath: /work/logs/dms-misura-service
+    historyMaxDays: 7
+    historyMaxSizeMB: 150
