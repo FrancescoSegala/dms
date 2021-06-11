@@ -2,6 +2,8 @@ package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,8 @@ public class FolderController {
 
     @Autowired
     DDSImpl dds;
+    
+    private final Logger logger = LoggerFactory.getLogger(FolderController.class);
 
     @GetMapping("/folders/{id}")
     public Folder get(@PathVariable String id) {
@@ -29,7 +33,10 @@ public class FolderController {
     public List<Folder> list(@RequestParam MultiValueMap<String, Object> parameters,
             @RequestParam(defaultValue = "0") Long offset, @RequestParam(defaultValue = "10") Long limit,
             @RequestParam(defaultValue = "id") String sort, @RequestParam(defaultValue = "asc") String direction) {
-        return dds.listFolders();
+    	
+    	logger.info("Chiamata GET /folders");
+    	
+    	return dds.listFolders();
     }
 
     @GetMapping("/folders/{folder_id}/subfolders")
