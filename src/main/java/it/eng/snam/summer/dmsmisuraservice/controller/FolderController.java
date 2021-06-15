@@ -2,10 +2,11 @@ package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
+import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.service.DDSImpl;
 
 @RestController
@@ -21,7 +23,7 @@ public class FolderController {
 
     @Autowired
     DDSImpl dds;
-    
+
     private final Logger logger = LoggerFactory.getLogger(FolderController.class);
 
     @GetMapping("/folders/{id}")
@@ -30,20 +32,14 @@ public class FolderController {
     }
 
     @GetMapping("/folders")
-    public List<Folder> list(@RequestParam MultiValueMap<String, Object> parameters,
-            @RequestParam(defaultValue = "0") Long offset, @RequestParam(defaultValue = "10") Long limit,
-            @RequestParam(defaultValue = "id") String sort, @RequestParam(defaultValue = "asc") String direction) {
-    	
-    	logger.info("Chiamata GET /folders");
-    	
-    	return dds.listFolders();
+    public List<Folder> list( @Valid Pagination pagination) {
+
+        logger.info("Chiamata GET /folders");
+        return dds.listFolders();
     }
 
     @GetMapping("/folders/{folder_id}/subfolders")
-    public List<Subfolder> listSubfolders(@PathVariable String folder_id,
-            @RequestParam MultiValueMap<String, Object> parameters, @RequestParam(defaultValue = "0") Long offset,
-            @RequestParam(defaultValue = "10") Long limit, @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction) {
+    public List<Subfolder> listSubfolders(@PathVariable String folder_id, @RequestParam @Valid Pagination pagination) {
         return dds.listSubfolders(folder_id);
     }
 
@@ -54,9 +50,7 @@ public class FolderController {
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents")
     public List<Document> listDocumentsInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,
-            @RequestParam MultiValueMap<String, Object> parameters, @RequestParam(defaultValue = "0") Long offset,
-            @RequestParam(defaultValue = "10") Long limit, @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction) {
+            @RequestParam @Valid Pagination pagination) {
         return dds.listDocumentsInSubfolder(folder_id, subfolder_id);
     }
 
@@ -66,8 +60,6 @@ public class FolderController {
         return dds.getDocument(document_id, folder_id, subfolder_id);
     }
 
-
-    //download pdf?
-
+    // download pdf?
 
 }

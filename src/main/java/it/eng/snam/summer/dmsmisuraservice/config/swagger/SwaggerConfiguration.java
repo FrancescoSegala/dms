@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @Profile("!test")
 public class SwaggerConfiguration {
-	
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -33,7 +33,7 @@ public class SwaggerConfiguration {
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false);
     }
-    
+
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("dms-misura-service")

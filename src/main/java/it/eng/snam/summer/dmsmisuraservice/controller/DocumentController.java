@@ -2,6 +2,7 @@ package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
+import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.service.DDSImpl;
 
 @RestController
@@ -21,18 +23,7 @@ public class DocumentController {
     DDSImpl dds;
 
     @GetMapping("/documents")
-    public List<Document> getDocuments(
-            @RequestParam MultiValueMap<String, Object> parameters,
-            @RequestParam(defaultValue = "0") Long offset,
-            @RequestParam(defaultValue = "10") Long limit,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(defaultValue = "") String folder,
-            @RequestParam(defaultValue = "") String subfolder,
-            @RequestParam(defaultValue = "") String published_at,
-            @RequestParam(defaultValue = "") String remi ,
-            @RequestParam(defaultValue = "") String linea_in ) {
-                System.out.println(parameters);
+    public List<Document> getDocuments( @Valid DocumentSearch search) {
         return dds.listDocuments();
     }
 
