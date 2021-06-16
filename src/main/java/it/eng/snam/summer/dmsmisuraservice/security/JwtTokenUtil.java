@@ -191,6 +191,7 @@ public class JwtTokenUtil implements Serializable {
 		try {
 			keyFactory = KeyFactory.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
+            //nop
 		}
 
 		// NOSONAR
@@ -200,6 +201,7 @@ public class JwtTokenUtil implements Serializable {
 			try {
 				pubKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
 			} catch (InvalidKeySpecException e) {
+                //nop
 			}
 		}
 

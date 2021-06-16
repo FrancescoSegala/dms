@@ -120,7 +120,7 @@ public class DDSImpl implements DDS {
                     .withName("name")
                     .withNotes("notes")
                     .withStatus("status")
-                    .withInfo( (List<Info>) subfolder.attributes );
+                    .withInfo( subfolder.attributes );
         //@formatter:on
     }
 
