@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import io.micrometer.core.instrument.util.IOUtils;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
+import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 
 @Service
@@ -35,7 +36,7 @@ public class DDSImpl implements DDS {
         m.put("folder", values[0]);
         m.put("subfolder", values[1]);
         m.put("description", values[2]);
-        
+
         List<Map<String, String>> attributes = Arrays.asList(values[3].split(",")).stream()
                 .map(e ->
                //Map.of("name", e, "type", "text")
@@ -75,7 +76,7 @@ public class DDSImpl implements DDS {
     public List<Subfolder> listSubfolders(String folder_id) {
         return loadFolders()
                 .map(e -> new Subfolder(e.get("subfolder").toString(), e.get("description").toString(),
-                        e.get("folder").toString(), (List<Map<String, String>>) e.get("attributes")))
+                        e.get("folder").toString(), (List<Info>) e.get("attributes")))
                 .filter(e -> e.folder.equals(folder_id)).collect(Collectors.toList());
     }
 
@@ -119,7 +120,7 @@ public class DDSImpl implements DDS {
                     .withName("name")
                     .withNotes("notes")
                     .withStatus("status")
-                    .withInfo(  subfolder.attributes);
+                    .withInfo( (List<Info>) subfolder.attributes );
         //@formatter:on
     }
 

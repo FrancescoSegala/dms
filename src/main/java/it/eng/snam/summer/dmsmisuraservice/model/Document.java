@@ -1,7 +1,6 @@
 package it.eng.snam.summer.dmsmisuraservice.model;
 
 import java.util.List;
-import java.util.Map;
 
 public class Document {
 
@@ -17,7 +16,7 @@ public class Document {
     public String notes;
     public String published_at;
     public String name;
-    public List<Map<String, String>> info;
+    public List<Info> info;
 
     public Document withId(String id) {
         this.id = id;
@@ -79,7 +78,7 @@ public class Document {
         return this;
     }
 
-    public Document withInfo(List<Map<String, String>> info) {
+    public Document withInfo(List<Info> info) {
         this.info = info;
         return this;
     }
@@ -180,12 +179,13 @@ public class Document {
         this.name = name;
     }
 
-    public List<Map<String, String>> getInfo() {
+    public List<Info> getInfo() {
         return info;
     }
 
-    public void setInfo(List<Map<String, String>> info) {
+    public void setInfo(List<Info> info) {
         this.info = info;
     }
+
 
 }
