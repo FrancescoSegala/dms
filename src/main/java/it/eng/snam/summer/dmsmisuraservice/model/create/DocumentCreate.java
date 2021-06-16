@@ -2,6 +2,8 @@ package it.eng.snam.summer.dmsmisuraservice.model.create;
 
 import java.util.List;
 import java.util.Map;
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.DOCUMENT_REGEX;
+
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -15,9 +17,8 @@ public class DocumentCreate {
 
     //info necessarie ricevute da clienet per creare un nuovo  documento
     @ApiModelProperty("The name of the new document")
-    //^[A-Za-z0-9]+[-_A-Za-z0-9]*$
-    @NotBlank
-    @Pattern(regexp = "^[a-zA-Z]+[_1-9]*[a-zA-Z-0-9]*$")
+     @NotBlank
+    @Pattern(regexp = DOCUMENT_REGEX)
     public String name;
 
     @ApiModelProperty("list of infos about the document ")
