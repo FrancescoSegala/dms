@@ -1,5 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.model.search;
 
+import javax.validation.constraints.Pattern;
+
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class DocumentSearch extends Pagination{
@@ -12,16 +15,26 @@ public class DocumentSearch extends Pagination{
     private  String subfolder;
 
     @ApiModelProperty("the time of publishing ")
+    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z",
+         message = "date format not valid (shoud be of type yyyy-mm-ddTHH:MM:ss)")
     private  String published_at;
 
     @ApiModelProperty("the remi")
+    @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     private  String remi ;
 
     @ApiModelProperty("the list of 'linea' to include the research")
-    private  String linea_in;
+    //@Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
+    private  String[] linea_in;
 
 
 
+    public String[] getLinea_in() {
+        return linea_in;
+    }
+    public void setLinea_in(String[] linea_in) {
+        this.linea_in = linea_in;
+    }
     public String getFolder() {
         return folder;
     }
@@ -46,12 +59,7 @@ public class DocumentSearch extends Pagination{
     public void setRemi(String remi) {
         this.remi = remi;
     }
-    public String getLinea_in() {
-        return linea_in;
-    }
-    public void setLinea_in(String linea_in) {
-        this.linea_in = linea_in;
-    }
+
 
 
 }
