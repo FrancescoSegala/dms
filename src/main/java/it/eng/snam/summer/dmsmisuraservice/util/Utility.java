@@ -1,6 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -26,4 +28,11 @@ public class Utility {
         map.put(k, v);
         return map;
     }
+
+
+    public static<T> List<T> listOf(T...e ){
+        return  Arrays.asList(e);
+
+    }
+
 }
