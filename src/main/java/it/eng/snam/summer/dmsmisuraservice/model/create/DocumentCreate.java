@@ -9,7 +9,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
+import it.eng.snam.summer.dmsmisuraservice.model.validation.ValidDocumentCreate;
 
+@ValidDocumentCreate
 public class DocumentCreate {
 
 
@@ -17,7 +19,7 @@ public class DocumentCreate {
 
     //info necessarie ricevute da clienet per creare un nuovo  documento
     @ApiModelProperty("The name of the new document")
-     @NotBlank
+    @NotBlank
     @Pattern(regexp = DOCUMENT_REGEX)
     public String name;
 

@@ -16,13 +16,14 @@ import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
-import it.eng.snam.summer.dmsmisuraservice.service.DDSImpl;
+import it.eng.snam.summer.dmsmisuraservice.service.DDS;
+import it.eng.snam.summer.dmsmisuraservice.service.fakeDDSImpl;
 
 @RestController
 public class FolderController {
 
     @Autowired
-    DDSImpl dds;
+    DDS dds;
 
     private final Logger logger = LoggerFactory.getLogger(FolderController.class);
 

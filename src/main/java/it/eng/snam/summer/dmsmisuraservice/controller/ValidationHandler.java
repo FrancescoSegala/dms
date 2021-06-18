@@ -1,7 +1,7 @@
 package it.eng.snam.summer.dmsmisuraservice.controller;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,15 +19,10 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
             WebRequest request) {
-
-                Map<String, String> errors = new HashMap<>();
-                ex.getBindingResult().getAllErrors().forEach((error) -> {
-                    System.out.println(error);
-                    String fieldName = ((FieldError) error).getField();
-                    String message = error.getDefaultMessage();
-                    errors.put(fieldName, message);
-                });
-                errors.put("status", ""+ status.value());
+                Map<String, String> errors =  ex.getBindingResult()
+                                .getAllErrors()
+                                .stream()
+                                .collect(Collectors.toMap(e -> ((FieldError) e).getField(), e -> e.getDefaultMessage() ));
                 return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 

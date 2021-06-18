@@ -1,127 +1,97 @@
 package it.eng.snam.summer.dmsmisuraservice.service;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import io.micrometer.core.instrument.util.IOUtils;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
-import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
-@Service
+@Component
 public class DDSImpl implements DDS {
 
 
-    private Stream<Map<String, Object>> loadFolders() {
-        return Arrays
-                .asList(IOUtils.toString(this.getClass().getResourceAsStream("/fake_data/folders.csv")).split("\n"))
-                .stream().map(e -> toRecord(e));
-    }
+    @Autowired
+    DDSFolder ddsFolder ;
 
-    private Map<String, Object> toRecord(String s) {
-        Map<String, Object> m = new HashMap<>();
-        String[] values = s.split(";");
-        m.put("folder", values[0]);
-        m.put("subfolder", values[1]);
-        m.put("description", values[2]);
+    @Autowired
+    DDSDocument ddsDocument ;
 
-        List<Map<String, String>> attributes = Arrays.asList(values[3].split(",")).stream()
-                .map(e ->
-               //Map.of("name", e, "type", "text")
-               {
-                   Map<String, String> res= mapOf("name", e);
-                   res.put("type", "text");
-                   return res;
-               }
-                ).collect(Collectors.toList());
-        m.put("attributes", attributes);
-        return m;
-    }
 
-    public Folder getFolder(String folder_id) {
-        //@formatter:off
-        return loadFolders()
-            .filter(e -> e.get("folder").equals(folder_id))
-            .findFirst()
-            .map(e -> new Folder(folder_id, "description" + folder_id))
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            //@formatter:on
-    }
-
-    public Document getDocument(String doc_id) {
-        return randomDocument(doc_id);
-    }
-
-    public Document getDocument(String doc_id, String folder_id, String subfolder_id) {
-        return randomDocument(doc_id, folder_id, subfolder_id);
-    }
 
     public List<Folder> listFolders() {
-        return loadFolders().map(e -> new Folder(e.get("folder").toString(), "description" + e.get("folder")))
-                .filter(distinctByKey(e -> e.id)).collect(Collectors.toList());
+        return  ddsFolder.list()
+        .stream()
+        .map(e -> toFolder(e))
+        .collect(Collectors.toList());
+
     }
 
+
+
+    private Folder toFolder(Entity e) {
+        return new Folder( );
+    }
+
+
+
+    @Override
+    public Folder getFolder(String id) {
+             ddsFolder.get(id);
+        return null ;
+    }
+
+
+
+    @Override
     public List<Subfolder> listSubfolders(String folder_id) {
-        return loadFolders()
-                .map(e -> new Subfolder(e.get("subfolder").toString(), e.get("description").toString(),
-                        e.get("folder").toString(), (List<Info>) e.get("attributes")))
-                .filter(e -> e.folder.equals(folder_id)).collect(Collectors.toList());
+        // TODO Auto-generated method stub
+        return null;
     }
 
+
+
+    @Override
     public Subfolder getSubfolder(String folder_id, String subfolder_id) {
-        return listSubfolders(folder_id).stream().filter(e -> e.id.equals(subfolder_id)).findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public List<Document> listDocuments() {
-        return IntStream.range(0, 100).mapToObj(e -> randomDocument("" + e)).collect(Collectors.toList());
-    }
 
+
+    @Override
     public List<Document> listDocumentsInSubfolder(String folder_id, String subfolder_id) {
-        return IntStream.range(0, (int) (Math.random() * 20))
-                .mapToObj(e -> randomDocument("" + e, folder_id, subfolder_id)).collect(Collectors.toList());
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    private Document randomDocument(String id) {
-        List<Folder> folders = listFolders();
-        int random_folder = (int) Math.floor(Math.random() * folders.size());
-        String folder_id = folders.get(random_folder).id;
-        String subfolder_id = listSubfolders(folder_id)
-                .get((int) Math.floor(Math.random() * listSubfolders(folder_id).size())).id;
-        return randomDocument(id, folder_id, subfolder_id);
 
+
+    @Override
+    public Document getDocument(String document_id, String folder_id, String subfolder_id) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    private Document randomDocument(String id, String folder_id, String subfolder_id) {
-        Subfolder subfolder = getSubfolder(folder_id, subfolder_id);
-        //@formatter:off
-        return new Document()
-                    .withId(id)
-                    .withCreatedAt(Instant.now().toString())
-                    .withCreatedBy("System")
-                    .withFolder( folder_id  )
-                    .withUpdatedBy("System")
-                    .withUpdatedAt(Instant.now().toString())
-                    .withSubfolder( subfolder_id )
-                    .withPublishedAt(Instant.now().toString())
-                    .withLink("/link")
-                    .withName("name")
-                    .withNotes("notes")
-                    .withStatus("status")
-                    .withInfo( subfolder.attributes );
-        //@formatter:on
+
+
+    @Override
+    public List<Document> listDocuments() {
+        return ddsDocument.list()
+        .stream()
+        .map(e -> toDocument(e))
+        .collect(Collectors.toList())
+        ;
+    }
+
+
+
+    private Document toDocument(Entity e) {
+        return new Document();
     }
 
 }

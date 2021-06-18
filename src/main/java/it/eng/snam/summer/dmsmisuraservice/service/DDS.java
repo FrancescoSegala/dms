@@ -1,35 +1,29 @@
 package it.eng.snam.summer.dmsmisuraservice.service;
 
+import java.util.List;
+
+import it.eng.snam.summer.dmsmisuraservice.model.Document;
+import it.eng.snam.summer.dmsmisuraservice.model.Folder;
+import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
+
 public interface DDS {
 
+    public List<Folder> listFolders();
 
-    // RestTemplate template = new RestTemplate();
+    public Folder getFolder(String id);
 
-    // public String precallUrl = "https://dds-folder.snam.it/precall";
-    // public String authUrl = "http://161.27.146.15:8180/auth/realms/Paper_Realm/protocol/openid-connect/auth";
-    // public String tokenUrl = "http://161.27.146.15:8180/auth/realms/Paper_Realm/protocol/openid-connect/token";
-    // public String clientId = "PaperCollaudo";
-    // public String clientSecret = "5a623e04-8597-4359-b5d6-e8a51034757d";
-    // public String baseUrl = "https://digidoc-coll.eng.it/Paper";
+    public List<Subfolder> listSubfolders(String folder_id);
 
-    // private String accessToken() {
-    // Map<String, String> precall = template.getForObject(precallUrl, Map.class);
-    // // TODO precall( precallUrl ) -> return a object containing a SSO url GET
-    // method
-    // // TODO getAccessToken ( SSOUrl , clientId , Secret ) -> object: accessTokem
-    // ,
-    // // RefreshToken , Expire POST method
-    // // TODO (optional) getRefreshToken(token, clientId , Secret) -> object :
-    // // refreshToken :
-    // // TODO getFunction( functionUrl , header:bearerToken=access_token, body)
-    // POST
-    // // method
-    // // String sso = precall.get("SSOUrl");
+    public Subfolder getSubfolder(String folder_id, String subfolder_id);
 
-    // // template.postForEntity(url, request, responseType, uriVariables)
-    // return "";
-    // }
+    public List<Document> listDocumentsInSubfolder(String folder_id, String subfolder_id);
+
+    public Document getDocument(String document_id, String folder_id, String subfolder_id);
+
+    public List<Document> listDocuments();
 
 
+    //GET folders ->
+    //implementazione metodi che sono in fakeddsImpl
 
 }

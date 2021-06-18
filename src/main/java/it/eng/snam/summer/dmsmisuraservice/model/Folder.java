@@ -12,6 +12,19 @@ public class Folder {
         this.description = description;
     }
 
+    public Folder withId(String v ){
+        this.id = v ;
+        return this;
+    }
+
+    public Folder withDescription(String desc ){
+        this.description = desc;
+        return this;
+    }
+
+    public Folder() {
+    }
+
 
 
 }
