@@ -19,19 +19,29 @@ public class SnamRestClient {
     private HttpHeaders headers = new HttpHeaders();
     private String url = "";
 
+
+    public static SnamRestClient rest(String url){
+        return new SnamRestClient(url);
+    }
+
+    public static SnamRestClient rest( DDSPrecall precall ){
+        return new SnamRestClient(precall);
+    }
+
     public SnamRestClient withContentType(MediaType ct) {
         headers.setContentType(ct);
         return this;
     }
 
 
-    public SnamRestClient(String url) {
+
+    private SnamRestClient(String url) {
         this.withURL(url)
         .withContentType(MediaType.APPLICATION_JSON);
     }
 
 
-    public SnamRestClient( DDSPrecall precall ) {
+    private SnamRestClient( DDSPrecall precall ) {
         this(precall.url);
         this.headers.set("Authorization", "Bearer "+ precall.accessToken );
     }

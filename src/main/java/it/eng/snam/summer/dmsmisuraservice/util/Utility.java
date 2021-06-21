@@ -12,6 +12,7 @@ public class Utility {
 
 
     public static final String DOCUMENT_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
+    public static final String SUBFOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
 
 
     public static boolean isEmpty(String string) {

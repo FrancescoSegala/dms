@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
-import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
+import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
+import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
+import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.service.DDS;
-import it.eng.snam.summer.dmsmisuraservice.service.fakeDDSImpl;
 
 @RestController
 public class FolderController {
@@ -33,15 +34,13 @@ public class FolderController {
     }
 
     @GetMapping("/folders")
-    public List<Folder> list( @Valid Pagination pagination) {
-
-        logger.info("Chiamata GET /folders");
-        return dds.listFolders();
+    public List<Folder> list( @Valid FolderSearch params) {
+        return dds.listFolders(params);
     }
 
     @GetMapping("/folders/{folder_id}/subfolders")
-    public List<Subfolder> listSubfolders(@PathVariable String folder_id, @RequestParam @Valid Pagination pagination) {
-        return dds.listSubfolders(folder_id);
+    public List<Subfolder> listSubfolders(@PathVariable String folder_id, @Valid SubfolderSearch params) {
+        return dds.listSubfolders(folder_id, params);
     }
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}")
@@ -51,16 +50,20 @@ public class FolderController {
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents")
     public List<Document> listDocumentsInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,
-            @RequestParam @Valid Pagination pagination) {
-        return dds.listDocumentsInSubfolder(folder_id, subfolder_id);
+            @RequestParam @Valid DocumentSearch params) {
+        return dds.listDocuments( params );
     }
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}")
     public Document getDocumentInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,
             @PathVariable String document_id) {
-        return dds.getDocument(document_id, folder_id, subfolder_id);
+        return dds.getDocument(document_id);
     }
 
-    // download pdf?
+    @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}/content")
+    public Document getContent(@PathVariable String folder_id, @PathVariable String subfolder_id,
+            @PathVariable String document_id) {
+        return dds.getDocument(document_id);
+    }
 
 }

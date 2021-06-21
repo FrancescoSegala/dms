@@ -47,7 +47,6 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	/** Restituisce l'utente dal token */
-	@SuppressWarnings("deprecation")
 	public String getUserFromToken(String token) {
 		String utente = null;
 
@@ -146,13 +145,9 @@ public class JwtTokenUtil implements Serializable {
 	 */
 	private Claims getAllClaimsFromTokenOld(String token) {
 		return Jwts.parser()
-				/* Con chiave */
 				.setSigningKey(secret)
 				.parseClaimsJws(token)
 				.getBody();
-				/* Senza chiave */
-//				.parseClaimsJwt(token)
-//				.getBody();
 	}
 
 

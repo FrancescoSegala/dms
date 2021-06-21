@@ -22,18 +22,21 @@ public class DocumentController {
     DDS dds;
 
     @GetMapping("/documents")
-    public List<Document> list( @Valid DocumentSearch search) {
-        return dds.listDocuments();
+    public List<Document> list( @Valid DocumentSearch params) {
+        return dds.listDocuments(params);
     }
 
     @GetMapping("/documents/{document_id}")
     public Document get(@PathVariable String document_id) {
-        return dds.getDocument(document_id, document_id, document_id);
+        return dds.getDocument(document_id);
     }
 
     @PostMapping("/documents")
     public Document post( @Valid DocumentCreate dc) {
         return new Document().withId("pippo");
     }
+
+
+
 
 }

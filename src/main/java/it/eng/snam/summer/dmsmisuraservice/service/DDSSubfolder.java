@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+
+import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
-@Component
-public class DDSDocument {
+public class DDSSubfolder {
 
 
     @Autowired
@@ -19,15 +19,13 @@ public class DDSDocument {
     @Value("${external.dds.OS}")
     private String os;
 
-    public List<Entity> list() {
-        //@formatter:off
-        return rest.getDocumentBySQL()
-            .withParam("OS", this.os)
-            .withParam("select", listOf("*"))
-            .withParam("where", "")
-            .postForList();
-            //@formatter:on
-    }
 
+    List<Entity> list(String folder_id , SubfolderSearch params ){
+        return rest.getFolderBySQL()
+            .withParam("OS", this.os )
+            .withParam("select", listOf("*"))
+            .withParam("where", "limit = " + params.getLimit() )
+            .postForList();
+    }
 
 }

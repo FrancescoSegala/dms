@@ -4,39 +4,39 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-
+import static it.eng.snam.summer.dmsmisuraservice.service.DDSPrecall.precall;
+import static it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient.rest;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient;
 
 @Component
-public class UrlProvider {
+public class DDSRestProvider {
 
 
-    private static String FOLDER_PRECALL_URL = "https://dds-folder-t.snam.it/precall";
-    private static String DOCUMENT_GET_PRECALL_URL = "https://dds-doc-read-t.snam.it/precall";
-    private static String CLIENT_ID = "1550tdmi";
-    private static String CLIENT_SECRET = "4eb4ca2b54bfc5fa7f7c539afe950637";
+    @Value("${external.dds.folder_precall_url}")
+    private String folder_precall_url ;
+    @Value("${external.dds.document_precall_url}")
+    private String document_precall_url ;
+    @Value("${external.dds.client_id}")
+    private String client_id ;
+    @Value("${external.dds.client_secret}")
+    private String client_secret ;
+
     private static Map<String, Entity> SSO_EXPIRATION = new HashMap<>() ;
 
     private DDSPrecall getPrecall(String precallUrl , String fn , String method ){
-        Entity precall = new SnamRestClient(precallUrl).get();
-        DDSPrecall result = new DDSPrecall();
-        result.url = precall.getAsString(fn) + "/"+ method;
-        result.accessToken =  accessToken(precall.getAsString("SSOUrl"));
-        return result;
+        Entity precall = rest(precallUrl).get();
+        return precall()
+                .withUrl(precall.getAsString(fn) + "/"+ method)
+                .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
     }
 
 
     private boolean isAccessTokenExpired(String ssoUrl){
-        if (! SSO_EXPIRATION.containsKey(ssoUrl) ){
-            return true;
-        }
-        if( Instant.now().isAfter((Instant) SSO_EXPIRATION.get(ssoUrl).get("expiration")) ){
-            return true;
-        }
-        return false;
+        return (! SSO_EXPIRATION.containsKey(ssoUrl)) || (Instant.now().isAfter((Instant) SSO_EXPIRATION.get(ssoUrl).get("expiration")));
     }
 
 
@@ -44,17 +44,17 @@ public class UrlProvider {
         if ( ! isAccessTokenExpired(ssoUrl) ){
             return SSO_EXPIRATION.get(ssoUrl).getAsString("access_token");
         }
-        Entity ssoResult = new SnamRestClient(ssoUrl)
+        Entity ssoResult = rest(ssoUrl)
             .withContentType(MediaType.APPLICATION_FORM_URLENCODED)
             .withParam("grant_type", "client_credentials")
-            .withParam("client_id", CLIENT_ID)
-            .withParam("client_secret", CLIENT_SECRET)
+            .withParam("client_id", client_id)
+            .withParam("client_secret", client_secret)
             .post();
-        Entity refreshResponse = new SnamRestClient(ssoUrl)
+        Entity refreshResponse = rest(ssoUrl)
             .withContentType(MediaType.APPLICATION_FORM_URLENCODED)
             .withParam("grant_type", "refresh_token")
-            .withParam("client_id", CLIENT_ID)
-            .withParam("client_secret", CLIENT_SECRET)
+            .withParam("client_id", client_id)
+            .withParam("client_secret", client_secret)
             .withParam("refresh_token", ssoResult.getAsString("refresh_token"))
             .post();
 
@@ -64,13 +64,13 @@ public class UrlProvider {
         return refreshResponse.getAsString("access_token");
     }
 
-    public DDSPrecall getFolderBySQL(){
-        return getPrecall(FOLDER_PRECALL_URL, "getfolder", "getFolderBySQL");
+
+    public SnamRestClient getFolderBySQL(){
+        return rest( getPrecall(folder_precall_url, "getfolder", "getFolderBySQL"));
     }
 
-
-    public DDSPrecall getDocumentBySQL(){
-        return getPrecall(DOCUMENT_GET_PRECALL_URL, "getdoc", "getDocumentBySQL");
+    public SnamRestClient getDocumentBySQL(){
+        return rest(getPrecall(document_precall_url, "getdoc", "getDocumentBySQL"));
     }
 
 

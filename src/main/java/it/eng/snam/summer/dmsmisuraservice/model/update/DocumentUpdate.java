@@ -1,13 +1,13 @@
 package it.eng.snam.summer.dmsmisuraservice.model.update;
 
 import java.util.List;
-import java.util.Map;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.DOCUMENT_REGEX;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
+import it.eng.snam.summer.dmsmisuraservice.model.Info;
 
 public class DocumentUpdate {
 
@@ -24,7 +24,7 @@ public class DocumentUpdate {
     public String name;
 
     @ApiModelProperty("List of infos about the document")
-    public List<Map<String, String>> info;
+    public List<Info> info;
 
     @ApiModelProperty("status of the document")
     public String status;
@@ -51,10 +51,11 @@ public class DocumentUpdate {
     public void setName(String name) {
         this.name = name;
     }
-    public List<Map<String, String>> getInfo() {
+
+    public List<Info> getInfo() {
         return info;
     }
-    public void setInfo(List<Map<String, String>> info) {
+    public void setInfo(List<Info> info) {
         this.info = info;
     }
     public String getStatus() {
