@@ -15,7 +15,7 @@ public class SnamRestClient {
 
     private RestOperations template = new RestTemplate();
 
-    private Entity entity = new Entity();
+    private Entity params = new Entity();
     private HttpHeaders headers = new HttpHeaders();
     private String url = "";
 
@@ -52,7 +52,7 @@ public class SnamRestClient {
     }
 
     public SnamRestClient withParam(String k, Object v) {
-        entity.put(k, v);
+        params.put(k, v);
         return this;
     }
 
@@ -63,21 +63,26 @@ public class SnamRestClient {
 
 
     public Entity get(){
+        System.out.println("[SNAM-REST-CLIENT][GET] - url:" + url);
+        System.out.println("[SNAM-REST-CLIENT][GET] - params:" + params);
         Entity aux = template.getForObject(url, Entity.class);
-        System.out.println(aux);
+        System.out.println("[SNAM-REST-CLIENT][GET] - response:"+aux);
         return aux;
     }
 
     public Entity post() {
-        System.out.println("Entity "+ entity);
-        Entity aux =  template.postForObject(url, new HttpEntity<>(entity.toMultiValueMap(), headers), Entity.class);
-        System.out.println(aux);
+        System.out.println("[SNAM-REST-CLIENT][POST] - url:" + url);
+        System.out.println("[SNAM-REST-CLIENT][POST] - params:" + params);
+        Entity aux =  template.postForObject(url, new HttpEntity<>(params.toMultiValueMap(), headers), Entity.class);
+        System.out.println("[SNAM-REST-CLIENT][POST] - response:" + aux);
         return aux;
     }
 
     public List<Entity> postForList(){
-        List<Entity> aux = (List<Entity>) template.postForObject(url, new HttpEntity<>(entity.toString(), headers), List.class);
-        System.out.println(aux);
+        System.out.println("[SNAM-REST-CLIENT][POSTFORLIST] - url:" + url);
+        System.out.println("[SNAM-REST-CLIENT][POSTFORLIST] - params:" + params);
+        List<Entity> aux = (List<Entity>) template.postForObject(url, new HttpEntity<>(params.toString(), headers), List.class);
+        System.out.println("[SNAM-REST-CLIENT][POSTFORLIST] - response:"+ aux);
         return aux;
     }
 

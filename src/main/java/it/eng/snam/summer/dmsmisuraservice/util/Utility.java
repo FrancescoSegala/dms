@@ -31,7 +31,7 @@ public class Utility {
     }
 
 
-    public static<T> List<T> listOf(T...e ){
+    public static<T> List<T> listOf(T... e ){
         return  Arrays.asList(e);
 
     }

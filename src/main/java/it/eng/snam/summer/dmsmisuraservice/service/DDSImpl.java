@@ -1,5 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.service;
 
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toDocument;
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toFolder;
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSubfolder;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -16,156 +19,85 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
-import it.eng.snam.summer.dmsmisuraservice.util.Entity;
-
+import it.eng.snam.summer.dmsmisuraservice.util.EntityMapper;
 
 //@Component
 public class DDSImpl implements DDS {
 
+    @Autowired
+    DDSFolder ddsFolder;
 
     @Autowired
-    DDSFolder ddsFolder ;
+    DDSDocument ddsDocument;
 
     @Autowired
-    DDSDocument ddsDocument ;
-
-    @Autowired
-    DDSSubfolder  ddsSubfolder;
-
+    DDSSubfolder ddsSubfolder;
 
     @Override
     public List<Folder> listFolders(FolderSearch params) {
-        return  ddsFolder
-        .list(params)
-        .stream()
-        .map( this::toFolder )
-        .collect( toList() );
+        return ddsFolder.list(params).stream().map(EntityMapper::toFolder).collect(toList());
 
-    }
-
-
-
-    private Folder toFolder(Entity e) {
-        return new Folder()
-        .withId(e.id())
-        .withDescription(e.getAsString("description"));
-    }
-
-
-    private Subfolder toSubfolder(Entity e){
-        return new Subfolder()
-                    .withId(e.id())//TODO
-                    .withDescription(e.getAsString("description"))
-                    .withStatus(e.getAsString("status"));
     }
 
     @Override
     public Folder getFolder(String id) {
-        return toFolder( ddsFolder.get(id));
+        return toFolder(ddsFolder.get(id));
     }
-
-
 
     @Override
     public List<Subfolder> listSubfolders(String folder_id, SubfolderSearch params) {
-        return ddsSubfolder.list(folder_id, params)
-                .stream()
-                .map(this::toSubfolder)
-                .collect( toList() );
+        return ddsSubfolder.list(folder_id, params).stream().map(EntityMapper::toSubfolder).collect(toList());
     }
-
-
 
     @Override
     public Subfolder getSubfolder(String folder_id, String subfolder_id) {
-        // TODO Auto-generated method stub
-        return null;
+        return toSubfolder(ddsSubfolder.get(folder_id, subfolder_id));
     }
-
-
-
 
     @Override
     public List<Document> listDocuments(DocumentSearch params) {
-        return ddsDocument.list()
-        .stream()
-        .map(this::toDocument)
-        .collect(toList())
-        ;
+        return ddsDocument.list().stream().map(EntityMapper::toDocument).collect(toList());
     }
-
-
-
-    private Document toDocument(Entity e) {
-        return new Document()
-        ;
-    }
-
-
-
 
     @Override
     public void deleteSubfolder(String folder_id, String subfolder_id) {
-        // TODO Auto-generated method stub
+        ddsSubfolder.delete(folder_id, subfolder_id);
 
     }
-
-
 
     @Override
     public Document getDocument(String document_id) {
-        // TODO Auto-generated method stub
-        return null;
+        return toDocument(ddsDocument.get(document_id));
     }
-
-
 
     @Override
     public Document createDocument(DocumentCreate params) {
-        // TODO Auto-generated method stub
-        return null;
+        return toDocument(ddsDocument.post(params));
     }
-
-
 
     @Override
     public Document updateDocument(String document_id, DocumentUpdate params) {
-        // TODO Auto-generated method stub
-        return null;
+        return toDocument(ddsDocument.put(params));
     }
-
-
 
     @Override
     public void deleteDocument(String document_id) {
-        // TODO Auto-generated method stub
-
+        ddsDocument.delete(document_id);
     }
-
-
 
     @Override
     public void getContent(String document_id) {
-        // TODO Auto-generated method stub
-
+        ddsDocument.getContent(document_id);
     }
-
-
-
-
 
     @Override
     public Subfolder createSubfolder(String folder_id, SubfolderCreate params) {
-        // TODO Auto-generated method stub
-        return null;
+        return toSubfolder(ddsSubfolder.post(folder_id, params));
     }
-
-
 
     @Override
     public Subfolder updateSubfolder(String folder_id, SubfolderUpdate params) {
-        // TODO Auto-generated method stub
-        return null;
+        return toSubfolder(ddsSubfolder.put(folder_id, params));
     }
 
 }

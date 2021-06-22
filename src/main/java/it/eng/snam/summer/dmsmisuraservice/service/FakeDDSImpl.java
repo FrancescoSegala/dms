@@ -46,7 +46,6 @@ public class FakeDDSImpl implements DDS {
 
         List<Map<String, String>> attributes = Arrays.asList(values[3].split(",")).stream()
                 .map(e ->
-               //Map.of("name", e, "type", "text")
                {
                    Map<String, String> res= mapOf("name", e);
                    res.put("type", "text");
@@ -194,7 +193,7 @@ public class FakeDDSImpl implements DDS {
 
     @Override
     public void getContent(String document_id) {
-        // TODO Auto-generated method stub
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 
     }
 

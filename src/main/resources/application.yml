@@ -49,7 +49,7 @@ logging:
 
 external:
     dds:
-        fake: true
+        fake: false
         OS: DMSMIS
         folder_precall_url: https://dds-folder-t.snam.it/precall
         document_precall_url: https://dds-doc-read-t.snam.it/precall
