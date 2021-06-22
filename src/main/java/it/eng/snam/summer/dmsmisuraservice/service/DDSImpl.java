@@ -59,7 +59,6 @@ public class DDSImpl implements DDS {
                     .withStatus(e.getAsString("status"));
     }
 
-
     @Override
     public Folder getFolder(String id) {
         return toFolder( ddsFolder.get(id));

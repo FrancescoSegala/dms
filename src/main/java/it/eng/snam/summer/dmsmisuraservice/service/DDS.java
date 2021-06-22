@@ -25,7 +25,7 @@ public interface DDS {
 
     public Subfolder createSubfolder( String folder_id , SubfolderCreate params);
 
-    public Subfolder updateSubfolder( String folder_id , SubfolderUpdate params); //TODO potrebbe essere updateSubfolder(folder, subfolder, params) ?
+    public Subfolder updateSubfolder( String folder_id , SubfolderUpdate params);
 
     public void deleteSubfolder(String folder_id , String subfolder_id );
 

@@ -62,7 +62,7 @@ public class FakeDDSImpl implements DDS {
         return loadFolders()
             .filter(e -> e.get("folder").equals(folder_id))
             .findFirst()
-            .map(e -> new Folder(folder_id, "description" + folder_id))
+            .map(e -> new Folder(folder_id, e.get("description").toString()))
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
             //@formatter:on
     }
@@ -76,7 +76,7 @@ public class FakeDDSImpl implements DDS {
     }
 
     public List<Folder> listFolders() {
-        return loadFolders().map(e -> new Folder(e.get("folder").toString(), "description" + e.get("folder")))
+        return loadFolders().map(e -> new Folder(e.get("folder").toString(), e.get("description").toString() ))
                 .filter(distinctByKey(e -> e.id)).collect(Collectors.toList());
     }
 
