@@ -31,10 +31,18 @@ public class DocumentController {
         return dds.getDocument(document_id);
     }
 
-    @PostMapping("/documents")
-    public Document post( @Valid DocumentCreate dc) {
-        return new Document().withId("pippo");
+
+    @GetMapping("/documents/{document_id}/content")
+    public void getContent(@PathVariable String document_id) {
+        dds.getContent(document_id);
     }
+
+    @PostMapping("/documents")
+    public Document post( @Valid DocumentCreate params) {
+        return dds.createDocument(params);
+    }
+
+
 
 
 
