@@ -29,7 +29,7 @@ public class DDSSubfolder extends DDSEntity {
         return rest.getFolderBySQL()
                 .withParam("OS", this.os )
                 .withParam("select", listOf("*"))
-                .withParam("where", clause("subfolder_id", subfolder_id, "=")) //TODO è corretto?
+                .withParam("where", clause("subfolder_id", subfolder_id, "=")) //TODO sbagliato risponde 422
                 .post();
     }
 

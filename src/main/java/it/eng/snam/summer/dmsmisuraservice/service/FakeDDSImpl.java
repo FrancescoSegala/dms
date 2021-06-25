@@ -166,12 +166,12 @@ public class FakeDDSImpl implements DDS {
     @Override
     public Document createDocument(DocumentCreate params) {
         return new Document()
-                    .withName(params.name)
-                    .withNotes(params.notes)
-                    .withFolder(params.folder)
-                    .withStatus(params.status)
-                    .withSubfolder(params.subfolder)
-                    .withInfo(params.info);
+                    .withName(params.getName())
+                    .withNotes(params.getNotes())
+                    .withFolder(params.getFolder())
+                    .withStatus(params.getStatus())
+                    .withSubfolder(params.getSubfolder())
+                    .withInfo(params.getInfo());
 
     }
 
