@@ -56,7 +56,7 @@ public class DDSImpl implements DDS {
 
     @Override
     public List<Document> listDocuments(DocumentSearch params) {
-        return ddsDocument.list().stream().map(EntityMapper::toDocument).collect(toList());
+        return ddsDocument.list(params).stream().map(EntityMapper::toDocument).collect(toList());
     }
 
     @Override

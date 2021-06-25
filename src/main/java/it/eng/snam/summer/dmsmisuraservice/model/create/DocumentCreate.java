@@ -16,24 +16,24 @@ public class DocumentCreate {
     @ApiModelProperty("The name of the new document")
     @NotBlank
     @Pattern(regexp = DOCUMENT_REGEX)
-    public String name;
+    private String name;
 
     @ApiModelProperty("list of infos about the document ")
-    public List<Info> info;
+    private List<Info> info;
 
     @ApiModelProperty("status of the document")
-    public String status = "active";
+    private String status = "active";
 
     @ApiModelProperty("notes for the document")
-    public String notes;
+    private String notes;
 
     @ApiModelProperty("the id of the 1st level folder")
     @NotBlank
-    public String folder;
+    private String folder;
 
     @ApiModelProperty("the id of the 2nd level folder")
     @NotBlank
-    public String subfolder;
+    private String subfolder;
 
     public String getName() {
         return name;

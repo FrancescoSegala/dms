@@ -4,31 +4,23 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
+import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 @Component
-public class DDSSubfolder {
-
-
-    @Autowired
-    DDSRestProvider rest;
-
-    @Value("${external.dds.OS}")
-    private String os;
+public class DDSSubfolder extends DDSEntity {
 
 
     public List<Entity> list(String folder_id , SubfolderSearch params ){
         return rest.getFolderBySQL()
             .withParam("OS", this.os )
             .withParam("select", listOf("*"))
-            .withParam("where", "limit = " + params.getLimit() )
+            .withParam("where", where(params) ) //TODO è corretto ? non serve il folder id?
             .postForList();
     }
 
@@ -37,7 +29,7 @@ public class DDSSubfolder {
         return rest.getFolderBySQL()
                 .withParam("OS", this.os )
                 .withParam("select", listOf("*"))
-                .withParam("where", "subfolder condition")
+                .withParam("where", clause("subfolder_id", subfolder_id, "=")) //TODO è corretto?
                 .post();
     }
 
@@ -55,6 +47,17 @@ public class DDSSubfolder {
     public Entity put(String folder_id, SubfolderUpdate params){
         return new Entity();
         //TODO IMPLEMENT
+    }
+
+
+    @Override
+    protected List<String> clauses(Pagination p) {
+        SubfolderSearch params = (SubfolderSearch) p;
+        return listOf(
+            clause("id", params.getId(), "="),
+            clause("folder", params.getFolder(), "="),
+            clause("status", params.getStatus(), "=")
+        );
     }
 
 

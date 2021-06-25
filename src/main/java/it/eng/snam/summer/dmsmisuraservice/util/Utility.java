@@ -13,10 +13,15 @@ public class Utility {
 
     public static final String DOCUMENT_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
     public static final String SUBFOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
+    public static final String FOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
 
 
     public static boolean isEmpty(String string) {
         return (string == null || string.trim().isEmpty());
+    }
+
+    public static boolean isEmpty(String[] values){
+        return values == null || values.length == 0 ;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
@@ -29,6 +34,7 @@ public class Utility {
         map.put(k, v);
         return map;
     }
+
 
 
     public static<T> List<T> listOf(T... e ){

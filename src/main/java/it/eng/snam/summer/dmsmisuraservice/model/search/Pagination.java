@@ -6,7 +6,7 @@ import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class Pagination {
+public abstract class Pagination {
 
 
 
@@ -20,7 +20,7 @@ public class Pagination {
     private String direction = "asc";
 
     @ApiModelProperty("limit the number of records given as result, must be an integer greater than 0 and less than 100")
-    @Min(0L)
+    @Min(1L)
     @Max(100L)
     private Long limit = 10L ;
 
@@ -28,8 +28,6 @@ public class Pagination {
     @Min(0L)
     @ApiModelProperty("the offset from where start giving the result, must be an integer greater than 0")
     private Long offset = 0L;
-
-
 
 
     public String getSort() {

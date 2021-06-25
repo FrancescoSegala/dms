@@ -16,7 +16,7 @@ public class DocumentSearch extends Pagination{
 
     @ApiModelProperty("the time of publishing ")
     @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z",
-         message = "date format not valid (shoud be of type yyyy-mm-ddTHH:MM:ss)")
+         message = "date format not valid (should be of type yyyy-mm-ddTHH:MM:ss)")
     private  String published_at;
 
     @ApiModelProperty("the remi")

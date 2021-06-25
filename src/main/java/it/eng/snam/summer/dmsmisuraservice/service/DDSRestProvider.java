@@ -18,8 +18,10 @@ public class DDSRestProvider {
 
     @Value("${external.dds.folder_precall_url}")
     private String folder_precall_url ;
-    @Value("${external.dds.document_precall_url}")
-    private String document_precall_url ;
+    @Value("${external.dds.document_read_precall_url}")
+    private String document_read_precall_url ;
+    @Value("${external.dds.document_write_precall_url}")
+    private String document_write_precall_url ;
     @Value("${external.dds.client_id}")
     private String client_id ;
     @Value("${external.dds.client_secret}")
@@ -70,7 +72,11 @@ public class DDSRestProvider {
     }
 
     public SnamRestClient getDocumentBySQL(){
-        return rest(getPrecall(document_precall_url, "getdoc", "getDocumentBySQL"));
+        return rest(getPrecall(document_read_precall_url, "getdoc", "getDocumentBySQL"));
+    }
+
+    public SnamRestClient createDocumentBySQL(){
+        return rest(getPrecall(document_read_precall_url, "upsertdoc", "createDocument"));
     }
 
 
