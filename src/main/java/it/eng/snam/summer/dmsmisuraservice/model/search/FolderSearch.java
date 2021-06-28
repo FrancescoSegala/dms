@@ -8,6 +8,13 @@ public class FolderSearch extends Pagination {
     @ApiModelProperty("the id of the 1st level folder to search")
     private  String id;
 
+
+    public FolderSearch withId( String id ) {
+        this.id = id ;
+         return this;
+    }
+
+
     public String getId() {
         return id;
     }

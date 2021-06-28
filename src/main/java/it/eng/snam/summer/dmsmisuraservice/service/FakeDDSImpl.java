@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import javax.validation.Valid;
+
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
@@ -67,6 +70,9 @@ public class FakeDDSImpl implements DDS {
     }
 
     public Document getDocument(String doc_id) {
+        if (Integer.parseInt(doc_id) <= 0 ){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity "+ doc_id + " not exist");
+        }
         return randomDocument(doc_id);
     }
 
@@ -79,7 +85,7 @@ public class FakeDDSImpl implements DDS {
                 .filter(distinctByKey(e -> e.id)).collect(Collectors.toList());
     }
 
-    public List<Subfolder> listSubfolders(String folder_id, SubfolderSearch params ) {
+    public List<Subfolder> listSubfolders(String folder_id, @Valid SubfolderSearch params ) {
         return loadFolders()
                 .map(e ->
                     new Subfolder( e.get("subfolder").toString(),
@@ -144,12 +150,12 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public Subfolder createSubfolder(String folder_id, SubfolderCreate params) {
+    public Subfolder createSubfolder(String folder_id, @Valid SubfolderCreate params) {
         return getSubfolder(folder_id, params.getSubfolder_id() );
     }
 
     @Override
-    public Subfolder updateSubfolder(String folder_id, SubfolderUpdate params) {
+    public Subfolder updateSubfolder(String folder_id, @Valid SubfolderUpdate params) {
         return getSubfolder(folder_id, params.getSubfolder_id() );
     }
 
@@ -159,12 +165,12 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public List<Document> listDocuments(DocumentSearch params) {
+    public List<Document> listDocuments( @Valid DocumentSearch params) {
         return listDocuments();
     }
 
     @Override
-    public Document createDocument(DocumentCreate params) {
+    public Document createDocument( @Valid DocumentCreate params) {
         return new Document()
                     .withName(params.getName())
                     .withNotes(params.getNotes())
@@ -176,7 +182,7 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public Document updateDocument(String document_id, DocumentUpdate params) {
+    public Document updateDocument(String document_id, @Valid DocumentUpdate params) {
         return new Document()
                     .withName(params.name)
                     .withNotes(params.notes)

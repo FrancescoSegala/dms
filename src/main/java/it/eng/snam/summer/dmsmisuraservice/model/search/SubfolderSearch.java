@@ -17,6 +17,22 @@ public class SubfolderSearch extends Pagination {
     @Pattern(regexp = "(active|inactive)")
     private String status ;
 
+
+    public SubfolderSearch withId( String id ) {
+        this.id = id ;
+         return this;
+    }
+
+    public SubfolderSearch withFolder( String folder ) {
+        this.folder = folder ;
+         return this;
+    }
+
+    public SubfolderSearch withStatus( String status ) {
+        this.status = status ;
+         return this;
+    }
+
     public String getFolder() {
         return folder;
     }
