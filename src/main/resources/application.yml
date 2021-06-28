@@ -56,3 +56,7 @@ external:
         document_write_precall_url: https://dds-doc-write-t.snam.it/precall
         client_id: 1550tdmi
         client_secret: 4eb4ca2b54bfc5fa7f7c539afe950637
+    summer:
+        fake: false
+        jwt_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi/secure/token?rie=RI00674
+        remi_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi

@@ -1,4 +1,4 @@
-package it.eng.snam.summer.dmsmisuraservice.service;
+package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import java.util.List;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;

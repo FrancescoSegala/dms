@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
-import it.eng.snam.summer.dmsmisuraservice.service.DDS;
+import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 
 @RestController
 public class DocumentController {

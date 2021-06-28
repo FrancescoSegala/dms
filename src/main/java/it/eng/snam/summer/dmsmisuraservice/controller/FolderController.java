@@ -18,7 +18,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
-import it.eng.snam.summer.dmsmisuraservice.service.DDS;
+import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 
 @RestController
 public class FolderController {

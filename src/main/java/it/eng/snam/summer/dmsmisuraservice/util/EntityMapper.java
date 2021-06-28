@@ -2,6 +2,7 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
+import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 
 public class EntityMapper {
@@ -40,6 +41,14 @@ public class EntityMapper {
             .withInfo( e.getAsList("info"))
         ;
     }
+
+
+    public static Remi toRemi(Entity e ){
+        return new Remi()
+            .withId(e.getAsString("remiAss"))
+            .withDescription(e.getAsString("ragSociale"));
+    }
+
 
 
 }

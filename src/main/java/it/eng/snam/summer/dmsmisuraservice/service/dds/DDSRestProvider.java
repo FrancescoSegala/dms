@@ -1,4 +1,4 @@
-package it.eng.snam.summer.dmsmisuraservice.service;
+package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -7,8 +7,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import static it.eng.snam.summer.dmsmisuraservice.service.DDSPrecall.precall;
+
 import static it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient.rest;
+import static it.eng.snam.summer.dmsmisuraservice.util.Precall.precall;
+
+import it.eng.snam.summer.dmsmisuraservice.util.Precall;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient;
 
@@ -29,7 +32,7 @@ public class DDSRestProvider {
 
     private static Map<String, Entity> SSO_EXPIRATION = new HashMap<>() ;
 
-    private DDSPrecall getPrecall(String precallUrl , String fn , String method ){
+    private Precall getPrecall(String precallUrl , String fn , String method ){
         Entity precall = rest(precallUrl).get();
         return precall()
                 .withUrl(precall.getAsString(fn) + "/"+ method)
@@ -63,7 +66,7 @@ public class DDSRestProvider {
         Entity aux = Entity.build("access_token", refreshResponse.getAsString("access_token"))
                         .with("expiration", Instant.now().plusSeconds(   ((Integer) refreshResponse.get("expires_in")).longValue()  ) );
         SSO_EXPIRATION.put(ssoUrl, aux );
-        return refreshResponse.getAsString("access_token");
+        return "Bearer "+ refreshResponse.getAsString("access_token");
     }
 
 

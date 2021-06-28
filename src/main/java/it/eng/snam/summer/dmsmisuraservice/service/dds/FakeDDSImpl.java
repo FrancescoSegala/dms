@@ -1,4 +1,4 @@
-package it.eng.snam.summer.dmsmisuraservice.service;
+package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import java.time.Instant;
 import java.util.Arrays;
