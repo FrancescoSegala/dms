@@ -23,6 +23,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
+import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
@@ -201,6 +202,12 @@ public class FakeDDSImpl implements DDS {
     public void getContent(String document_id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 
+    }
+
+    @Override
+    public Folder createFolder(FolderCreate params) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

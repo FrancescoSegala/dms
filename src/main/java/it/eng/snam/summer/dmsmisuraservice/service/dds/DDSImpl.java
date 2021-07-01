@@ -13,6 +13,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
+import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
@@ -98,6 +99,11 @@ public class DDSImpl implements DDS {
     @Override
     public Subfolder updateSubfolder(String folder_id, SubfolderUpdate params) {
         return toSubfolder(ddsSubfolder.put(folder_id, params));
+    }
+
+    @Override
+    public Folder createFolder(FolderCreate params) {
+        return toFolder(ddsFolder.post(params));
     }
 
 }

@@ -9,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
+import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
@@ -31,6 +34,11 @@ public class FolderController {
     @GetMapping("/folders/{id}")
     public Folder get(@PathVariable String id) {
         return dds.getFolder(id);
+    }
+
+    @PostMapping("/folders")
+    public Folder postFolder(@Valid @RequestBody FolderCreate params){
+        return dds.createFolder(params);
     }
 
     @GetMapping("/folders")
@@ -65,5 +73,8 @@ public class FolderController {
             @PathVariable String document_id) {
         return dds.getDocument(document_id);
     }
+
+
+
 
 }

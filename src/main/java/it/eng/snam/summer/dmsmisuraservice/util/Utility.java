@@ -35,6 +35,12 @@ public class Utility {
         return map;
     }
 
+    public static Map<String, Entity> mapOf(String k , Entity v){
+        HashMap<String, Entity> map = new HashMap<>();
+        map.put(k, v);
+        return map;
+    }
+
 
 
     public static<T> List<T> listOf(T... e ){

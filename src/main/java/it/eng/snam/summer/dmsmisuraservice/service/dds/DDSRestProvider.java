@@ -63,9 +63,9 @@ public class DDSRestProvider {
             .withParam("refresh_token", ssoResult.getAsString("refresh_token"))
             .post();
 
-        Entity aux = Entity.build("access_token", refreshResponse.getAsString("access_token"))
+        Entity aux = Entity.build("access_token", "Bearer "+ refreshResponse.getAsString("access_token"))
                         .with("expiration", Instant.now().plusSeconds(   ((Integer) refreshResponse.get("expires_in")).longValue()  ) );
-        SSO_EXPIRATION.put(ssoUrl, aux );
+        SSO_EXPIRATION.put(ssoUrl,  aux );
         return "Bearer "+ refreshResponse.getAsString("access_token");
     }
 
@@ -74,12 +74,16 @@ public class DDSRestProvider {
         return rest( getPrecall(folder_precall_url, "getfolder", "getFolderBySQL"));
     }
 
+    public SnamRestClient createFolder(){
+        return rest(getPrecall(folder_precall_url, "upsertfolder", "createFolders"));
+    }
+
     public SnamRestClient getDocumentBySQL(){
         return rest(getPrecall(document_read_precall_url, "getdoc", "getDocumentBySQL"));
     }
 
-    public SnamRestClient createDocumentBySQL(){
-        return rest(getPrecall(document_read_precall_url, "upsertdoc", "createDocument"));
+    public SnamRestClient createDocument(){
+        return rest(getPrecall(document_write_precall_url, "upsertdoc", "createDocument"));
     }
 
 

@@ -6,6 +6,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
+import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
@@ -26,6 +27,9 @@ public interface DDS {
     public Subfolder createSubfolder( String folder_id , SubfolderCreate params);
 
     public Subfolder updateSubfolder( String folder_id , SubfolderUpdate params);
+
+    public Folder createFolder( FolderCreate params );
+
 
     public void deleteSubfolder(String folder_id , String subfolder_id );
 

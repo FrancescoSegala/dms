@@ -7,6 +7,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,6 +17,7 @@ public class SnamRestClient {
     private RestOperations template = new RestTemplate();
 
     private Entity params = new Entity();
+    private MediaType contentType ;
     private HttpHeaders headers = new HttpHeaders();
     private String url = "";
 
@@ -27,6 +30,7 @@ public class SnamRestClient {
     }
 
     public SnamRestClient withContentType(MediaType ct) {
+        contentType = ct ;
         headers.setContentType(ct);
         return this;
     }
@@ -57,28 +61,32 @@ public class SnamRestClient {
 
     public Entity get() {
         printRequest();
-        Entity aux = template.exchange(url, HttpMethod.GET ,  new HttpEntity<>(params.toMultiValueMap(), headers) , Entity.class).getBody();
+        Entity aux = template
+                .exchange(url, HttpMethod.GET, new HttpEntity<>(params.toMultiValueMap(), headers), Entity.class)
+                .getBody();
         printResponse(aux);
         return aux;
     }
 
     public String getString() {
         printRequest();
-        String aux = template.getForObject(url, String.class,  new HttpEntity<>(params.toMultiValueMap(), headers));
+        String aux = template.getForObject(url, String.class, new HttpEntity<>(params.toMultiValueMap(), headers));
         printResponse(aux);
         return aux;
     }
 
     public Entity post() {
+         Object body =  MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString(): params.toMultiValueMap();
         printRequest();
-        Entity aux = template.postForObject(url, new HttpEntity<>(params.toMultiValueMap(), headers), Entity.class);
+        Entity aux = template.postForObject(url, new HttpEntity<>(body, headers), Entity.class);
         printResponse(aux);
         return aux;
     }
 
     public List<Entity> postForList() {
+        Object body =  MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString(): params.toMultiValueMap();
         printRequest();
-        List<Entity> aux = (List<Entity>) template.postForObject(url, new HttpEntity<>(params.toString(), headers),
+        List<Entity> aux = (List<Entity>) template.postForObject(url, new HttpEntity<>(body, headers),
                 List.class);
         printResponse(aux);
         return aux;

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
@@ -39,6 +40,17 @@ public class DDSFolder extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder " + id + " does not exists");
         }
     }
+
+
+    public Entity post(FolderCreate params ){
+        return rest.createFolder()
+            .withParam("OS", this.os)
+            .withParam("folderName", params.getName() )
+            .withParam("folderClass", params.getClass_name() )
+            .withParam("applyParentPermission",true)
+            .post();
+    }
+
 
     @Override
     protected List<String> clauses(Pagination p) {
