@@ -40,9 +40,15 @@ public class DDSDocument extends DDSEntity{
     }
 
     public Entity post(DocumentCreate params){
-        //TODO implement
-        //return rest.createDocumentBySQL().post()
-        return new Entity();
+        return rest.createDocument()
+                .withParam("OS", this.os)
+                .withParam("documentalClass", params.getFolder() )
+                .withParam("name", params.getName() )
+                .withParam("documentTitle", params.getTitle() )
+                .withParam("customAttributes", listOf() )
+                .withParam("customPermission", listOf() )
+                .post()
+                ;
     }
 
 

@@ -25,6 +25,19 @@ public class DocumentSearch extends Pagination {
     // @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     private String[] linea_in;
 
+    @ApiModelProperty("the list of 'remi' to include the research")
+    private String[] remi_in;
+
+    @ApiModelProperty("The province of the document")
+    private String province ;
+
+
+
+    public DocumentSearch withProvince(  String province ) {
+        this.province = province ;
+         return this;
+    }
+
     public DocumentSearch withFolder(String folder) {
         this.folder = folder;
         return this;
@@ -89,5 +102,23 @@ public class DocumentSearch extends Pagination {
     public void setRemi(String remi) {
         this.remi = remi;
     }
+
+    public String[] getRemi_in() {
+        return remi_in;
+    }
+
+    public void setRemi_in(String[] remi_in) {
+        this.remi_in = remi_in;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+
 
 }

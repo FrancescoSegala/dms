@@ -14,7 +14,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.Info;
 public class DocumentCreate {
 
     @ApiModelProperty("The name of the new document")
-    @NotBlank
+    @NotBlank(message = "name must be not empty")
     @Pattern(regexp = DOCUMENT_REGEX)
     private String name;
 
@@ -27,12 +27,15 @@ public class DocumentCreate {
     @ApiModelProperty("notes for the document")
     private String notes;
 
+    @ApiModelProperty("title of the document")
+    private String title;
+
     @ApiModelProperty("the id of the 1st level folder")
-    @NotBlank
+    @NotBlank(message = "folder must be not empty")
     private String folder;
 
     @ApiModelProperty("the id of the 2nd level folder")
-    @NotBlank
+    @NotBlank(message = "subfolder must be not empty")
     private String subfolder;
 
     public String getName() {
@@ -47,6 +50,14 @@ public class DocumentCreate {
     }
     public void setInfo(List<Info> info) {
         this.info = info;
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
     }
     public String getStatus() {
         return status;
