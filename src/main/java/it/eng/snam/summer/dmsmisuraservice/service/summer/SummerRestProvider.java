@@ -18,17 +18,27 @@ public class SummerRestProvider {
     @Value("${external.summer.remi_url}")
     private String anagrafica_remi_url  ;
 
+    @Value("${external.summer.user_url}")
+    private String user_url  ;
 
-    private Precall getPrecall(String remi_id){
+
+
+    private Precall getPrecall( String url , String id){
         String authorization = rest(jwt_url).getString();
         return precall()
-            .withUrl(anagrafica_remi_url + "/" + remi_id )
+            .withUrl(url + "/" + id )
             .withAccessToken(authorization);
     }
 
 
-    public SnamRestClient getRemiById(String id ){
-        return rest(getPrecall(id));
+    public SnamRestClient getRemiById(String remi_id ){
+        return rest(getPrecall(anagrafica_remi_url, remi_id));
     }
+
+
+    public SnamRestClient getUserProfile(String user_id){
+        return rest(getPrecall( user_url ,user_id));
+    }
+
 
 }
