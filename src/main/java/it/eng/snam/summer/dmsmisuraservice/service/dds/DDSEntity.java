@@ -51,7 +51,7 @@ public abstract class DDSEntity {
     protected String where(Pagination p) {
         //@formatter:off
         return Stream.concat(
-            listOf(clause("'1'", "1", "=")).stream(),
+            listOf("_id is not null").stream(),
             clauses(p).stream())
         .filter(e -> ! isEmpty(e))
         .collect(Collectors.joining(" and "))

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.util.LinkedMultiValueMap;
@@ -87,6 +88,10 @@ public class Entity extends HashMap<String, Object> {
         return this.with(k, v).withType(k, type);
     }
 
+    public Entity getAsEntity(String k ){
+        return new Entity( (Map<String, Object>) this.get(k));
+    }
+
 
     private Map<String, String> types = new HashMap<>();
 
@@ -126,6 +131,17 @@ public class Entity extends HashMap<String, Object> {
 			throw new RuntimeException(e);
 		}
 	}
+
+
+    public static List<Entity> parseJsonAsList(String input){
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.readValue(input , new TypeReference<List<Entity>>(){}) ;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 	public String stringfy() {
 		ObjectMapper om = new ObjectMapper();

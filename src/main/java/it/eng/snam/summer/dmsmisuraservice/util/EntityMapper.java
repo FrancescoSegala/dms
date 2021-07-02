@@ -1,5 +1,6 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
+import it.eng.snam.summer.dmsmisuraservice.data.AnagRemi;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
@@ -10,8 +11,8 @@ public class EntityMapper {
 
     public static Folder toFolder(Entity e) {
         return new Folder()
-        .withId(e.id())
-        .withDescription(e.getAsString("description"));
+        .withId(e.getAsEntity("systemAttributes").getAsString("name"))
+        .withDescription(e.getAsEntity("systemAttributes").getAsString("annotations"));
     }
 
 
@@ -47,6 +48,12 @@ public class EntityMapper {
         return new Remi()
             .withId(e.getAsString("remiAss"))
             .withDescription(e.getAsString("ragSociale"));
+    }
+
+    public static Remi toRemi(AnagRemi e){
+        return new Remi()
+            .withId(e.getC_remi_ass())
+            .withDescription( e.getS_remi() );
     }
 
 

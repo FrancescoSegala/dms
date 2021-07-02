@@ -2,13 +2,10 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 
 import java.util.List;
 
-import org.bouncycastle.crypto.RuntimeCryptoException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -86,10 +83,9 @@ public class SnamRestClient {
     public List<Entity> postForList() {
         Object body =  MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString(): params.toMultiValueMap();
         printRequest();
-        List<Entity> aux = (List<Entity>) template.postForObject(url, new HttpEntity<>(body, headers),
-                List.class);
+        String aux =  template.postForObject(url, new HttpEntity<>(body, headers), String.class);
         printResponse(aux);
-        return aux;
+        return Entity.parseJsonAsList(aux);
     }
 
     private void printRequest() {

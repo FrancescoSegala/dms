@@ -3,11 +3,8 @@ package it.eng.snam.summer.dmsmisuraservice.controller;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.xml.ws.http.HTTPException;
-
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.mapOf;
 
-import org.springframework.boot.actuate.trace.http.HttpTrace.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +27,8 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
             WebRequest request) {
         Map<String, String> errors = ex.getBindingResult().getAllErrors().stream()
                 .collect(Collectors.toMap(e -> ((FieldError) e).getField(), e -> e.getDefaultMessage()));
-         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -43,16 +39,13 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = { HttpClientErrorException.class })
-    protected ResponseEntity<Object> handleHttpError(HttpClientErrorException ex, WebRequest request ) {
-        return new ResponseEntity<>( Entity.parseJson(ex.getResponseBodyAsString() ), ex.getStatusCode());
+    protected ResponseEntity<Object> handleHttpError(HttpClientErrorException ex, WebRequest request) {
+        return new ResponseEntity<>(Entity.parseJson(ex.getResponseBodyAsString()), ex.getStatusCode());
     }
-
 
     @ExceptionHandler(value = { Exception.class })
-    protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request ) {
-        System.out.println("qui");
-        return new ResponseEntity<>(mapOf("message",ex.getMessage() ), HttpStatus.BAD_REQUEST);
+    protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(mapOf("message", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
-
 
 }
