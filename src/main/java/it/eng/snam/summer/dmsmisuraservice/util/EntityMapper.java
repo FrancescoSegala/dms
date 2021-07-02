@@ -1,6 +1,5 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
-import it.eng.snam.summer.dmsmisuraservice.data.AnagRemi;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
@@ -50,11 +49,6 @@ public class EntityMapper {
             .withDescription(e.getAsString("ragSociale"));
     }
 
-    public static Remi toRemi(AnagRemi e){
-        return new Remi()
-            .withId(e.getC_remi_ass())
-            .withDescription( e.getS_remi() );
-    }
 
 
 
