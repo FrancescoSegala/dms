@@ -2,7 +2,12 @@ spring:
   profiles: 'dev, default'
   kafka:
     bootstrap-servers: 'localhost:9092'
-  ##datasource:
+  datasource:
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        url: jdbc:sqlserver://SNSRD00156:1970;database=summer_anag_remi
+        username: summer_svil
+        password: xAnlxhx8xfMH
+
 
   jpa:
     properties:

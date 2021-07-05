@@ -48,10 +48,10 @@ public class FakeDDSImpl implements DDS {
         m.put("subfolder", values[1]);
         m.put("description", values[2]);
 
-        List<Map<String, String>> attributes = Arrays.asList(values[3].split(",")).stream()
+        List<Map<String, Object>> attributes = Arrays.asList(values[3].split(",")).stream()
                 .map(e ->
                {
-                   Map<String, String> res= mapOf("name", e);
+                   Map<String, Object> res= mapOf("name", e);
                    res.put("type", "text");
                    return res;
                }

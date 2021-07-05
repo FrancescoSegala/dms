@@ -6,7 +6,7 @@ import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public abstract class Pagination {
+public class Pagination {
 
 
 
@@ -28,6 +28,21 @@ public abstract class Pagination {
     @Min(0L)
     @ApiModelProperty("the offset from where start giving the result, must be an integer greater than 0")
     private Long offset = 0L;
+
+    public Pagination(){}
+
+
+
+
+    public Pagination(@Pattern(regexp = "^[a-zA-Z]+[_1-9]*[a-zA-Z-0-9]*$") String sort,
+            @Pattern(regexp = "(asc|desc)") String direction, @Min(1) @Max(100) Long limit, @Min(0) Long offset) {
+        this.sort = sort;
+        this.direction = direction;
+        this.limit = limit;
+        this.offset = offset;
+    }
+
+
 
 
     public String getSort() {

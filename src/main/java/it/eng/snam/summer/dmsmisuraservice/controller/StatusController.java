@@ -16,7 +16,7 @@ public class StatusController {
 
     @GetMapping("/status")
     @SummerLog( logInputParameter =  true, debugLevelLog = true , logExecutionTime = true)
-    public Map<String, String> status(){
+    public Map<String, Object> status(){
     	return mapOf("hello", "world");
     }
 

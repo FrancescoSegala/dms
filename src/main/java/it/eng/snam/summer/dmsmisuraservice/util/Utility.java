@@ -29,8 +29,8 @@ public class Utility {
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
-    public static Map<String, String> mapOf(String k , String v ){
-        HashMap<String, String> map = new HashMap<>();
+    public static <T> Map<String, T> mapOf(String k , T v ){
+        HashMap<String, T> map = new HashMap<>();
         map.put(k, v);
         return map;
     }
@@ -41,9 +41,11 @@ public class Utility {
         return map;
     }
 
+    public static <T> Map<String , T> emptyMap(){
+        return new HashMap<>();
+    }
 
-
-    public static<T> List<T> listOf(T... e ){
+    public static <T> List<T> listOf(T... e ){
         return  Arrays.asList(e);
 
     }
