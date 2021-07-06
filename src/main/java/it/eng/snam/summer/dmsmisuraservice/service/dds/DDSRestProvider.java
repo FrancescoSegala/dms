@@ -70,6 +70,16 @@ public class DDSRestProvider {
                 "user1");
     }
 
+    public SnamRestClient updateFolder(){
+        return rest(getPrecall(folder_precall_url, "upsertfolder", "setFoldersSystem")).withHeader("OAM_REMOTE_USER",
+        "user1");
+    }
+
+    public SnamRestClient deleteFolder(){
+        return rest(getPrecall(folder_precall_url, "deletefolder", "deleteFolder")).withHeader("OAM_REMOTE_USER",
+        "user1");
+    }
+
     public SnamRestClient getDocumentBySQL() {
         return rest(getPrecall(document_read_precall_url, "getdoc", "getDocumentBySQL")).withHeader("OAM_REMOTE_USER",
                 "user1");
@@ -79,5 +89,7 @@ public class DDSRestProvider {
         return rest(getPrecall(document_write_precall_url, "upsertdoc", "createDocument")).withHeader("OAM_REMOTE_USER",
                 "user1");
     }
+
+
 
 }

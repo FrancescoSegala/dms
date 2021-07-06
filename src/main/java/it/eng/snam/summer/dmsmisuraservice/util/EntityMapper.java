@@ -10,16 +10,17 @@ public class EntityMapper {
 
     public static Folder toFolder(Entity e) {
         return new Folder()
-        .withId(e.getAsEntity("systemAttributes").getAsString("name"))
+        .withId(e.getAsEntity("systemAttributes").getAsString("name").substring(1))
         .withDescription(e.getAsEntity("systemAttributes").getAsString("annotations"));
     }
 
 
     public static Subfolder toSubfolder(Entity e){
         return new Subfolder()
-                    .withId(e.id())//TODO COMPLETE
-                    .withDescription(e.getAsString("description"))
-                    .withStatus(e.getAsString("status"));
+                    .withId(e.getAsEntity("systemAttributes").getAsString("name").substring(1))
+                    .withFolder(e.getAsEntity("systemAttributes").getAsString("name"))
+                    .withDescription(e.getAsEntity("systemAttributes").getAsString("annotations"))
+                    .withStatus(e.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active" );
     }
 
 

@@ -68,7 +68,7 @@ public abstract class AbstractController {
 
     private String getOrderByString(String sort, String direction) {
         if (sort == null || direction == null || sort.isEmpty() || direction.isEmpty() || sort.equals("no_sort")) {
-            return " order by rand()";
+            return " order by id";
         }
         String dir = listOf("asc", "desc").stream().filter(e -> e.equals(direction.toLowerCase())).findAny()
                 .orElseThrow(

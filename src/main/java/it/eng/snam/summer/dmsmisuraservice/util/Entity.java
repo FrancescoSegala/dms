@@ -158,4 +158,8 @@ public class Entity extends HashMap<String, Object> {
         return this.stringfy();
     }
 
+    public boolean getAsBoolean(String k) {
+        return (boolean) get(k);
+    }
+
 }

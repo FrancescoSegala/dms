@@ -20,7 +20,7 @@ public class Utility {
         return (string == null || string.trim().isEmpty());
     }
 
-    public static boolean isEmpty(String[] values){
+    public static <T> boolean isEmpty(T[] values){
         return values == null || values.length == 0 ;
     }
 

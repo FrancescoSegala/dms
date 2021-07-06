@@ -24,6 +24,10 @@ public abstract class DDSEntity {
         return isEmpty(value) ? "" : String.format(" %s %s '%s' ", field, operator, value);
     }
 
+    protected String clause(String field, String value, String operator, String prefix, String postfix){
+        return isEmpty(value) ? "" : String.format(" %s %s '%s%s%s' ", field, operator, prefix ,value, postfix);
+    }
+
     protected String clause(String field, String[] values, String operator) {
         //@formatter:off
         return isEmpty(values) ?
@@ -48,6 +52,11 @@ public abstract class DDSEntity {
     protected abstract List<String> clauses(Pagination p);
 
 
+    /**
+     * it requires clauses function to be implemented in the child class
+     * @param p DTO that creates the condtion for dds calls
+     * @return the string representing the where condition fot the ms call
+     */
     protected String where(Pagination p) {
         //@formatter:off
         return Stream.concat(

@@ -20,7 +20,7 @@ public class DDSSubfolder extends DDSEntity {
         return rest.getFolderBySQL()
             .withParam("OS", this.os )
             .withParam("select", listOf("*"))
-            .withParam("where", where(params) ) //TODO è corretto ? non serve il folder id?
+            .withParam("where",clause("name", "/" + folder_id + "/%", "like ") ) //TODO è corretto ? non serve il folder id?
             .postForList();
     }
 

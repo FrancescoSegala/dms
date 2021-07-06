@@ -80,6 +80,14 @@ public class SnamRestClient {
         return aux;
     }
 
+    public String postForString(){
+        Object body =  MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString(): params.toMultiValueMap();
+        printRequest();
+        String aux =  template.postForObject(url, new HttpEntity<>(body, headers), String.class);
+        printResponse(aux);
+        return aux;
+    }
+
     public List<Entity> postForList() {
         Object body =  MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString(): params.toMultiValueMap();
         printRequest();

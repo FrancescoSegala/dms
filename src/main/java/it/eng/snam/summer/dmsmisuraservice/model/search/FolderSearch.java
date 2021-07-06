@@ -9,6 +9,8 @@ public class FolderSearch extends Pagination {
     private  String id;
 
 
+    private String id_like ;
+
     public FolderSearch withId( String id ) {
         this.id = id ;
          return this;
@@ -22,6 +24,17 @@ public class FolderSearch extends Pagination {
     public void setId(String id) {
         this.id = id;
     }
+
+
+    public String getId_like() {
+        return id_like;
+    }
+
+
+    public void setId_like(String id_like) {
+        this.id_like = id_like;
+    }
+
 
 
 }

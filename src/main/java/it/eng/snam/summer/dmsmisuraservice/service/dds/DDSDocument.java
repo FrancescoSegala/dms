@@ -4,51 +4,54 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
+import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
+import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
 @Component
-public class DDSDocument extends DDSEntity{
+public class DDSDocument {
 
+    @Autowired
+    NamedParameterJdbcOperations template ;
 
     public List<Entity> list(DocumentSearch params) {
-        //@formatter:off
-        return rest.getDocumentBySQL()
-            .withParam("OS", this.os)
-            .withParam("select", listOf("*"))
-            .withParam("where", where(params) )
-            .postForList();
-            //@formatter:on
+        return new SnamSQLClient(template)
+        .withTable("v_documenti")
+        .withParams(params)
+        .list();
+
     }
 
 
     public Entity get(String document_id ){
         //@formatter:off
-        return rest.getDocumentBySQL()
-            .withParam("OS", this.os)
-            .withParam("select", listOf("*"))
-            .withParam("where", clause("id",  document_id , "=") )
-            .post();
-            //@formatter:on
+        return new SnamSQLClient(template)
+        .withTable("v_documenti")
+        .withParams(new IdSearch(document_id))
+        .get();
+        //@formatter:on
     }
 
     public Entity post(DocumentCreate params){
-        return rest.createDocument()
-                .withParam("OS", this.os)
-                .withParam("documentalClass", params.getFolder() )
-                .withParam("name", params.getName() )
-                .withParam("documentTitle", params.getTitle() )
-                .withParam("customAttributes", listOf() )
-                .withParam("customPermission", listOf() )
-                .post()
-                ;
+        // return rest.createDocument()
+        //         .withParam("OS", this.os)
+        //         .withParam("documentalClass", params.getFolder() )
+        //         .withParam("name", params.getName() )
+        //         .withParam("documentTitle", params.getTitle() )
+        //         .withParam("customAttributes", listOf() )
+        //         .withParam("customPermission", listOf() )
+        //         .post()
+        //         ;
+        return null ;
     }
 
 
@@ -64,19 +67,6 @@ public class DDSDocument extends DDSEntity{
 
     public void getContent(String document_id){
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    @Override
-    protected List<String> clauses(Pagination p) {
-        DocumentSearch params = (DocumentSearch) p;
-        return listOf(
-        clause("folder", params.getFolder(), "="),
-        clause("subfolder", params.getSubfolder(), "=") ,
-        clause("published_at", params.getPublished_at(), "="),
-        clause("remi", params.getRemi(), "="),
-        clause("linea", params.getLinea_in(), "in")
-        );
     }
 
 }

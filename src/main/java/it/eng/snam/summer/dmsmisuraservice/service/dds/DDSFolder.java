@@ -1,7 +1,7 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import java.util.List;
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,10 @@ import it.eng.snam.summer.dmsmisuraservice.util.Utility;
 @Component
 public class DDSFolder extends DDSEntity {
 
-    public List<Entity> list(FolderSearch params ) {
+    public List<Entity> list(FolderSearch params) {
+        System.out.println("PARAMS");
+        System.out.println(params.getId());
+        System.out.println(params.getId_like());
         //@formatter:off
         return rest.getFolderBySQL()
             .withParam("OS", this.os )
@@ -26,13 +29,30 @@ public class DDSFolder extends DDSEntity {
             //@formatter:on
     }
 
+
+    private Entity update(FolderCreate params ){
+        Entity folder = get(params.getId());
+
+        Entity systemAttributes = folder.getAsEntity("systemAttributes").with("annotations",
+                params.getDescription());
+        //@formatter:off
+        rest.updateFolder()
+            .withParam("OS", this.os)
+            .withParam("id", "/" + params.getId())
+            .withParam("systemAttributes", systemAttributes)
+            .post();
+        //@formatter:on
+        return get(params.getId());
+    }
+
+
     public Entity get(String id) {
         try {
             //@formatter:off
             return rest.getFolderBySQL()
             .withParam("OS", this.os )
             .withParam("select", listOf("*"))
-            .withParam("where", clause("id", id, "="))
+            .withParam("where", clause("name", "/" + id, "="))
             .postForList()
             .get(0);
             //@formatter:on
@@ -41,14 +61,23 @@ public class DDSFolder extends DDSEntity {
         }
     }
 
+    public Entity post(FolderCreate params) {
+        //@formatter:off
+        rest.createFolder()
+                .withParam("OS", this.os)
+                .withParam("folderName", params.getId())
+                .withParam("folderClass", "dms_DMSFolder")
+                .postForString();
+        //@formatter:on
+        return update(params);
+    }
 
-    public Entity post(FolderCreate params ){
-        return rest.createFolder()
+    public boolean delete(String folder_id){
+        return rest.deleteFolder()
             .withParam("OS", this.os)
-            .withParam("folderName", params.getName() )
-            .withParam("folderClass", params.getClass_name() )
-            .withParam("applyParentPermission",true)
-            .post();
+            .withParam("id", folder_id)
+            .postForString()
+            .equals("") ? true : false ;
     }
 
 
@@ -56,8 +85,9 @@ public class DDSFolder extends DDSEntity {
     protected List<String> clauses(Pagination p) {
         FolderSearch params = (FolderSearch) p;
         return Utility.listOf(
-            clause("id", params.getId(), "=")
-        );
+            clause("name", params.getId(), "=", "/", ""),
+            clause("name", params.getId_like() , "like", "/", "%")
+            );
     }
 
 }

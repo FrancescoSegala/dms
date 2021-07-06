@@ -5,26 +5,41 @@ import io.swagger.annotations.ApiModelProperty;
 public class FolderCreate {
 
 
-    @ApiModelProperty("folder name")
-    private String name ;
+    @ApiModelProperty("folder id")
+    private String id ;
 
-    @ApiModelProperty("folder class")
-    private String class_name  ;
+    // @ApiModelProperty("folder class")
+    // private String class_name  = "dms_DMSFolder";
 
-    public String getName() {
-        return name;
+
+    @ApiModelProperty("folder description")
+    private String description = ""  ;
+
+
+    // public String getClass_name() {
+    //     return class_name;
+    // }
+
+    // public void setClass_name(String class_name) {
+    //     this.class_name = class_name;
+    // }
+
+
+
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getId() {
+        return id;
     }
 
-    public String getClass_name() {
-        return class_name;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setClass_name(String class_name) {
-        this.class_name = class_name;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 
