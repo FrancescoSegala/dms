@@ -16,9 +16,15 @@ import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
 
 public interface DDS {
 
+    //folder
+
     public List<Folder> listFolders(FolderSearch params);
 
     public Folder getFolder(String id);
+
+    public Folder createFolder( FolderCreate params );
+
+    //subfolder
 
     public List<Subfolder> listSubfolders(String folder_id, SubfolderSearch params );
 
@@ -28,10 +34,9 @@ public interface DDS {
 
     public Subfolder updateSubfolder( String folder_id , SubfolderUpdate params);
 
-    public Folder createFolder( FolderCreate params );
+    public void deleteSubfolder(String id );
 
-
-    public void deleteSubfolder(String folder_id , String subfolder_id );
+    //document
 
     public Document getDocument(String document_id);
 

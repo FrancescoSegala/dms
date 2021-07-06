@@ -4,7 +4,10 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
@@ -16,37 +19,58 @@ import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 public class DDSSubfolder extends DDSEntity {
 
 
+    @Autowired
+    DDSFolder ddsFolder;
+
     public List<Entity> list(String folder_id , SubfolderSearch params ){
         return rest.getFolderBySQL()
             .withParam("OS", this.os )
             .withParam("select", listOf("*"))
-            .withParam("where",clause("name", "/" + folder_id + "/%", "like ") ) //TODO è corretto ? non serve il folder id?
+            .withParam("where",  clause("name", folder_id , "like", "/", "/%") + " and " + where(params)   )
             .postForList();
     }
 
 
     public Entity get(String folder_id , String subfolder_id ){
-        return rest.getFolderBySQL()
-                .withParam("OS", this.os )
-                .withParam("select", listOf("*"))
-                .withParam("where", clause("subfolder_id", subfolder_id, "=")) //TODO sbagliato risponde 422
-                .post();
+        List<Entity> list = rest.getFolderBySQL()
+            .withParam("OS", this.os )
+            .withParam("select", listOf("*"))
+            .withParam("where", clause("name", folder_id + "/" + subfolder_id, "=", "/", ""))
+            .postForList();
+        if (list.size() == 0 ){
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Entity "+ folder_id +"/" + subfolder_id + " not found");
+        }
+        return list.get(0);
     }
 
 
-    public void delete(String folder_id, String subfolder_id){
-        //TODO IMPLEMENT
+    public void delete(String id ){
+        rest.deleteFolder()
+            .withParam("OS", this.os)
+            .withParam("id", "/" + id )
+            .postForString();
     }
 
 
     public Entity post(String folder_id, SubfolderCreate params){
-        return new Entity();
-        //TODO IMPLEMENT
+        params.setId( folder_id + "/" + params.getId() );
+        return ddsFolder.post(params);
     }
 
-    public Entity put(String folder_id, SubfolderUpdate params){
-        return new Entity();
-        //TODO IMPLEMENT
+
+    public Entity put(String id, SubfolderUpdate params){
+        Entity folder = ddsFolder.get(id);
+        Entity systemAttributes = folder.getAsEntity("systemAttributes")
+        .with("annotations", params.getDescription());
+        //@formatter:off
+        rest.updateFolder()
+            .withParam("OS", this.os)
+            .withParam("id", "/" + id)
+            .withParam("systemAttributes", systemAttributes)
+            .post();
+        //@formatter:on
+        return ddsFolder.get(id);
     }
 
 
@@ -54,10 +78,14 @@ public class DDSSubfolder extends DDSEntity {
     protected List<String> clauses(Pagination p) {
         SubfolderSearch params = (SubfolderSearch) p;
         return listOf(
-            clause("id", params.getId(), "="),
-            clause("folder", params.getFolder(), "="),
-            clause("status", params.getStatus(), "=")
+            clause("isLogicalDeleted", "inactive".equalsIgnoreCase(params.getStatus())  )
         );
+    }
+
+
+    @Override
+    protected String sortField(String field) {
+        return "name";
     }
 
 

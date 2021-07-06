@@ -1,11 +1,26 @@
 package it.eng.snam.summer.dmsmisuraservice.model.search;
 
-
 import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
 
 public class DocumentSearch extends Pagination {
+
+    public String id;
+    public String data_documento;
+    public String linea;
+    public String codice_centro;
+    public String codice_distretto;
+    public String codice_area_tecnica;
+    public String codice_polo;
+    public String ragione_sociale;
+    public String ubicazione;
+    public String provincia;
+    public String comune;
+    public String regione;
+    public String codice_aop;
+    public String codice_ateco;
+    public String  data_entrata_esercizi;
 
     @ApiModelProperty("the id of the 1st level folder")
     public String folder;
@@ -13,20 +28,15 @@ public class DocumentSearch extends Pagination {
     @ApiModelProperty("the id of the 2nd level folder")
     public String subfolder;
 
-    @ApiModelProperty("the time of publishing ")
-    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z", message = "date format not valid (should be of type yyyy-mm-ddTHH:MM:ss)")
-    public String published_at_ge;
-
-    @ApiModelProperty("the time of publishing ")
-    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z", message = "date format not valid (should be of type yyyy-mm-ddTHH:MM:ss)")
-    public String published_at_le;
+    // @Pattern(regexp =
+    // "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z", message
+    // = "date format not valid (should be of type yyyy-mm-ddTHH:MM:ss)")
 
     @ApiModelProperty("the remi")
     @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     public String remi;
 
-
-    public String ragione_sociale_like ;
+    public String ragione_sociale_like;
 
     @ApiModelProperty("the list of 'linea' to include the research")
     // @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
@@ -34,16 +44,6 @@ public class DocumentSearch extends Pagination {
 
     @ApiModelProperty("the list of 'remi' to include the research")
     public String[] remi_in;
-
-    @ApiModelProperty("The province of the document")
-    public String province ;
-
-
-
-    public DocumentSearch withProvince(  String province ) {
-        this.province = province ;
-         return this;
-    }
 
     public DocumentSearch withFolder(String folder) {
         this.folder = folder;
@@ -54,8 +54,6 @@ public class DocumentSearch extends Pagination {
         this.subfolder = subfolder;
         return this;
     }
-
-
 
     public String getRagione_sociale_like() {
         return ragione_sociale_like;
@@ -99,24 +97,6 @@ public class DocumentSearch extends Pagination {
         this.subfolder = subfolder;
     }
 
-
-
-    public String getPublished_at_ge() {
-        return published_at_ge;
-    }
-
-    public void setPublished_at_ge(String published_at_ge) {
-        this.published_at_ge = published_at_ge;
-    }
-
-    public String getPublished_at_le() {
-        return published_at_le;
-    }
-
-    public void setPublished_at_le(String published_at_le) {
-        this.published_at_le = published_at_le;
-    }
-
     public String getRemi() {
         return remi;
     }
@@ -132,15 +112,5 @@ public class DocumentSearch extends Pagination {
     public void setRemi_in(String[] remi_in) {
         this.remi_in = remi_in;
     }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-
 
 }

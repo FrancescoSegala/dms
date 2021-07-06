@@ -22,7 +22,6 @@ import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
 import it.eng.snam.summer.dmsmisuraservice.util.EntityMapper;
 
-//@Component
 public class DDSImpl implements DDS {
 
     @Autowired
@@ -34,10 +33,17 @@ public class DDSImpl implements DDS {
     @Autowired
     DDSSubfolder ddsSubfolder;
 
+    // -------------------------- folder --------------------------
+
     @Override
     public List<Folder> listFolders(FolderSearch params) {
-        return ddsFolder.list(params).stream().map(EntityMapper::toFolder).collect(toList());
-
+        //@formatter:off
+        return ddsFolder
+            .list(params)
+            .stream()
+            .map(EntityMapper::toFolder)
+            .collect(toList());
+        //@formatter:on
     }
 
     @Override
@@ -46,8 +52,21 @@ public class DDSImpl implements DDS {
     }
 
     @Override
+    public Folder createFolder(FolderCreate params) {
+        return toFolder(ddsFolder.post(params));
+    }
+
+    // -------------------------- subfolder --------------------------
+
+    @Override
     public List<Subfolder> listSubfolders(String folder_id, SubfolderSearch params) {
-        return ddsSubfolder.list(folder_id, params).stream().map(EntityMapper::toSubfolder).collect(toList());
+        //@formatter:off
+        return ddsSubfolder
+            .list(folder_id, params)
+            .stream()
+            .map(EntityMapper::toSubfolder)
+            .collect(toList());
+        //@formatter:on
     }
 
     @Override
@@ -56,14 +75,31 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public List<Document> listDocuments(DocumentSearch params) {
-        return ddsDocument.list(params).stream().map(EntityMapper::toDocument).collect(toList());
+    public Subfolder createSubfolder(String folder_id, SubfolderCreate params) {
+        return toSubfolder(ddsSubfolder.post(folder_id, params));
     }
 
     @Override
-    public void deleteSubfolder(String folder_id, String subfolder_id) {
-        ddsSubfolder.delete(folder_id, subfolder_id);
+    public Subfolder updateSubfolder(String folder_id, SubfolderUpdate params) {
+        return toSubfolder(ddsSubfolder.put(folder_id, params));
+    }
 
+    @Override
+    public void deleteSubfolder(String id ) {
+        ddsSubfolder.delete(id);
+    }
+
+    // -------------------------- Documents --------------------------
+
+    @Override
+    public List<Document> listDocuments(DocumentSearch params) {
+        //@formatter:off
+        return ddsDocument
+            .list(params)
+            .stream()
+            .map(EntityMapper::toDocument)
+            .collect(toList());
+        //@formatter:on
     }
 
     @Override
@@ -89,21 +125,6 @@ public class DDSImpl implements DDS {
     @Override
     public void getContent(String document_id) {
         ddsDocument.getContent(document_id);
-    }
-
-    @Override
-    public Subfolder createSubfolder(String folder_id, SubfolderCreate params) {
-        return toSubfolder(ddsSubfolder.post(folder_id, params));
-    }
-
-    @Override
-    public Subfolder updateSubfolder(String folder_id, SubfolderUpdate params) {
-        return toSubfolder(ddsSubfolder.put(folder_id, params));
-    }
-
-    @Override
-    public Folder createFolder(FolderCreate params) {
-        return toFolder(ddsFolder.post(params));
     }
 
 }

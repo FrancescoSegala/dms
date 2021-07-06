@@ -1,5 +1,5 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
-
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
@@ -17,10 +17,11 @@ public class EntityMapper {
 
     public static Subfolder toSubfolder(Entity e){
         return new Subfolder()
-                    .withId(e.getAsEntity("systemAttributes").getAsString("name").substring(1))
-                    .withFolder(e.getAsEntity("systemAttributes").getAsString("name"))
+                    .withId(e.getAsEntity("systemAttributes").getAsString("name"))
+                    .withFolder(e.getAsEntity("systemAttributes").getAsString("name").split("/")[1] )
                     .withDescription(e.getAsEntity("systemAttributes").getAsString("annotations"))
-                    .withStatus(e.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active" );
+                    .withStatus(e.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active" )
+                    .withSource("P8");
     }
 
 

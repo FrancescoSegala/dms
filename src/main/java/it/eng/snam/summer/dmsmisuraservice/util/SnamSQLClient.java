@@ -3,7 +3,6 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,19 +20,12 @@ public class SnamSQLClient {
     private String table;
     private Pagination pagination;
 
-    private static Map<String ,String > operators = new Entity()
-                                                .with("_eq","=")
-                                                .with("_ge",">=")
-                                                .with("_le","<=")
-                                                .with("_like","like")
-                                                .toMap()
-                                                ;
-
+    private static Map<String, String> operators = new Entity().with("_eq", "=").with("_ge", ">=").with("_le", "<=")
+            .with("_like", "like").toMap();
 
     public SnamSQLClient(NamedParameterJdbcOperations template) {
         this.template = template;
     }
-
 
     public SnamSQLClient withTable(String table) {
         this.table = table;
@@ -54,51 +46,52 @@ public class SnamSQLClient {
         return template.queryForList(sql, params()).stream().map(Entity::build).collect(Collectors.toList());
     }
 
-    private String conditions() {
-        String res = notNulls()
-        .map(e -> String.format(" %s %s %s", column(e.getName()) , operator(e.getName()), name(e.getName()) ))
-        .collect(Collectors.joining(" and "));
-        return res.isEmpty() ? "" : "AND " + res ;
+    public Long count() {
+        String where = "from " + table + " where 1=1 " + conditions();
+        String sql = "select count(*) " + where;
+        System.out.println(sql);
+        return template.queryForObject(sql, params(), Long.class);
     }
 
+    public Map<String, Long> countByField(String field) {
+        String where = " from " + table + " where 1=1 " + conditions();
+        String sql = "select count(*) as count , " + field + where + " group by " + field;
+        System.out.println(sql);
+        System.out.println(params());
+        return template.queryForList(sql, params() )
+            .stream()
+            .collect(Collectors.toMap(e -> (String) e.get(field), e ->  Long.parseLong(e.get("count").toString()) ))
+        ;
+    }
 
-
-    private Stream<Field> notNulls(){
-        return Stream.of(  pagination.getClass().getDeclaredFields() )
-            .filter(f -> {
-                try {
-                    return f.get(pagination) != null;
-                } catch (Exception e ) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-                }
-            }  );
+    private String conditions() {
+        String res = pagination.notNulls()
+                .map(e -> String.format(" %s %s %s", column(e.getName()), operator(e.getName()), name(e.getName())))
+                .collect(Collectors.joining(" and "));
+        return res.isEmpty() ? "" : "AND " + res;
     }
 
     private String name(String f) {
-        return "like".equals(operator(f)) ?  "'%'+:" + f + "+'%'" : ":"+f ;
+        return "like".equals(operator(f)) ? "'%'+:" + f + "+'%'" : ":" + f;
     }
 
-    private String column( String f ){
-         return "=".equals(operator(f)) ? f : f.substring(0, f.lastIndexOf("_"));
-    }
-    private String operator(String f ){
-        return operators.keySet().stream()
-            .filter( e -> f.endsWith(e) )
-            .findFirst()
-            .map(e -> operators.get(e))
-            .orElse("=");
+    private String column(String f) {
+        return "=".equals(operator(f)) ? f : f.substring(0, f.lastIndexOf("_"));
     }
 
+    private String operator(String f) {
+        return operators.keySet().stream().filter(e -> f.endsWith(e)).findFirst().map(e -> operators.get(e))
+                .orElse("=");
+    }
 
     private Map<String, Object> params() {
-        return notNulls()
-                .collect(Collectors.toMap(f-> f.getName(), f->  {
-                    try {
-                        return f.get(pagination);
-                    } catch (Exception e) {
-                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-                    }
-                } ));
+        return pagination.notNulls().collect(Collectors.toMap(f -> f.getName(), f -> {
+            try {
+                return f.get(pagination);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }));
     }
 
     private String getOrderByString() {

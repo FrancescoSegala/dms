@@ -17,9 +17,6 @@ import it.eng.snam.summer.dmsmisuraservice.util.Utility;
 public class DDSFolder extends DDSEntity {
 
     public List<Entity> list(FolderSearch params) {
-        System.out.println("PARAMS");
-        System.out.println(params.getId());
-        System.out.println(params.getId_like());
         //@formatter:off
         return rest.getFolderBySQL()
             .withParam("OS", this.os )
@@ -29,12 +26,11 @@ public class DDSFolder extends DDSEntity {
             //@formatter:on
     }
 
-
-    private Entity update(FolderCreate params ){
+    private Entity update(FolderCreate params) {
         Entity folder = get(params.getId());
 
-        Entity systemAttributes = folder.getAsEntity("systemAttributes").with("annotations",
-                params.getDescription());
+        Entity systemAttributes = folder.getAsEntity("systemAttributes")
+        .with("annotations", params.getDescription());
         //@formatter:off
         rest.updateFolder()
             .withParam("OS", this.os)
@@ -45,14 +41,13 @@ public class DDSFolder extends DDSEntity {
         return get(params.getId());
     }
 
-
     public Entity get(String id) {
         try {
             //@formatter:off
             return rest.getFolderBySQL()
             .withParam("OS", this.os )
             .withParam("select", listOf("*"))
-            .withParam("where", clause("name", "/" + id, "="))
+            .withParam("where", clause("name", id, "=", "/", ""))
             .postForList()
             .get(0);
             //@formatter:on
@@ -72,22 +67,18 @@ public class DDSFolder extends DDSEntity {
         return update(params);
     }
 
-    public boolean delete(String folder_id){
-        return rest.deleteFolder()
-            .withParam("OS", this.os)
-            .withParam("id", folder_id)
-            .postForString()
-            .equals("") ? true : false ;
-    }
-
 
     @Override
     protected List<String> clauses(Pagination p) {
         FolderSearch params = (FolderSearch) p;
         return Utility.listOf(
-            clause("name", params.getId(), "=", "/", ""),
-            clause("name", params.getId_like() , "like", "/", "%")
-            );
+            clause("foldersParents", "/", "=")
+        );
+    }
+
+    @Override
+    protected String sortField(String field) {
+        return "name";
     }
 
 }

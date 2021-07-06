@@ -104,7 +104,7 @@ public class SnamRestClient {
             method = e.getStackTrace()[1].getMethodName();
         }
         System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
-        System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method, this.headers);
+        //System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method, this.headers);
         System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method, this.params);
     }
 

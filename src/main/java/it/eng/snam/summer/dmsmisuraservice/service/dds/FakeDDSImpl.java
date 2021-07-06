@@ -94,8 +94,7 @@ public class FakeDDSImpl implements DDS {
                     e.get("description").toString(),
                     "source",
                     listOf("dest1", "dest2"),
-                    e.get("folder").toString(),
-                    listOf(new Info()))
+                    e.get("folder").toString())
                     )
                 .filter(e -> e.folder.equals(folder_id)).collect(Collectors.toList());
     }
@@ -140,8 +139,7 @@ public class FakeDDSImpl implements DDS {
                     .withLink("/link")
                     .withName("name")
                     .withNotes("notes")
-                    .withStatus("status")
-                    .withInfo( subfolder.attributes );
+                    .withStatus("status");
         //@formatter:on
     }
 

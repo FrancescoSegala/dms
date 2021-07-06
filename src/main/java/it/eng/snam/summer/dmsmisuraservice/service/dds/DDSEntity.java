@@ -20,8 +20,15 @@ public abstract class DDSEntity {
     @Value("${external.dds.OS}")
     protected String os;
 
+
+    protected abstract String sortField( String field );
+
     protected String clause(String field, String value, String operator) {
         return isEmpty(value) ? "" : String.format(" %s %s '%s' ", field, operator, value);
+    }
+
+    protected String clause(String field , Boolean value ) {
+        return value == null ? "" : String.format(" %s = %s ", field,  value);
     }
 
     protected String clause(String field, String value, String operator, String prefix, String postfix){
@@ -42,7 +49,7 @@ public abstract class DDSEntity {
 
     protected String pagination(Pagination p) {
         //@formatter:off
-        return (isEmpty( p.getSort() ) ? "" : " order by " + p.getSort() + " " + p.getDirection())
+        return (isEmpty( p.getSort() ) ? "" : " order by " + sortField(p.getSort()) + " " + p.getDirection())
         + ( " limit " + p.getLimit() )
         + ( " offset " + p.getOffset());
         //@formatter:on
@@ -59,6 +66,7 @@ public abstract class DDSEntity {
      */
     protected String where(Pagination p) {
         //@formatter:off
+        System.out.println(clauses(p));
         return Stream.concat(
             listOf("_id is not null").stream(),
             clauses(p).stream())
