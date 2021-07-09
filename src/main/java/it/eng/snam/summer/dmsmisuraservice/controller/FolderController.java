@@ -25,10 +25,10 @@ import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentCount;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
 @RestController
@@ -39,6 +39,12 @@ public class FolderController {
 
     @Autowired
     private NamedParameterJdbcOperations template;
+
+
+    @GetMapping("/tree")
+    public List<Entity> tree(){
+        return dds.tree();
+    }
 
     // ----------- folders ----------
 
@@ -57,21 +63,38 @@ public class FolderController {
         return dds.listFolders(params);
     }
 
+    //TODO da rimuovere
+    @DeleteMapping("/folders/{id}")
+    public void delete(@PathVariable String id){
+        dds.deleteSubfolder(id);
+    }
+
     // ----------- subfolders -----------
 
     @GetMapping("/folders/{folder_id}/subfolders")
     public List<Subfolder> listSubfolders(@PathVariable String folder_id, @Valid SubfolderSearch params) {
-        Map<String, Long> countMap = new SnamSQLClient(template).withTable("documenti")
-                .withParams(new DocumentCount(folder_id, null)).countByField("subfolder");
-        return dds.listSubfolders(folder_id, params).stream()
-                .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[2], 0L)))
-                .collect(Collectors.toList());
+        //@formatter:off
+        Map<String, Long> countMap = new SnamSQLClient(template)
+            .withTable("documenti")
+            .withParams(new DocumentCount(folder_id, null))
+            .countByField("subfolder");
+        return dds.listSubfolders(folder_id, params)
+            .stream()
+            .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[2], 0L)))
+            .collect(Collectors.toList());
+        //@formatter:on
     }
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}")
     public Subfolder getSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id) {
-        return dds.getSubfolder(folder_id, subfolder_id).withDocumentCount(new SnamSQLClient(template)
-                .withTable("documenti").withParams(new DocumentCount(folder_id, subfolder_id)).count());
+        //@formatter:off
+        return dds.getSubfolder(folder_id, subfolder_id)
+            .withDocumentCount(
+                new SnamSQLClient(template)
+                    .withTable("documenti")
+                    .withParams(new DocumentCount(folder_id, subfolder_id))
+                    .count());
+        //@formatter:on
     }
 
     @PostMapping("/folders/{folder_id}/subfolders")
@@ -85,13 +108,13 @@ public class FolderController {
         return dds.updateSubfolder(folder_id + "/" + subfolder_id, params);
     }
 
+
     @DeleteMapping("/folders/{folder_id}/subfolders/{subfolder_id}")
     public void deleteSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id) {
         dds.deleteSubfolder(folder_id + "/" + subfolder_id);
     }
 
-
-//TODO qui
+    // TODO qui
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents")
     public List<Document> listDocumentsInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,

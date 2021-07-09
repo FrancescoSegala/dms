@@ -52,7 +52,6 @@ public class DocumentControllerTest  {
             .withFolder("COMM")
             .withSubfolder("COMM")
             .withLinea(Arrays.array("1", "2", "3"))
-            .withPublishedAt("2021-01-02T22:32:00Z")
             .withRemi("remi")
             ;
         List<Document> list = controller.list(params);
@@ -67,7 +66,6 @@ public class DocumentControllerTest  {
             .withFolder("COMMA")
             .withSubfolder("COMMA")
             .withLinea(Arrays.array("1", "2", "3"))
-            .withPublishedAt("21-01-02T22:32Z")
             .withRemi("remi!!//")
         ;
         try {

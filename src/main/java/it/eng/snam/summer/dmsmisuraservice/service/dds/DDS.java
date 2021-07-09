@@ -13,8 +13,13 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 public interface DDS {
+
+
+
+    public List<Entity> tree();
 
     //folder
 

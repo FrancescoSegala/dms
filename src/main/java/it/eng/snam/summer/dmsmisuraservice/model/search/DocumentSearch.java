@@ -7,26 +7,28 @@ import io.swagger.annotations.ApiModelProperty;
 public class DocumentSearch extends Pagination {
 
     public String id;
-    public String data_documento;
+    public String data_documento_gt;
+    public String data_documento_lt;
     public String linea;
     public String codice_centro;
     public String codice_distretto;
     public String codice_area_tecnica;
     public String codice_polo;
     public String ragione_sociale;
+    public String ragione_sociale_like;
     public String ubicazione;
+    public String ubicazione_like;
     public String provincia;
     public String comune;
     public String regione;
     public String codice_aop;
     public String codice_ateco;
-    public String  data_entrata_esercizi;
-
-    @ApiModelProperty("the id of the 1st level folder")
+    public String data_entrata_esercizio_gt;
+    public String data_entrata_esercizio_lt;
     public String folder;
-
-    @ApiModelProperty("the id of the 2nd level folder")
     public String subfolder;
+    public String remi_terzo;
+    public String reti_trasporto;
 
     // @Pattern(regexp =
     // "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z", message
@@ -36,14 +38,9 @@ public class DocumentSearch extends Pagination {
     @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     public String remi;
 
-    public String ragione_sociale_like;
-
     @ApiModelProperty("the list of 'linea' to include the research")
     // @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     public String[] linea_in;
-
-    @ApiModelProperty("the list of 'remi' to include the research")
-    public String[] remi_in;
 
     public DocumentSearch withFolder(String folder) {
         this.folder = folder;
@@ -103,14 +100,6 @@ public class DocumentSearch extends Pagination {
 
     public void setRemi(String remi) {
         this.remi = remi;
-    }
-
-    public String[] getRemi_in() {
-        return remi_in;
-    }
-
-    public void setRemi_in(String[] remi_in) {
-        this.remi_in = remi_in;
     }
 
 }

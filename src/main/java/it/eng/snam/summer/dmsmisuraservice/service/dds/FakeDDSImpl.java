@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 import io.micrometer.core.instrument.util.IOUtils;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
-import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
@@ -30,6 +29,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 
 public class FakeDDSImpl implements DDS {
@@ -148,20 +148,6 @@ public class FakeDDSImpl implements DDS {
         return listFolders();
     }
 
-    @Override
-    public Subfolder createSubfolder(String folder_id, @Valid SubfolderCreate params) {
-        return getSubfolder(folder_id, params.getSubfolder_id() );
-    }
-
-    @Override
-    public Subfolder updateSubfolder(String folder_id, @Valid SubfolderUpdate params) {
-        return getSubfolder(folder_id, params.getSubfolder_id() );
-    }
-
-    @Override
-    public void deleteSubfolder(String folder_id, String subfolder_id) {
-        //nop
-    }
 
     @Override
     public List<Document> listDocuments( @Valid DocumentSearch params) {
@@ -204,6 +190,30 @@ public class FakeDDSImpl implements DDS {
 
     @Override
     public Folder createFolder(FolderCreate params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteSubfolder(String id) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Subfolder createSubfolder(String folder_id, SubfolderCreate params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Subfolder updateSubfolder(String folder_id, SubfolderUpdate params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Entity> tree() {
         // TODO Auto-generated method stub
         return null;
     }

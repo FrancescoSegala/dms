@@ -1,11 +1,5 @@
 package it.eng.snam.summer.dmsmisuraservice.model.create;
 
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.SUBFOLDER_REGEX;
-
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
 

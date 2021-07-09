@@ -48,7 +48,7 @@ public class FolderControllerTest {
     @Test
     public void getFoldersWithParams(){
         FolderSearch params = new FolderSearch()
-            .withId("COMM");
+            ;
         List<Folder> list = controller.list(params);
         assertNotNull(list);
     }
@@ -57,7 +57,7 @@ public class FolderControllerTest {
     @Test
     public void getFailFolders(){
         FolderSearch params = new FolderSearch()
-            .withId("COMMA");
+             ;
         try {
             controller.list(params);
         } catch (ResponseStatusException e) {
@@ -98,9 +98,7 @@ public class FolderControllerTest {
     @Test
     public void getSubfoldersWithParams(){
         SubfolderSearch params = new SubfolderSearch()
-        .withFolder("COMM")
-        .withId("COMM")
-        .withStatus("active")
+         .withStatus("active")
         ;
         List<Subfolder> list = controller.listSubfolders("COMM", params);
         assertNotNull(list);
@@ -112,9 +110,7 @@ public class FolderControllerTest {
     public void getFailSubfolders(){
         //TODO iterate over params
         SubfolderSearch params = new SubfolderSearch()
-        .withFolder("COMMA")
-        .withId("COMMA")
-        .withStatus("attivo")
+         .withStatus("attivo")
         ;
         try {
             controller.listSubfolders("COMM", params);

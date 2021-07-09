@@ -6,6 +6,7 @@ import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSubfolder;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.EntityMapper;
 
 public class DDSImpl implements DDS {
@@ -85,7 +87,7 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public void deleteSubfolder(String id ) {
+    public void deleteSubfolder(String id) {
         ddsSubfolder.delete(id);
     }
 
@@ -125,6 +127,31 @@ public class DDSImpl implements DDS {
     @Override
     public void getContent(String document_id) {
         ddsDocument.getContent(document_id);
+    }
+
+    @Override
+    public List<Entity> tree() {
+        List<Entity> tree = ddsFolder.tree();
+        //@formatter:off
+        return tree.stream()
+            .filter(e -> "/".equals(e.getAsEntity("systemAttributes").getAsListString("foldersParents").get(0)) )
+            .map(e -> new Entity()
+                    .with("id", e.getAsEntity("systemAttributes").getAsString("name"))
+                    .with("subfolders",
+                            tree
+                            .stream()
+                            .filter( x ->
+                                 x.getAsEntity("systemAttributes").getAsListString("foldersParents").get(0).equals(e.getAsEntity("systemAttributes").getAsString("name"))
+                            )
+                            .map(x -> new Entity()
+                                .with("id",x.getAsEntity("systemAttributes").getAsString("name") )
+                                .with("description", x.getAsEntity("systemAttributes").getAsString("annotations"))
+                            )
+                            .collect(Collectors.toList())
+                        )
+                    )
+            .collect(Collectors.toList());
+        //@formatter:on
     }
 
 }

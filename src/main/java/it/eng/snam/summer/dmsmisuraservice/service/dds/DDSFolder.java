@@ -16,6 +16,17 @@ import it.eng.snam.summer.dmsmisuraservice.util.Utility;
 @Component
 public class DDSFolder extends DDSEntity {
 
+
+    public List<Entity> tree(){
+       //@formatter:off
+       return rest.getFolderBySQL()
+       .withParam("OS", this.os )
+       .withParam("select", listOf("*"))
+       .withParam("where", "" )
+       .postForList();
+       //@formatter:on
+    }
+
     public List<Entity> list(FolderSearch params) {
         //@formatter:off
         return rest.getFolderBySQL()

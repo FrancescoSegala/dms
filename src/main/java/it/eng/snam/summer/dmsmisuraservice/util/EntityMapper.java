@@ -4,6 +4,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
+import it.eng.snam.summer.dmsmisuraservice.model.SubfolderPermission;
 
 public class EntityMapper {
 
@@ -21,7 +22,8 @@ public class EntityMapper {
                     .withFolder(e.getAsEntity("systemAttributes").getAsString("name").split("/")[1] )
                     .withDescription(e.getAsEntity("systemAttributes").getAsString("annotations"))
                     .withStatus(e.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active" )
-                    .withSource("P8");
+                    .withSource("P8")
+                    .withPermission(new SubfolderPermission(true, true, true));
     }
 
 

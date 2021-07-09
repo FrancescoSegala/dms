@@ -12,6 +12,7 @@ public class Subfolder {
     public List<String> send_to = new ArrayList<>();
     public String folder;
     public Long document_count = 0L;
+    public SubfolderPermission permission ;
 
     public Subfolder(String id, String status, String description, String source, List<String> send_to, String folder) {
         this.id = id;
@@ -57,6 +58,11 @@ public class Subfolder {
 
     public Subfolder withDocumentCount(  Long count ) {
         this.document_count = count ;
+         return this;
+    }
+
+    public Subfolder withPermission( SubfolderPermission perm   ) {
+        this.permission = perm ;
          return this;
     }
 
