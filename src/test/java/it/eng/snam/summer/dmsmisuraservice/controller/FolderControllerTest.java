@@ -1,4 +1,4 @@
-package it.eng.snam.summer.dmsmisuraservice;
+package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -7,22 +7,21 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 
-import it.eng.snam.summer.dmsmisuraservice.controller.FolderController;
+import it.eng.snam.summer.dmsmisuraservice.DmsMisuraServiceApplication;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
+@SpringBootTest(classes = DmsMisuraServiceApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class FolderControllerTest {
 
     @Autowired

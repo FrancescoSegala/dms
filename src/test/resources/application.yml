@@ -2,7 +2,11 @@ spring:
   profiles: 'dev, default'
   kafka:
     bootstrap-servers: 'localhost:9092'
-  ##datasource:
+  datasource:
+     driverClassName: org.h2.Driver
+     url: jdbc:h2:mem:anag_remi
+     username: sa
+     password: sa
 
   jpa:
     properties:
@@ -60,3 +64,5 @@ external:
         fake: false
         jwt_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi/secure/token?rie=RI00674
         remi_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi
+        user_url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente
+        

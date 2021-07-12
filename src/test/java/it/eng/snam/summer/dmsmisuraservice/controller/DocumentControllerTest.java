@@ -1,4 +1,4 @@
-package it.eng.snam.summer.dmsmisuraservice;
+package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -8,20 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import org.assertj.core.util.Arrays;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 
-import it.eng.snam.summer.dmsmisuraservice.controller.DocumentController;
+import it.eng.snam.summer.dmsmisuraservice.DmsMisuraServiceApplication;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
+@SpringBootTest(classes = DmsMisuraServiceApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class DocumentControllerTest  {
 
     @Autowired
