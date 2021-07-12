@@ -16,14 +16,13 @@ import it.eng.snam.summer.dmsmisuraservice.util.Utility;
 @Component
 public class DDSFolder extends DDSEntity {
 
-
-    public List<Entity> tree(){
+    public List<Entity> tree() {
        //@formatter:off
        return rest.getFolderBySQL()
-       .withParam("OS", this.os )
-       .withParam("select", listOf("*"))
-       .withParam("where", "" )
-       .postForList();
+        .withParam("OS", this.os )
+        .withParam("select", listOf("*"))
+        .withParam("where", "" )
+        .postForList();
        //@formatter:on
     }
 
@@ -40,8 +39,7 @@ public class DDSFolder extends DDSEntity {
     private Entity update(FolderCreate params) {
         Entity folder = get(params.getId());
 
-        Entity systemAttributes = folder.getAsEntity("systemAttributes")
-        .with("annotations", params.getDescription());
+        Entity systemAttributes = folder.getAsEntity("systemAttributes").with("annotations", params.getDescription());
         //@formatter:off
         rest.updateFolder()
             .withParam("OS", this.os)
@@ -78,13 +76,10 @@ public class DDSFolder extends DDSEntity {
         return update(params);
     }
 
-
     @Override
     protected List<String> clauses(Pagination p) {
         FolderSearch params = (FolderSearch) p;
-        return Utility.listOf(
-            clause("foldersParents", "/", "=")
-        );
+        return Utility.listOf(clause("foldersParents", "/", "="));
     }
 
     @Override

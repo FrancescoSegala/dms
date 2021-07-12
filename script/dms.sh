@@ -3,11 +3,11 @@ export SERIVCE_URL="localhost:8090/dms-misura-service"
 
 
 function generate_body() {
-cat <<EOF
-    {
-        "id": "$1",
-        "description" : "$2"
-    }
+    cat <<EOF
+        {
+            "id": "$1",
+            "description" : "$2"
+        }
 EOF
 }
 
@@ -34,5 +34,21 @@ function read_file(){
 }
 
 
+function remove_all() {
+
+}
+
+#awk -F ';' -f create_subfolders.awk folders.csv | bash
 
 #awk -F ';' -f create_folders.awk folders.txt | bash
+
+case "$1" in
+    remove_all ) remove_all
+    ;;
+    remove ) remove
+    ;;
+    build ) build
+    ;;
+    * ) fodlersHelp
+esac
+

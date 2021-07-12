@@ -18,6 +18,7 @@ import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 public interface DDS {
 
 
+    //general
 
     public List<Entity> tree();
 
