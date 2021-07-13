@@ -20,7 +20,9 @@ spec:
     dockerfile: "FROM redhat-openjdk-18/openjdk18-openshift\r\nCOPY *.jar app.jar\r\nEXPOSE 8090\r\nCMD
       [\"java\", \"-Djava.security.egd=file:/dev/./urandom\", \"-jar\", \"app.jar\",
       \"--jwt.secret=${JWT_SECRET}\", \"--jwt.profiler-url=${JWT_PROFILER_URL}\",
-      \"--jwt.enabled=${JWT_ENABLED}\", \"--jwt.public-key=${PUBLIC_KEY_TOKEN}\", 
+      \"--jwt.enabled=${JWT_ENABLED}\", \"--jwt.public-key=${PUBLIC_KEY_TOKEN}\",
+      \"--controlm-jks.password=${CONTROLM_CERT_STORE_PASSWORD}\",
+      \"--controlm-jks.truststore=${CERT_TRUSTSTORE}\", 
       \"--logging.level.it.eng.snam.summer.dmsmisuraservice.security=${LOGGING_LEVEL_SECURITY}\",
       \"--logging.level.it.eng.snam.summer.dmsmisuraservice.controller=${LOGGING_LEVEL_CONTROLLER}\",
       \"--logging.level.it.eng.snam.summer.dmsmisuraservice.service=${LOGGING_LEVEL_SERVICE}\",
