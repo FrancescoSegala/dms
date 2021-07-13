@@ -23,6 +23,8 @@ public class DDSDocument {
     @Autowired
     NamedParameterJdbcOperations template ;
 
+
+
     public List<Entity> list(DocumentSearch params) {
         return new SnamSQLClient(template)
         .withTable("v_documenti")
@@ -34,14 +36,17 @@ public class DDSDocument {
 
     public Entity get(String document_id ){
         //@formatter:off
-        return new SnamSQLClient(template)
+        Entity doc =  new SnamSQLClient(template)
         .withTable("v_documenti")
         .withParams(new IdSearch(document_id))
         .get();
         //@formatter:on
+        return new Entity(); // merge delle info da doc e da dds, priorità a db sql
     }
 
     public Entity post(DocumentCreate params){
+        //validazione
+        // error handling
         // return rest.createDocument()
         //         .withParam("OS", this.os)
         //         .withParam("documentalClass", params.getFolder() )
@@ -51,6 +56,8 @@ public class DDSDocument {
         //         .withParam("customPermission", listOf() )
         //         .post()
         //         ;
+
+        // prima scrivi file su dds e poi su db
         return null ;
     }
 

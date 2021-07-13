@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.aspect.ExecutionTime;
 import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
@@ -16,6 +17,7 @@ import it.eng.snam.summer.dmsmisuraservice.util.Utility;
 @Component
 public class DDSFolder extends DDSEntity {
 
+    @ExecutionTime
     public List<Entity> tree() {
        //@formatter:off
        return rest.getFolderBySQL()

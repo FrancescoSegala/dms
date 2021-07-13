@@ -5,9 +5,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
+import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 
 @RestController
@@ -41,6 +44,17 @@ public class DocumentController {
     @PostMapping("/documents")
     public Document post(@RequestBody @Valid DocumentCreate params) {
         return dds.createDocument(params);
+    }
+
+    @PutMapping("/documents/{document_id}")
+    public Document put(@PathVariable String document_id, @RequestBody @Valid DocumentUpdate params) {
+        return dds.updateDocument(document_id, params);
+    }
+
+
+    @DeleteMapping("/documents/{document_id}")
+    public void delete(@PathVariable String document_id){
+        dds.deleteDocument(document_id);
     }
 
 }

@@ -158,9 +158,7 @@ public class FakeDDSImpl implements DDS {
     public Document createDocument( @Valid DocumentCreate params) {
         return new Document()
                     .withName(params.getName())
-                    .withNotes(params.getNotes())
                     .withFolder(params.getFolder())
-                    .withStatus(params.getStatus())
                     .withSubfolder(params.getSubfolder())
                     .withInfo(params.getInfo());
 

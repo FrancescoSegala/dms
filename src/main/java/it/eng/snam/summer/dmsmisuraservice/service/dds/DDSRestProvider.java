@@ -12,6 +12,8 @@ import static it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient.rest;
 import static it.eng.snam.summer.dmsmisuraservice.util.Precall.precall;
 
 import it.eng.snam.summer.dmsmisuraservice.util.Precall;
+import it.eng.snam.summer.dmsmisuraservice.aspect.ExecutionTime;
+import it.eng.snam.summer.dmsmisuraservice.util.CachedFunction;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient;
 
@@ -28,14 +30,27 @@ public class DDSRestProvider {
     private String client_id;
     @Value("${external.dds.client_secret}")
     private String client_secret;
+    @Value("${external.dds.cache_expire}")
+    private static Long cache_expire;
 
     private static Map<String, Entity> SSO_EXPIRATION = new HashMap<>();
+    private static CachedFunction<String , Entity > CACHED_PRECALL = new CachedFunction<>(cache_expire, precallUrl -> rest(precallUrl).get() );
 
-    private Precall getPrecall(String precallUrl, String fn, String method) {
-        Entity precall = rest(precallUrl).get();
-        return precall().withUrl(precall.getAsString(fn) + "/" + method)
-                .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
+    public Precall getPrecall(String precallUrl, String fn, String method) {
+
+        Long start = Instant.now().toEpochMilli();
+        try {
+            //Entity precall = CACHED_PRECALL.apply(precallUrl);
+            Entity precall = rest(precallUrl).get();
+            return precall().withUrl(precall.getAsString(fn) + "/" + method)
+                    .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
+        } finally {
+            Long end = Instant.now().toEpochMilli();
+            System.out.printf("Precall : %s %s %s - execution time %d ms \n ", precallUrl, fn, method, (end - start));
+        }
+
     }
+
 
     private boolean isAccessTokenExpired(String ssoUrl) {
         return (!SSO_EXPIRATION.containsKey(ssoUrl))
@@ -60,36 +75,40 @@ public class DDSRestProvider {
         return "Bearer " + refreshResponse.getAsString("access_token");
     }
 
+    @ExecutionTime
     public SnamRestClient getFolderBySQL() {
         return rest(getPrecall(folder_precall_url, "getfolder", "getFolderBySQL")).withHeader("OAM_REMOTE_USER",
                 "user1");
     }
 
+    @ExecutionTime
     public SnamRestClient createFolder() {
         return rest(getPrecall(folder_precall_url, "upsertfolder", "createFolders")).withHeader("OAM_REMOTE_USER",
                 "user1");
     }
 
-    public SnamRestClient updateFolder(){
+    @ExecutionTime
+    public SnamRestClient updateFolder() {
         return rest(getPrecall(folder_precall_url, "upsertfolder", "setFoldersSystem")).withHeader("OAM_REMOTE_USER",
-        "user1");
+                "user1");
     }
 
-    public SnamRestClient deleteFolder(){
+    @ExecutionTime
+    public SnamRestClient deleteFolder() {
         return rest(getPrecall(folder_precall_url, "deletefolder", "deleteFolder")).withHeader("OAM_REMOTE_USER",
-        "user1");
+                "user1");
     }
 
+    @ExecutionTime
     public SnamRestClient getDocumentBySQL() {
         return rest(getPrecall(document_read_precall_url, "getdoc", "getDocumentBySQL")).withHeader("OAM_REMOTE_USER",
                 "user1");
     }
 
+    @ExecutionTime
     public SnamRestClient createDocument() {
         return rest(getPrecall(document_write_precall_url, "upsertdoc", "createDocument")).withHeader("OAM_REMOTE_USER",
                 "user1");
     }
-
-
 
 }
