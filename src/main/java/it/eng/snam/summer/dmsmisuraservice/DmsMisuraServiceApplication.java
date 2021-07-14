@@ -33,7 +33,7 @@ public class DmsMisuraServiceApplication {
 	@PostConstruct
     public void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Rome"));
-        UtilityControlM.setSslProperties(password, trustStorePath);
+        //UtilityControlM.setSslProperties(password, trustStorePath);
     }
 
     @Bean
