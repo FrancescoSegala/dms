@@ -17,6 +17,7 @@ public class EntityMapper {
 
 
     public static Subfolder toSubfolder(Entity e){
+        System.out.println( "Entity mapper "+ e);
         return new Subfolder()
                     .withId(e.getAsEntity("systemAttributes").getAsString("name"))
                     .withFolder(e.getAsEntity("systemAttributes").getAsString("name").split("/")[1] )

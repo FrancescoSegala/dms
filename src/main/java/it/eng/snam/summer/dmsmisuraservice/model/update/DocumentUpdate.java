@@ -11,11 +11,6 @@ import it.eng.snam.summer.dmsmisuraservice.model.Info;
 
 public class DocumentUpdate {
 
-    //informazioni necessarie da client per fare update di un documento
-
-    @ApiModelProperty("id of the document to update")
-    @NotBlank
-    public String id;
 
     @ApiModelProperty("document name")
     //^[A-Za-z0-9]+[-_A-Za-z0-9]*$
@@ -32,19 +27,8 @@ public class DocumentUpdate {
     @ApiModelProperty("notes for the document")
     public String notes;
 
-    @ApiModelProperty("the id of the 1st level folder")
-    public String folder;
-
-    @ApiModelProperty("the id of the 2nd level folder")
-    public String subfolder;
 
 
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }
@@ -71,18 +55,6 @@ public class DocumentUpdate {
         this.notes = notes;
     }
 
-    public String getFolder() {
-        return folder;
-    }
-    public void setFolder(String folder) {
-        this.folder = folder;
-    }
-    public String getSubfolder() {
-        return subfolder;
-    }
-    public void setSubfolder(String subfolder) {
-        this.subfolder = subfolder;
-    }
 
 
 }

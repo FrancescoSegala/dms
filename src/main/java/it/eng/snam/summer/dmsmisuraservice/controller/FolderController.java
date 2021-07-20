@@ -78,8 +78,10 @@ public class FolderController {
             .withTable("documenti")
             .withParams(new DocumentCount(folder_id, null))
             .countByField("subfolder");
+            System.out.println(countMap);
         return dds.listSubfolders(folder_id, params)
             .stream()
+             .peek( e -> System.out.println(e))
             .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[2], 0L)))
             .collect(Collectors.toList());
         //@formatter:on

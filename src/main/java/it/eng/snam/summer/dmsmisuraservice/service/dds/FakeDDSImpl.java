@@ -169,9 +169,7 @@ public class FakeDDSImpl implements DDS {
         return new Document()
                     .withName(params.name)
                     .withNotes(params.notes)
-                    .withFolder(params.folder)
                     .withStatus(params.status)
-                    .withSubfolder(params.subfolder)
                     .withInfo(params.info);
     }
 

@@ -62,6 +62,7 @@ public class DDSImpl implements DDS {
 
     @Override
     public List<Subfolder> listSubfolders(String folder_id, SubfolderSearch params) {
+        System.out.println("list subfolders dds impl ");
         //@formatter:off
         return ddsSubfolder
             .list(folder_id, params)

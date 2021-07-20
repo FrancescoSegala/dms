@@ -111,11 +111,10 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-         System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
+         //System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
         //  System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method,
         //  this.headers);
-         System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method,
-         this.params);
+         //System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method,this.params);
     }
 
     private void printResponse(Object response) {
@@ -125,8 +124,7 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-         System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method,
-         response);
+         //System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method,response);
     }
 
     public RestTemplate SSLtemplate() {

@@ -57,7 +57,7 @@ public class DDSDocument {
         //         .post()
         //         ;
 
-        // prima scrivi file su dds e poi su db
+        // TODO prima scrivi file (attuale file pdf) su dds e poi su db
         return null ;
     }
 

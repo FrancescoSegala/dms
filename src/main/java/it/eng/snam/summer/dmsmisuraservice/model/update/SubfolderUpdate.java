@@ -10,6 +10,8 @@ public class SubfolderUpdate  {
     @NotBlank
     public String description;
 
+    //todo anche send_to e status
+
     public String getDescription() {
         return description;
     }

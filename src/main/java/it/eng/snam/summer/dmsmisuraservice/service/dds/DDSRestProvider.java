@@ -31,17 +31,17 @@ public class DDSRestProvider {
     @Value("${external.dds.client_secret}")
     private String client_secret;
     @Value("${external.dds.cache_expire}")
-    private static Long cache_expire;
+    private Long cache_expire;
 
     private static Map<String, Entity> SSO_EXPIRATION = new HashMap<>();
-    private static CachedFunction<String , Entity > CACHED_PRECALL = new CachedFunction<>(cache_expire, precallUrl -> rest(precallUrl).get() );
+    private static CachedFunction<String , Entity > CACHED_PRECALL = new CachedFunction<>(1000000L, precallUrl -> rest(precallUrl).get() );
 
     public Precall getPrecall(String precallUrl, String fn, String method) {
 
         Long start = Instant.now().toEpochMilli();
         try {
-            //Entity precall = CACHED_PRECALL.apply(precallUrl);
-            Entity precall = rest(precallUrl).get();
+            Entity precall = CACHED_PRECALL.apply(precallUrl);
+            //Entity precall = rest(precallUrl).get();
             return precall().withUrl(precall.getAsString(fn) + "/" + method)
                     .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
         } finally {

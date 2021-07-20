@@ -23,7 +23,7 @@ public class DDSFolder extends DDSEntity {
        return rest.getFolderBySQL()
         .withParam("OS", this.os )
         .withParam("select", listOf("*"))
-        .withParam("where", "" )
+        .withParam("where", " name != '/parentFolder'" )
         .postForList();
        //@formatter:on
     }
