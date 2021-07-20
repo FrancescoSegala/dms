@@ -86,7 +86,7 @@ VERB;FFAN;FFAN - PROGR. SOLO ANALISI FF;codiceREMI, lineaREMI, TIPO
 VERB;PELA;PELA - POST ELABORAZIONE ;codiceREMI, lineaREMI, TIPO
 VERB;AGPE;AGPE - AGGIORNAMENTO ANALISI PER POST ELABORAZIONE ;codiceREMI, lineaREMI, TIPO
 VERB;FFNE1;FFNE1 - PROGR. SOLO ANALISI - NON EFFETTUATA, ASSENZA CLIENTE ;codiceREMI, lineaREMI, TIPO
-VERB;FFNE2;FFNE2 - PROGR. SOLO ANALISI - NON EFFETTUATA, ASSENZA CLIENTE 2ø TENTATIVO ;codiceREMI, lineaREMI, TIPO
+VERB;FFNE2;FFNE2 - PROGR. SOLO ANALISI - NON EFFETTUATA, ASSENZA CLIENTE 2ï¿½ TENTATIVO ;codiceREMI, lineaREMI, TIPO
 VERB;FFNE3;FFNE3 - PROGR. SOLO ANALISI - NON EFFETTUATA, RIFIUTO C.F. CON FIRMA ;codiceREMI, lineaREMI, TIPO
 VERB;FFNE4;FFNE4 - PROGR. SOLO ANALISI - NON EFFETTUATA, RIFIUTO C.F. SENZA FIRMA ;codiceREMI, lineaREMI, TIPO
 VERB;SDIVO;SDIVO - SCHEDA D'INTERVENTO VOLUMETRICA ;codiceREMI, lineaREMI, TIPO
@@ -143,10 +143,8 @@ OLDOC;PCON;PCON - PUNTO DI RICONSEGNA (PLANIMETRIE) ;codiceREMI, lineaREMI, TIPO
 OLDOC;FFRC;FFRC - FLOW-COMP RATIFICA CONTRIBUTO ;codiceREMI, lineaREMI, TIPO
 OLDOC;VEIM;VEIM - SCHEDA VERIFICA IMPIANTO ;codiceREMI, lineaREMI, TIPO
 VDM;VDM;VVDM - VERIFICA VERBALI DI MISURA  ;codiceREMI, lineaREMI, TIPO, MeseAnno, Visto, DataEmissione
-Attestato di Conformit…;Attestato di Conformit…;Attestato di Conformit…;codiceREMI, lineaREMI, TIPO
 MAOP;MAOP;MAOP - Manuale Operativo;codiceREMI, lineaREMI, ClienteInterlocutore, Ubicazione, REMIDaAssociare
 INTE;INTE;COVA - INTERNE SRG VARIE ;codiceREMI, lineaREMI, ClienteInterlocutore, Ubicazione, REMIDaAssociare
-Documento Correlato;Documento Correlato;Documento Correlato;Riferimento, ClienteInterlocutore, Ubicazione, REMIDaAssociare
 LABO;ACCUGC;ACCUGC - Certificato Accuratezza GC;NCertificatoTaratura, DataEsecuzioneProva, ProprietarioStrumento, Codice AOP, Descrizione AOP, Nome documento
 LABO;GASINT;GASINT - Rapporti di prova gas interni;Nrapporto, TipoMatrice, CodiceClienteLASVIL, CodiceAOP, NomeAOP, NomeImpianto, TipoAnalisi,Nome documento
 LABO;FUMI;FUMI - Rapporti di prova analisi dei fumi;Nrapporto, AnnoEmissione, CodiceClienteEMIX, Sito
