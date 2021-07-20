@@ -138,6 +138,7 @@ public class DDSImpl implements DDS {
             .filter(e -> "/".equals(e.getAsEntity("systemAttributes").getAsListString("foldersParents").get(0)) )
             .map(e -> new Entity()
                     .with("id", e.getAsEntity("systemAttributes").getAsString("name"))
+                    .with("description", e.getAsEntity("systemAttributes").getAsString("annotations"))
                     .with("subfolders",
                             tree
                             .stream()

@@ -62,13 +62,13 @@ public abstract class DDSEntity {
     /**
      * it requires clauses function to be implemented in the child class
      * @param p DTO that creates the condtion for dds calls
-     * @return the string representing the where condition fot the ms call
+     * @return the string representing the where condition for the ms call
      */
     protected String where(Pagination p) {
         //@formatter:off
         System.out.println(clauses(p));
         return Stream.concat(
-            listOf("_id is not null").stream(),
+            listOf("_id is not null and name != '/parentFolder' ").stream(),
             clauses(p).stream())
         .filter(e -> ! isEmpty(e))
         .collect(Collectors.joining(" and "))
