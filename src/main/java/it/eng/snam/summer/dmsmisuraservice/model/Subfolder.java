@@ -68,12 +68,11 @@ public class Subfolder {
     }
 
 
-    //TODO json meglio
     @Override
     public String toString() {
-        return "Subfolder [description=" + description + ", document_count=" + document_count + ", folder=" + folder
-                + ", id=" + id + ", permission=" + permission + ", send_to=" + send_to + ", source=" + source
-                + ", status=" + status + "]";
+        return "{description :" + description + ", document_count :" + document_count + ", folder :" + folder
+                + ", id :" + id + ", permission :" + permission + ", send_to :" + send_to + ", source :" + source
+                + ", status :" + status + "}";
     }
 
 

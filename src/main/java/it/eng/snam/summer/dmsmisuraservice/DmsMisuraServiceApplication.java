@@ -15,7 +15,6 @@ import it.eng.snam.summer.dmsmisuraservice.service.dds.FakeDDSImpl;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.FakeSummerImpl;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerImpl;
-import it.eng.snam.summer.dmsmisuraservice.util.UtilityControlM;
 
 @SpringBootApplication
 public class DmsMisuraServiceApplication {

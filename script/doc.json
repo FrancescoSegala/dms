@@ -1,0 +1,26 @@
+{
+    "OS": "DMMIS",
+    "documentalClass": "DMSMisuraDoc",
+    "id": "postman_test_apdf",
+    "name": "test a",
+    "documentTitle": "test a pdf title",
+    "customAttributes": [ {
+        "key": "NavigationPath",
+        "value": "/VERBNM/VERBNM"
+    } ],
+    "customPermissions": [ {
+        "name": "userName",
+        "type": "user",
+        "permissionList": {
+            "w": true,
+            "r": true,
+            "d": true,
+            "p": true
+        }
+    } ],
+    "folders": [
+        "/ISRS/RISCHI"
+    ],
+    "folderClass": "DMSFolder",
+    "createFolderIfNotExist": true
+}

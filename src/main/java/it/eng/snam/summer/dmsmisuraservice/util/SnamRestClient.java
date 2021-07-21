@@ -9,6 +9,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,15 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 public class SnamRestClient {
+
+    @Value("${external.audit.rest_client_headers}")
+    private boolean headers_debug;
+
+    @Value("${external.audit.rest_client_response}")
+    private boolean response_debug;
+
+    @Value("${external.summer.rest_client_request}")
+    private boolean request_debug;
 
     private Entity params = new Entity();
     private MediaType contentType;
@@ -111,10 +121,12 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-         //System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
-        //  System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method,
-        //  this.headers);
-         //System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method,this.params);
+        if (request_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
+        if (headers_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method, this.headers);
+        if (request_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method, this.params);
     }
 
     private void printResponse(Object response) {
@@ -124,7 +136,11 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-         //System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method,response);
+        //TODO perche non funziona ?
+        // System.out.println("debugRequest");
+        // System.out.println(request_debug);
+        if (response_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method, response);
     }
 
     public RestTemplate SSLtemplate() {

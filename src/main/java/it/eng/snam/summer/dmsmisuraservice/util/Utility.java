@@ -1,6 +1,5 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
-import static org.mockito.Answers.values;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,10 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 
 public class Utility {
 

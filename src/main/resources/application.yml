@@ -8,19 +8,21 @@ spring:
         username: summer_svil
         password: xAnlxhx8xfMH
 
-
   jpa:
     properties:
       hibernate:
         show_sql: false
         format_sql: false
         ddl-auto: none
+
   servlet:
     multipart:
       enabled: true
       file-size-threshold: 2KB
       max-file-size: 200MB
       max-request-size: 215MB
+
+
 server:
   port: 8090
   servlet:
@@ -53,6 +55,12 @@ logging:
     historyMaxSizeMB: 150
 
 external:
+    audit:
+        rest_client_request: true
+        rest_client_response: true
+        rest_client_headers: true
+        sql_client_sql: false
+        sql_client_resopnse: false
     dds:
         fake: false
         OS: DMSMIS
@@ -63,7 +71,7 @@ external:
         client_secret: 4eb4ca2b54bfc5fa7f7c539afe950637
         cache_expire: 10000
     summer:
-        fake: false
+        fake: true
         jwt_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi/secure/token?rie=RI00674
         remi_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi
         user_url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente
