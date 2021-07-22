@@ -6,7 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class DocumentSearch extends Pagination {
 
-    public String id;
+
+    public String name;
+    @Pattern(regexp = "(active|inactive)")
+    public String status;
     public String data_documento_gt;
     public String data_documento_lt;
     public String linea;
@@ -30,16 +33,12 @@ public class DocumentSearch extends Pagination {
     public String remi_terzo;
     public String reti_trasporto;
 
-    // @Pattern(regexp =
-    // "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})\\:(\\d{2})(.)*[\\d]*Z", message
-    // = "date format not valid (should be of type yyyy-mm-ddTHH:MM:ss)")
 
     @ApiModelProperty("the remi")
     @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     public String remi;
 
     @ApiModelProperty("the list of 'linea' to include the research")
-    // @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")
     public String[] linea_in;
 
     public DocumentSearch withFolder(String folder) {
@@ -101,5 +100,175 @@ public class DocumentSearch extends Pagination {
     public void setRemi(String remi) {
         this.remi = remi;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getData_documento_gt() {
+        return data_documento_gt;
+    }
+
+    public void setData_documento_gt(String data_documento_gt) {
+        this.data_documento_gt = data_documento_gt;
+    }
+
+    public String getData_documento_lt() {
+        return data_documento_lt;
+    }
+
+    public void setData_documento_lt(String data_documento_lt) {
+        this.data_documento_lt = data_documento_lt;
+    }
+
+    public String getLinea() {
+        return linea;
+    }
+
+    public void setLinea(String linea) {
+        this.linea = linea;
+    }
+
+    public String getCodice_centro() {
+        return codice_centro;
+    }
+
+    public void setCodice_centro(String codice_centro) {
+        this.codice_centro = codice_centro;
+    }
+
+    public String getCodice_distretto() {
+        return codice_distretto;
+    }
+
+    public void setCodice_distretto(String codice_distretto) {
+        this.codice_distretto = codice_distretto;
+    }
+
+    public String getCodice_area_tecnica() {
+        return codice_area_tecnica;
+    }
+
+    public void setCodice_area_tecnica(String codice_area_tecnica) {
+        this.codice_area_tecnica = codice_area_tecnica;
+    }
+
+    public String getCodice_polo() {
+        return codice_polo;
+    }
+
+    public void setCodice_polo(String codice_polo) {
+        this.codice_polo = codice_polo;
+    }
+
+    public String getRagione_sociale() {
+        return ragione_sociale;
+    }
+
+    public void setRagione_sociale(String ragione_sociale) {
+        this.ragione_sociale = ragione_sociale;
+    }
+
+    public String getUbicazione() {
+        return ubicazione;
+    }
+
+    public void setUbicazione(String ubicazione) {
+        this.ubicazione = ubicazione;
+    }
+
+    public String getUbicazione_like() {
+        return ubicazione_like;
+    }
+
+    public void setUbicazione_like(String ubicazione_like) {
+        this.ubicazione_like = ubicazione_like;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    public String getComune() {
+        return comune;
+    }
+
+    public void setComune(String comune) {
+        this.comune = comune;
+    }
+
+    public String getRegione() {
+        return regione;
+    }
+
+    public void setRegione(String regione) {
+        this.regione = regione;
+    }
+
+    public String getCodice_aop() {
+        return codice_aop;
+    }
+
+    public void setCodice_aop(String codice_aop) {
+        this.codice_aop = codice_aop;
+    }
+
+    public String getCodice_ateco() {
+        return codice_ateco;
+    }
+
+    public void setCodice_ateco(String codice_ateco) {
+        this.codice_ateco = codice_ateco;
+    }
+
+    public String getData_entrata_esercizio_gt() {
+        return data_entrata_esercizio_gt;
+    }
+
+    public void setData_entrata_esercizio_gt(String data_entrata_esercizio_gt) {
+        this.data_entrata_esercizio_gt = data_entrata_esercizio_gt;
+    }
+
+    public String getData_entrata_esercizio_lt() {
+        return data_entrata_esercizio_lt;
+    }
+
+    public void setData_entrata_esercizio_lt(String data_entrata_esercizio_lt) {
+        this.data_entrata_esercizio_lt = data_entrata_esercizio_lt;
+    }
+
+    public String getRemi_terzo() {
+        return remi_terzo;
+    }
+
+    public void setRemi_terzo(String remi_terzo) {
+        this.remi_terzo = remi_terzo;
+    }
+
+    public String getReti_trasporto() {
+        return reti_trasporto;
+    }
+
+    public void setReti_trasporto(String reti_trasporto) {
+        this.reti_trasporto = reti_trasporto;
+    }
+
+
 
 }

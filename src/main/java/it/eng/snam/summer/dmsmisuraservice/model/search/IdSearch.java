@@ -3,7 +3,7 @@ package it.eng.snam.summer.dmsmisuraservice.model.search;
 public class IdSearch extends Pagination {
 
 
-    private String id ;
+    public String id ;
 
     public IdSearch(String id) {
         this.id = id;

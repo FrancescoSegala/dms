@@ -68,8 +68,8 @@ public abstract class DDSEntity {
         //@formatter:off
         System.out.println(clauses(p));
         return Stream.concat(
-            listOf("_id is not null and name != '/parentFolder' ").stream(),
-            clauses(p).stream())
+            listOf("_id is not null and name != '/parentFolder' ").stream(), //stream1
+            clauses(p).stream()) //stream2
         .filter(e -> ! isEmpty(e))
         .collect(Collectors.joining(" and "))
         + pagination(p);

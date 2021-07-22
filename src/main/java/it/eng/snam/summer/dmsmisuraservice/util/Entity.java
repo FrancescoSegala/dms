@@ -115,6 +115,12 @@ public class Entity extends HashMap<String, Object> {
             .collect( Collectors.toMap(e -> e, e -> this.getAsString(e) ));
     }
 
+    public Map<String, Object> toMapObject(){
+        return this.keySet()
+            .stream()
+            .collect( Collectors.toMap(e -> e, e -> this.get(e) ));
+    }
+
     public MultiValueMap<String, Object> toMultiValueMap(){
         MultiValueMap<String, Object> res = new LinkedMultiValueMap<>();
         this.keySet().forEach(

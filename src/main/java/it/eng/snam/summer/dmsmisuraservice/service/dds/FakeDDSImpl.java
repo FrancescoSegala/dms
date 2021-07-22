@@ -160,7 +160,7 @@ public class FakeDDSImpl implements DDS {
                     .withName(params.getName())
                     .withFolder(params.getFolder())
                     .withSubfolder(params.getSubfolder())
-                    .withInfo(params.getInfo());
+                    .withInfo(params.getInfo().get(0));
 
     }
 
@@ -170,7 +170,7 @@ public class FakeDDSImpl implements DDS {
                     .withName(params.name)
                     .withNotes(params.notes)
                     .withStatus(params.status)
-                    .withInfo(params.info);
+                    .withInfo(params.info.get(0));
     }
 
     @Override

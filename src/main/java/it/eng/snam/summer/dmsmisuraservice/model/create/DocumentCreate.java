@@ -21,11 +21,6 @@ public class DocumentCreate {
     @ApiModelProperty("list of infos about the document ")
     private List<Info> info; // es {"remi" : "codice_remi"}
 
-    // @ApiModelProperty("status of the document")
-    // private String status = "active";
-
-    // @ApiModelProperty("notes for the document")
-    // private String notes;
 
     @ApiModelProperty("title of the document")
     private String title; //solo su dds

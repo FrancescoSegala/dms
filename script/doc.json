@@ -1,26 +1,43 @@
-{
-    "OS": "DMMIS",
-    "documentalClass": "DMSMisuraDoc",
-    "id": "postman_test_apdf",
-    "name": "test a",
-    "documentTitle": "test a pdf title",
-    "customAttributes": [ {
-        "key": "NavigationPath",
-        "value": "/VERBNM/VERBNM"
-    } ],
-    "customPermissions": [ {
-        "name": "userName",
-        "type": "user",
-        "permissionList": {
-            "w": true,
-            "r": true,
-            "d": true,
-            "p": true
-        }
-    } ],
-    "folders": [
-        "/ISRS/RISCHI"
-    ],
-    "folderClass": "DMSFolder",
-    "createFolderIfNotExist": true
-}
+[ {
+        "OS": "DMMIS",
+        "documentalClass": "ALTRO",
+        "id": "postman_test_pdf",
+        "name": "test a",
+        "documentTitle": "test a pdf title",
+        "customAttributes": [],
+        "customPermissions": [],
+        "folders": [
+            "/ISRS"
+        ],
+        "folderClass": "DMSFolder",
+        "createFolderIfNotExist": true
+    }
+
+    ,
+    {
+        "OS": "GEIM",
+        "documentalClass": "DocAmbientale",
+        "id": "postman_test_idDocInsertedStreaming",
+        "name": "docName",
+        "documentTitle": "docTitle",
+        "customAttributes": [ {
+            "key": "Anno",
+            "value": 2020
+        } ],
+        "customPermissions": [ {
+            "name": "userName",
+            "type": "user",
+            "permissionList": {
+                "w": true,
+                "r": true,
+                "d": true,
+                "p": true
+            }
+        } ],
+        "folders": [
+            "/postman_test_folderCreated"
+        ],
+        "folderClass": "FolderAmbientaleAnno",
+        "createFolderIfNotExist": true
+    }
+]
