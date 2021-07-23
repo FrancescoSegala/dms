@@ -97,13 +97,19 @@ public class DDSDocument extends DDSEntity {
 
 
         //TODO post su dds
-        ResponseEntity<Resource> res = rest.createDocument()
-        .withParam("document", params)
-        .withParam("file", file)
-        .postMultipart();
+        byte[] newFile;
+        try {
+        	newFile = file.getBytes();
+        	ResponseEntity<byte[]> res = rest.createDocument()
+        			.withParam("document", params)
+        			.withParam("file", newFile)
+        			.postMultipart();
 
 
-        System.out.println(res.getStatusCode() );
+        	System.out.println(res.getStatusCode() );
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
         //TODO se risultato è ok continua
         //TODO se ok scrivi su db
 

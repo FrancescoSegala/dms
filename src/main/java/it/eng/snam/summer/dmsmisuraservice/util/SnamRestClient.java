@@ -95,12 +95,12 @@ public class SnamRestClient {
     }
 
 
-    public ResponseEntity<Resource>  postMultipart(){
+    public ResponseEntity<byte[]>  postMultipart(){
         Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ?  params.toMultiValueMap() : params.toString();
         System.out.println("body");
         System.out.println(body);
         template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
-        ResponseEntity<Resource>  aux = template().postForEntity(url, new HttpEntity<>(body, headers), Resource.class) ;
+        ResponseEntity<byte[]>  aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class) ;
         System.out.println("chiamata finita "+ aux.getStatusCode());
         if(aux.getStatusCode().equals(HttpStatus.OK))
             return aux ;
