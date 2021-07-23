@@ -34,14 +34,15 @@ public class DDSRestProvider {
     private Long cache_expire;
 
     private static Map<String, Entity> SSO_EXPIRATION = new HashMap<>();
-    private static CachedFunction<String , Entity > CACHED_PRECALL = new CachedFunction<>(1000000L, precallUrl -> rest(precallUrl).get() );
+    private static CachedFunction<String, Entity> CACHED_PRECALL = new CachedFunction<>(1000000L,
+            precallUrl -> rest(precallUrl).get());
 
     public Precall getPrecall(String precallUrl, String fn, String method) {
 
         Long start = Instant.now().toEpochMilli();
         try {
             Entity precall = CACHED_PRECALL.apply(precallUrl);
-            //Entity precall = rest(precallUrl).get();
+            // Entity precall = rest(precallUrl).get();
             return precall().withUrl(precall.getAsString(fn) + "/" + method)
                     .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
         } finally {
@@ -50,7 +51,6 @@ public class DDSRestProvider {
         }
 
     }
-
 
     private boolean isAccessTokenExpired(String ssoUrl) {
         return (!SSO_EXPIRATION.containsKey(ssoUrl))
@@ -107,8 +107,8 @@ public class DDSRestProvider {
 
     @ExecutionTime
     public SnamRestClient createDocument() {
-        return rest(getPrecall(document_write_precall_url, "upsertdoc", "createDocument")).withHeader("OAM_REMOTE_USER",
-                "user1");
+        return rest(getPrecall(document_write_precall_url, "upsertdoc", "createDocument"))
+                .withHeader("OAM_REMOTE_USER", "user1").withContentType(MediaType.MULTIPART_FORM_DATA);
     }
 
 }

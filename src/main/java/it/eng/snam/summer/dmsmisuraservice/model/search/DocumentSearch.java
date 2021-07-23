@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class DocumentSearch extends Pagination {
 
-
+    @ApiModelProperty("folder description")
     public String name;
     @Pattern(regexp = "(active|inactive)")
     public String status;

@@ -1,15 +1,25 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.Validators.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
@@ -24,6 +34,9 @@ public class DDSDocument extends DDSEntity {
 
     @Autowired
     NamedParameterJdbcOperations template;
+
+    @Autowired
+    DDSSubfolder subfolderService;
 
     public List<Entity> list(DocumentSearch params) {
         if (params.getLimit() <= 10)
@@ -66,18 +79,33 @@ public class DDSDocument extends DDSEntity {
         return merge(doc, dds);
     }
 
-    public Entity post(DocumentCreate params) {
-        // validazione
-        // error handling
-        // return rest.createDocument()
-        // .withParam("OS", this.os)
-        // .withParam("documentalClass", params.getFolder() )
-        // .withParam("name", params.getName() )
-        // .withParam("documentTitle", params.getTitle() )
-        // .withParam("customAttributes", listOf() )
-        // .withParam("customPermission", listOf() )
-        // .post()
-        // ;
+    public Entity post(DocumentCreate params, MultipartFile file) {
+
+        // TODO validazione info ?
+        try {
+            //valudazione folder e subfolder con get
+            subfolderService.get(params.getFolder(),params.getSubfolder());
+        } catch (ResponseStatusException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(e.getStatus(), e.getMessage());
+        }
+        System.out.println("params");
+        System.out.println(params);
+
+        System.out.println("file");
+        System.out.println(file.getOriginalFilename());
+
+
+        //TODO post su dds
+        ResponseEntity<Resource> res = rest.createDocument()
+        .withParam("document", params)
+        .withParam("file", file)
+        .postMultipart();
+
+
+        System.out.println(res.getStatusCode() );
+        //TODO se risultato è ok continua
+        //TODO se ok scrivi su db
 
         // TODO prima scrivi file (attuale file pdf) su dds e poi su db
         return null;

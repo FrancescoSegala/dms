@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
@@ -41,9 +45,9 @@ public class DocumentController {
         dds.getContent(document_id);
     }
 
-    @PostMapping("/documents")
-    public Document post(@RequestBody @Valid DocumentCreate params) {
-        return dds.createDocument(params);
+    @PostMapping(path = "/documents",  consumes = {"multipart/form-data"})
+    public Document post( @RequestPart("document") @Valid DocumentCreate params, @RequestPart("file") MultipartFile file) {
+        return dds.createDocument(params, file );
     }
 
     @PutMapping("/documents/{document_id}")

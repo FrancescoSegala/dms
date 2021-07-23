@@ -5,6 +5,7 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.DOCUMENT_REGEX;
 
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 
@@ -19,10 +20,12 @@ public class DocumentCreate {
     private String name; // solo su dds
 
     @ApiModelProperty("list of infos about the document ")
+    @NotEmpty(message = "info must be not empty")
     private List<Info> info; // es {"remi" : "codice_remi"}
 
-
     @ApiModelProperty("title of the document")
+    @NotBlank(message = "title must be not empty")
+    @Pattern(regexp = DOCUMENT_REGEX)
     private String title; //solo su dds
 
     @ApiModelProperty("the id of the 1st level folder")
@@ -54,18 +57,6 @@ public class DocumentCreate {
     public void setTitle(String title) {
         this.title = title;
     }
-    // public String getStatus() {
-    //     return status;
-    // }
-    // public void setStatus(String status) {
-    //     this.status = status;
-    // }
-    // public String getNotes() {
-    //     return notes;
-    // }
-    // public void setNotes(String notes) {
-    //     this.notes = notes;
-    // }
 
     public String getFolder() {
         return folder;
@@ -78,6 +69,11 @@ public class DocumentCreate {
     }
     public void setSubfolder(String subfolder) {
         this.subfolder = subfolder;
+    }
+    @Override
+    public String toString() {
+        return "{folder :" + folder + ", info :" + info + ", name :" + name + ", subfolder :" + subfolder
+                + ", title :" + title + "}";
     }
 
 

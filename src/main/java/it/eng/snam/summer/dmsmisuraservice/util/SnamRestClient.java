@@ -1,32 +1,39 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
+import java.io.ByteArrayInputStream;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.net.ssl.SSLContext;
-
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 public class SnamRestClient {
 
     @Value("${external.audit.rest_client_headers}")
-    private boolean headers_debug;
+    private boolean headers_debug = true;
 
     @Value("${external.audit.rest_client_response}")
-    private boolean response_debug;
+    private boolean response_debug = true;
 
     @Value("${external.summer.rest_client_request}")
-    private boolean request_debug;
+    private boolean request_debug = true;
 
     private Entity params = new Entity();
     private MediaType contentType;
@@ -85,6 +92,19 @@ public class SnamRestClient {
         String aux = template().getForObject(url, String.class, new HttpEntity<>(params.toMultiValueMap(), headers));
         printResponse(aux);
         return aux;
+    }
+
+
+    public ResponseEntity<Resource>  postMultipart(){
+        Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ?  params.toMultiValueMap() : params.toString();
+        System.out.println("body");
+        System.out.println(body);
+        template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
+        ResponseEntity<Resource>  aux = template().postForEntity(url, new HttpEntity<>(body, headers), Resource.class) ;
+        System.out.println("chiamata finita "+ aux.getStatusCode());
+        if(aux.getStatusCode().equals(HttpStatus.OK))
+            return aux ;
+        return null ;
     }
 
     public Entity post() {

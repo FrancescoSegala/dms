@@ -3,18 +3,21 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 public class Utility {
 
-    public static final String DOCUMENT_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
-    public static final String SUBFOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
-    public static final String FOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-]*$";
+    public static final String DOCUMENT_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-.]*$";
+    public static final String SUBFOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-.]*$";
+    public static final String FOLDER_REGEX = "^[a-zA-Z]+[a-zA-Z0-9_\\-.]*$";
 
     public static boolean isEmpty(String string) {
         return (string == null || string.trim().isEmpty());
@@ -47,6 +50,11 @@ public class Utility {
 
     public static <T> List<T> listOf(T... e) {
         return Arrays.asList(e);
+
+    }
+
+    public static <T> Set<T> setOf(T... e) {
+        return new HashSet<>(Arrays.asList(e));
 
     }
 

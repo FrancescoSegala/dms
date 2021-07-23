@@ -15,6 +15,7 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.micrometer.core.instrument.util.IOUtils;
@@ -155,7 +156,7 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public Document createDocument( @Valid DocumentCreate params) {
+    public Document createDocument( @Valid DocumentCreate params, MultipartFile file) {
         return new Document()
                     .withName(params.getName())
                     .withFolder(params.getFolder())

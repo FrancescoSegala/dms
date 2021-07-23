@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
@@ -111,8 +112,8 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public Document createDocument(DocumentCreate params) {
-        return toDocument(ddsDocument.post(params));
+    public Document createDocument(DocumentCreate params, MultipartFile file ) {
+        return toDocument(ddsDocument.post(params, file ));
     }
 
     @Override
