@@ -1,26 +1,27 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
-import static it.eng.snam.summer.dmsmisuraservice.util.Validators.*;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
@@ -80,41 +81,23 @@ public class DDSDocument extends DDSEntity {
     }
 
     public Entity post(DocumentCreate params, MultipartFile file) {
-
         // TODO validazione info ?
-        try {
-            //valudazione folder e subfolder con get
-            subfolderService.get(params.getFolder(),params.getSubfolder());
-        } catch (ResponseStatusException e) {
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(e.getStatus(), e.getMessage());
+        validatePath(params.getFolder(), params.getSubfolder());
+
+        Entity ddsDoc = toDDSpayload(params);
+        String sseMessage = this.postToDDS( ddsDoc, file);
+
+        System.out.println("SSEMESSAGE");
+        System.out.println(sseMessage);
+
+        if (!sseMessage.contains("\"status\" : 200")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
         }
-        System.out.println("params");
-        System.out.println(params);
-
-        System.out.println("file");
-        System.out.println(file.getOriginalFilename());
-
-
-        //TODO post su dds
-        byte[] newFile;
-        try {
-        	newFile = file.getBytes();
-        	ResponseEntity<byte[]> res = rest.createDocument()
-        			.withParam("document", params)
-        			.withParam("file", newFile)
-        			.postMultipart();
-
-
-        	System.out.println(res.getStatusCode() );
-        } catch (IOException e) {
-        	e.printStackTrace();
+        int rows = new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, ddsDoc.id()));
+        if (rows <= 0) {
+            this.handleSQLfail(ddsDoc.id());
         }
-        //TODO se risultato è ok continua
-        //TODO se ok scrivi su db
-
-        // TODO prima scrivi file (attuale file pdf) su dds e poi su db
-        return null;
+        return get(ddsDoc.id());
     }
 
     public Entity put(DocumentUpdate params) {
@@ -132,6 +115,23 @@ public class DDSDocument extends DDSEntity {
 
     private Entity pickDDSDocumentById(List<Entity> list, String id) {
         return list.stream().filter(e -> id.equals(e.getAsString("_id"))).findFirst().orElse(null);
+    }
+
+    private Entity toSQLpayload(DocumentCreate params, String id) {
+        return Entity.build("id", id).with("data", Instant.now().toString())
+                .with("c_remi_ass",
+                        params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst()
+                                .orElse((Info) Info.build().with("remi", null)).getAsString("remi"))
+                .with("folder", params.getFolder()).with("subfolder", params.getSubfolder());
+    }
+
+    private Entity toDDSpayload(DocumentCreate doc) {
+        String id = "DMSMIS_" + UUID.randomUUID().toString();
+        return Entity.build("OS", this.os).with("documentalClass", "ALTRO").with("id", id).with("name", doc.getName())
+                .with("documentTitle", doc.getTitle()).with("customAttributes", listOf())
+                .with("customPermissions", listOf())
+                .with("folders", listOf("/" + doc.getFolder() + "/" + doc.getSubfolder()))
+                .with("folderClass", "dms_DMSFolder").with("createFolderIfNotExist", false);
     }
 
     private Entity merge(Entity doc, Entity dds) {
@@ -153,6 +153,41 @@ public class DDSDocument extends DDSEntity {
 
     private String link(Entity dds) {
         return "/link/" + dds.getAsString("_id");
+    }
+
+    private void validatePath(String folder, String subfolder) {
+        try {
+            subfolderService.get(folder, subfolder);
+        } catch (ResponseStatusException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(e.getStatus(), e.getMessage());
+        }
+    }
+
+    private void handleSQLfail(String document_id) {
+        delete(document_id);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insert document failed");
+    }
+
+    private String postToDDS(Entity ddsDoc ,  MultipartFile file ){
+        String sseMessage = "Document creation failed";
+        ResponseEntity<byte[]> res = null;
+        try {
+            byte[] fileStream = file.getBytes();
+            res = rest.createDocument()
+                .withParam("document", ddsDoc)
+                .withParam("file", fileStream)
+                .postMultipart();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (res == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
+
+        InputStream is = new ByteArrayInputStream(res.getBody());
+        sseMessage = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+                .lines()
+                .collect(Collectors.joining("\n"));
+        return sseMessage ;
     }
 
     @Override

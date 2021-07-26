@@ -11,12 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 
 public class SnamSQLClient {
 
     @Value("${external.debug.sql_client.sql}")
-    private boolean debugSQL;
+    private boolean debugSQL = true;
     @Value("${external.debug.sql_client.response}")
     private boolean debugResponse;
 
@@ -123,6 +124,38 @@ public class SnamSQLClient {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
         }
         return res;
+    }
+
+
+    public int insert(Entity entity){
+        String fieldList = entity.keySet().stream().collect(Collectors.joining(","));
+        String paramList = entity.keySet().stream().map(e -> ":" + e ).collect(Collectors.joining(","));
+
+        String sql = String.format("INSERT INTO %s (%s) VALUES(%s)", table, fieldList, paramList);
+        int rows = template.update(sql, entity);
+         if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(entity);
+            System.out.println("affected " + rows + " rows");
+        }
+        // return find(entity.id());
+        return rows ;
+    }
+
+    public void delete(String id ) {
+        String sql = "";
+        int rows = template.update(sql , mapOf("id", id) );
+        if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(params());
+            System.out.println("affected " + rows + " rows");
+        }
+    }
+
+    public Entity find(String id ){
+        IdSearch idSearch = new IdSearch(id);
+        this.pagination = idSearch ;
+        return this.find();
     }
 
     public Entity find() {

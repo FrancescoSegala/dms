@@ -1,18 +1,20 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
-import java.io.ByteArrayInputStream;
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.net.ssl.SSLContext;
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
+
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 public class SnamRestClient {
 
@@ -97,13 +98,12 @@ public class SnamRestClient {
 
     public ResponseEntity<byte[]>  postMultipart(){
         Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ?  params.toMultiValueMap() : params.toString();
-        System.out.println("body");
-        System.out.println(body);
         template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
         ResponseEntity<byte[]>  aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class) ;
-        System.out.println("chiamata finita "+ aux.getStatusCode());
         if(aux.getStatusCode().equals(HttpStatus.OK))
+        {
             return aux ;
+        }
         return null ;
     }
 

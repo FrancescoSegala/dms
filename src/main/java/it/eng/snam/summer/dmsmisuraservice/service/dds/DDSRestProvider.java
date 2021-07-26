@@ -107,7 +107,7 @@ public class DDSRestProvider {
 
     @ExecutionTime
     public SnamRestClient createDocument() {
-        return rest(getPrecall(document_write_precall_url, "upsertdoc", "createDocument"))
+        return rest(getPrecall(document_write_precall_url, "upsertdoc", "streaming/insertDocument"))
                 .withHeader("OAM_REMOTE_USER", "user1").withContentType(MediaType.MULTIPART_FORM_DATA);
     }
 
