@@ -169,7 +169,7 @@ public class FakeDDSImpl implements DDS {
     public Document updateDocument(String document_id, @Valid DocumentUpdate params) {
         return new Document()
                     .withName(params.name)
-                    .withNotes(params.notes)
+                    .withNotes(params.title)
                     .withStatus(params.status)
                     .withInfo(params.info.get(0));
     }

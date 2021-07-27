@@ -71,10 +71,8 @@ public class SnamSQLClient {
             System.out.println(sql);
             System.out.println(params());
         }
-        return template.queryForList(sql, params() )
-            .stream()
-            .collect(Collectors.toMap(e -> (String) e.get(field), e ->  Long.parseLong(e.get("count").toString()) ))
-        ;
+        return template.queryForList(sql, params()).stream()
+                .collect(Collectors.toMap(e -> (String) e.get(field), e -> Long.parseLong(e.get("count").toString())));
     }
 
     private String conditions() {
@@ -126,25 +124,31 @@ public class SnamSQLClient {
         return res;
     }
 
-
-    public int insert(Entity entity){
+    public int insert(Entity entity) {
         String fieldList = entity.keySet().stream().collect(Collectors.joining(","));
-        String paramList = entity.keySet().stream().map(e -> ":" + e ).collect(Collectors.joining(","));
+        String paramList = entity.keySet().stream().map(e -> ":" + e).collect(Collectors.joining(","));
 
         String sql = String.format("INSERT INTO %s (%s) VALUES(%s)", table, fieldList, paramList);
         int rows = template.update(sql, entity);
-         if (debugSQL) {
+        if (debugSQL) {
             System.out.println(sql);
             System.out.println(entity);
             System.out.println("affected " + rows + " rows");
         }
         // return find(entity.id());
-        return rows ;
+        return rows;
     }
 
-    public void delete(String id ) {
+    public int update(Entity entity, String id ) {
+        String paramList = entity.entrySet().stream().filter(e -> !e.getKey().equals("id"))
+                .map(e -> e.getKey() + "=:" + e.getKey()).collect(Collectors.joining(","));
+        String sql = String.format("update %s set %s where id = '%s'", table, paramList,  id );
+        return template.update(sql, entity);
+    }
+
+    public void delete(String id) {
         String sql = "";
-        int rows = template.update(sql , mapOf("id", id) );
+        int rows = template.update(sql, mapOf("id", id));
         if (debugSQL) {
             System.out.println(sql);
             System.out.println(params());
@@ -152,9 +156,9 @@ public class SnamSQLClient {
         }
     }
 
-    public Entity find(String id ){
+    public Entity find(String id) {
         IdSearch idSearch = new IdSearch(id);
-        this.pagination = idSearch ;
+        this.pagination = idSearch;
         return this.find();
     }
 

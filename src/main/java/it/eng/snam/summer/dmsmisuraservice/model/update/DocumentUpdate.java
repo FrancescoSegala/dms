@@ -1,9 +1,9 @@
 package it.eng.snam.summer.dmsmisuraservice.model.update;
 
+import java.util.ArrayList;
 import java.util.List;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.DOCUMENT_REGEX;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -13,19 +13,18 @@ public class DocumentUpdate {
 
 
     @ApiModelProperty("document name")
-    //^[A-Za-z0-9]+[-_A-Za-z0-9]*$
     @Pattern(regexp = DOCUMENT_REGEX)
-    @NotBlank
     public String name;
 
     @ApiModelProperty("List of infos about the document")
-    public List<Info> info;
+    public List<Info> info = new ArrayList<>();
 
     @ApiModelProperty("status of the document")
+    @Pattern(regexp = "(active|inactive)")
     public String status;
 
-    @ApiModelProperty("notes for the document")
-    public String notes;
+    @ApiModelProperty("title of the document")
+    public String title;
 
 
 
@@ -48,12 +47,15 @@ public class DocumentUpdate {
     public void setStatus(String status) {
         this.status = status;
     }
-    public String getNotes() {
-        return notes;
+    public String getTitle() {
+        return title;
     }
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setTitle(String title) {
+        this.title = title;
     }
+
+
+
 
 
 

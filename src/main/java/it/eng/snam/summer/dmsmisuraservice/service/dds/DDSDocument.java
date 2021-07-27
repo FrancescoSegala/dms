@@ -4,7 +4,6 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +26,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerRemi;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
@@ -35,6 +35,9 @@ public class DDSDocument extends DDSEntity {
 
     @Autowired
     NamedParameterJdbcOperations template;
+
+    @Autowired
+    SummerRemi summerRemi;
 
     @Autowired
     DDSSubfolder subfolderService;
@@ -85,24 +88,83 @@ public class DDSDocument extends DDSEntity {
         validatePath(params.getFolder(), params.getSubfolder());
 
         Entity ddsDoc = toDDSpayload(params);
-        String sseMessage = this.postToDDS( ddsDoc, file);
-
-        System.out.println("SSEMESSAGE");
-        System.out.println(sseMessage);
+        String sseMessage = this.postToDDS(ddsDoc, file);
 
         if (!sseMessage.contains("\"status\" : 200")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
         }
         int rows = new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, ddsDoc.id()));
         if (rows <= 0) {
-            this.handleSQLfail(ddsDoc.id());
+            this.handleSQLfail(ddsDoc.id(), "Insert document failed");
         }
         return get(ddsDoc.id());
     }
 
-    public Entity put(DocumentUpdate params) {
-        // TODO implement
-        return new Entity();
+    public Entity put(String document_id, DocumentUpdate params) {
+        // TODO validate document update DTO infos other than remi ?
+
+        Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
+        if (remi != null) {
+            summerRemi.get(remi.getAsString("remi"));
+        }
+
+        //@formatter:off
+        List<Entity> ddsList = rest.getDocumentBySQL()
+                .withParam("OS", this.os)
+                .withParam("select", listOf("*"))
+                .withParam("where", clause("_id", document_id, "="))
+                .postForList();
+        //@formatter:on
+        if (ddsList.size() <= 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document " + document_id + "not found");
+        }
+        Entity ddsPreSysAttr = ddsList.get(0).getAsEntity("systemAttributes");
+        //@formatter:off
+        //il parametro isLogicalDeleted non cambia valore anche si imposta il flag
+        // basandosi sullo status -_-
+        Entity systemAttributes = Entity.build("OS", this.os)
+            .with("name",params.getName() != null ? params.getName() : ddsPreSysAttr.getAsString("name"))
+            .with("documentTitle", params.getTitle() != null ? params.getTitle() : ddsPreSysAttr.getAsString("documentTitle"))
+            .with("isLogicalDeleted", ddsPreSysAttr.getAsBoolean("isLogicalDeleted"))
+            .with("nameCheckOut", ddsPreSysAttr.getAsString("nameCheckOut"))
+            .with("creator", ddsPreSysAttr.getAsString("creator"))
+            .with("lastModifier", ddsPreSysAttr.getAsString("lastModifier"))
+            .with("foldersParents", ddsPreSysAttr.getAsListString("foldersParents"))
+            .with("documentClass", ddsPreSysAttr.getAsString("documentClass"))
+            .with("dateCreated", ddsPreSysAttr.getAsEntity("dateCreated").get("$date"))
+            .with("dateLastModified", ddsPreSysAttr.getAsEntity("dateLastModified").get("$date"))
+            .with("owner", ddsPreSysAttr.getAsString("owner"))
+            .with("annotations", ddsPreSysAttr.getAsString("annotations"))
+            .with("isCheckedOut", ddsPreSysAttr.getAsBoolean("isCheckedOut"))
+            .with("dateContentsLastAccessed", ddsPreSysAttr.getAsEntity("dateContentsLastAccessed").get("$date"))
+            .with("versionSeriesId", ddsPreSysAttr.getAsString("versionSeriesId"))
+            .with("lockTimeout", ddsPreSysAttr.getAsEntity("lockTimeout").getAsString("$date"))
+            .with("lockOwner", ddsPreSysAttr.getAsString("lockOwner"))
+            .with("reservationId", ddsPreSysAttr.getAsString("reservationId"))
+            .with("isReserved", ddsPreSysAttr.getAsBoolean("isReserved"));
+        //@formatter:on
+
+        //@formatter:off
+        String res = rest.updateDocument()
+            .withParam("id", document_id)
+            .withParam("OS", this.os)
+            .withParam("systemAttributes", systemAttributes)
+            .postForString();
+        //@formatter:on
+
+        if (res != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, res);
+        }
+        if (remi != null) {
+        //@formatter:off
+            int rows = new SnamSQLClient(template)
+                .withTable("documenti")
+                .update(Entity.build("c_remi_ass", remi.get("remi")), document_id);
+        //@formatter:on
+            if (rows <= 0)
+                handleSQLfail(document_id, "Update document failed");
+        }
+        return get(document_id);
     }
 
     public void delete(String document_id) {
@@ -118,20 +180,27 @@ public class DDSDocument extends DDSEntity {
     }
 
     private Entity toSQLpayload(DocumentCreate params, String id) {
+        //@formatter:off
         return Entity.build("id", id).with("data", Instant.now().toString())
                 .with("c_remi_ass",
                         params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst()
                                 .orElse((Info) Info.build().with("remi", null)).getAsString("remi"))
                 .with("folder", params.getFolder()).with("subfolder", params.getSubfolder());
+        //@formatter:on
     }
 
     private Entity toDDSpayload(DocumentCreate doc) {
         String id = "DMSMIS_" + UUID.randomUUID().toString();
-        return Entity.build("OS", this.os).with("documentalClass", "ALTRO").with("id", id).with("name", doc.getName())
-                .with("documentTitle", doc.getTitle()).with("customAttributes", listOf())
-                .with("customPermissions", listOf())
-                .with("folders", listOf("/" + doc.getFolder() + "/" + doc.getSubfolder()))
-                .with("folderClass", "dms_DMSFolder").with("createFolderIfNotExist", false);
+        //@formatter:off
+        return Entity.build("OS", this.os)
+            .with("documentalClass", "ALTRO")
+            .with("id", id)
+            .with("name", doc.getName())
+            .with("documentTitle", doc.getTitle()).with("customAttributes", listOf())
+            .with("customPermissions", listOf())
+            .with("folders", listOf("/" + doc.getFolder() + "/" + doc.getSubfolder()))
+            .with("folderClass", "dms_DMSFolder").with("createFolderIfNotExist", false);
+        //@formatter:on
     }
 
     private Entity merge(Entity doc, Entity dds) {
@@ -139,16 +208,19 @@ public class DDSDocument extends DDSEntity {
         if (dds == null)
             return null;
         Entity res = Entity.build(doc);
-        return res.with("name", dds.getAsEntity("systemAttributes").getAsString("name"))
-                .with("created_at", dds.getAsEntity("systemAttributes").getAsEntity("dateCreated").getAsString("$date"))
-                .with("updated_at",
-                        dds.getAsEntity("systemAttributes").getAsEntity("dateLastModified").getAsString("$date"))
-                .with("created_by", dds.getAsEntity("systemAttributes").getAsString("creator"))
-                .with("updated_by", dds.getAsEntity("systemAttributes").getAsString("lastModifier"))
-                .with("notes", dds.getAsEntity("systemAttributes").getAsString("documentTitle"))
-                .with("status",
-                        dds.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active")
-                .with("link", link(dds));
+        //@formatter:off
+        return res
+            .with("name", dds.getAsEntity("systemAttributes").getAsString("name"))
+            .with("created_at", dds.getAsEntity("systemAttributes").getAsEntity("dateCreated").getAsString("$date"))
+            .with("updated_at",
+                    dds.getAsEntity("systemAttributes").getAsEntity("dateLastModified").getAsString("$date"))
+            .with("created_by", dds.getAsEntity("systemAttributes").getAsString("creator"))
+            .with("updated_by", dds.getAsEntity("systemAttributes").getAsString("lastModifier"))
+            .with("notes", dds.getAsEntity("systemAttributes").getAsString("documentTitle"))
+            .with("status",
+                    dds.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active")
+            .with("link", link(dds));
+        //@formatter:on
     }
 
     private String link(Entity dds) {
@@ -164,30 +236,27 @@ public class DDSDocument extends DDSEntity {
         }
     }
 
-    private void handleSQLfail(String document_id) {
+    private void handleSQLfail(String document_id, String message) {
         delete(document_id);
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insert document failed");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
-    private String postToDDS(Entity ddsDoc ,  MultipartFile file ){
+    private String postToDDS(Entity ddsDoc, MultipartFile file) {
         String sseMessage = "Document creation failed";
         ResponseEntity<byte[]> res = null;
         try {
             byte[] fileStream = file.getBytes();
-            res = rest.createDocument()
-                .withParam("document", ddsDoc)
-                .withParam("file", fileStream)
-                .postMultipart();
+            res = rest.createDocument().withParam("document", ddsDoc).withParam("file", fileStream).postMultipart();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (res == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
+        if (res == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
 
         InputStream is = new ByteArrayInputStream(res.getBody());
-        sseMessage = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
-                .lines()
+        sseMessage = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
-        return sseMessage ;
+        return sseMessage;
     }
 
     @Override

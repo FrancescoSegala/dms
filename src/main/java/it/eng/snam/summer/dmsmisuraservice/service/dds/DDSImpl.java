@@ -118,7 +118,7 @@ public class DDSImpl implements DDS {
 
     @Override
     public Document updateDocument(String document_id, DocumentUpdate params) {
-        return toDocument(ddsDocument.put(params));
+        return toDocument(ddsDocument.put(document_id , params));
     }
 
     @Override

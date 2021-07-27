@@ -1,5 +1,4 @@
-[
-    {
+[ {
         "OS": "DMSMIS",
         "documentalClass": "ALTRO",
         "id": "postman_test_txt",
@@ -26,10 +25,38 @@
         ],
         "folderClass": "dms_DMSFolder",
         "createFolderIfNotExist": true
+    },
+
+
+
+    {
+        "id": "postman_test_pdf",
+        "OS": "DMSMIS",
+        "systemAttributes": {
+            "nameCheckOut": "inseritoCustom",
+            "OS": "DMSMIS",
+            "creator": "inseritoCustom",
+            "lastModifier": "",
+            "foldersParents": [
+                "/ISRS/RISCHI"
+            ],
+            "documentClass": "DocAmbientale",
+            "dateCreated": "2020-06-19T16:38:05.484Z",
+            "dateLastModified": "2020-06-19T16:38:05.484Z",
+            "name": "inseritoCustom",
+            "documentTitle": "inseritoCustom",
+            "owner": "inseritoCustom",
+            "annotations": "inseritoCustom",
+            "isLogicalDeleted": false,
+            "isCheckedOut": false,
+            "dateContentsLastAccessed": "2020-06-19T16:38:05.484Z",
+            "versionSeriesId": "GEIM_654e7ebd-f56a-4d32-a37b-c440be36f48a",
+            "lockTimeout": "2099-12-31T00:00:00.000Z",
+            "lockOwner": "inseritoCustom",
+            "reservationId": "inseritoCustom",
+            "isReserved": false
+        }
     }
-
-
-
 
 
     ,
