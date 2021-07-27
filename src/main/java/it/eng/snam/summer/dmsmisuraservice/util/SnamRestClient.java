@@ -8,6 +8,7 @@ import java.util.List;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
@@ -66,6 +67,7 @@ public class SnamRestClient {
         return this;
     }
 
+
     public SnamRestClient withParam(String k, Object v) {
         params.put(k, v);
         return this;
@@ -96,6 +98,13 @@ public class SnamRestClient {
     public ResponseEntity<byte[]>  postMultipart(){
         Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ?  params.toMultiValueMap() : params.toString();
         template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
+
+
+        System.out.println( body.toString()  );
+        System.out.println( "HTTP REQ" );
+        System.out.println( new HttpEntity<>(body, headers).toString()  );
+
+
         ResponseEntity<byte[]>  aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class) ;
         if(aux.getStatusCode().equals(HttpStatus.OK))
         {

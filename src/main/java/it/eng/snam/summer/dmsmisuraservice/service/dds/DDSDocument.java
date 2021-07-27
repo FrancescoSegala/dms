@@ -28,6 +28,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerRemi;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
+import it.eng.snam.summer.dmsmisuraservice.util.MultipartInputStreamFileResource;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
 @Component
@@ -122,7 +123,14 @@ public class DDSDocument extends DDSEntity {
         Entity ddsDoc = toDDSpayload(params);
         String sseMessage = postToDDS(ddsDoc, file);
 
-        if (!sseMessage.contains("\"status\" : 200")) {
+        System.out.println("sseMessage");
+        System.out.println(sseMessage);
+
+        boolean success = sseMessage.contains("\"status\" : 200")
+                            || sseMessage.contains("event: message")
+                            || sseMessage.contains("data : DMSMIS_");
+
+        if ( !success ) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
         }
         int rows = new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, ddsDoc.id()));
@@ -285,7 +293,10 @@ public class DDSDocument extends DDSEntity {
         ResponseEntity<byte[]> res = null;
         try {
             byte[] fileStream = file.getBytes();
-            res = rest.createDocument().withParam("document", ddsDoc).withParam("file", fileStream).postMultipart();
+            res = rest.createDocument().withParam("document", ddsDoc)
+            .withParam("file", new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()) )
+            //.withParam("filename", file.getOriginalFilename())
+            .postMultipart();
         } catch (Exception e) {
             e.printStackTrace();
         }
