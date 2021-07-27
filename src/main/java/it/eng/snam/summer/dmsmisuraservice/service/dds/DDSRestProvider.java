@@ -111,10 +111,15 @@ public class DDSRestProvider {
                 .withHeader("OAM_REMOTE_USER", "user1").withContentType(MediaType.MULTIPART_FORM_DATA);
     }
 
-
     @ExecutionTime
     public SnamRestClient updateDocument() {
         return rest(getPrecall(document_write_precall_url, "upsertdoc", "setDocumentSystem"))
+                .withHeader("OAM_REMOTE_USER", "user1");
+    }
+
+    @ExecutionTime
+    public SnamRestClient logicalDeleteDocument() {
+        return rest(getPrecall(document_write_precall_url, "deletedoc", "logicalDeleteDocument"))
                 .withHeader("OAM_REMOTE_USER", "user1");
     }
 }

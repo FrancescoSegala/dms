@@ -168,7 +168,13 @@ public class DDSDocument extends DDSEntity {
     }
 
     public void delete(String document_id) {
-        // TODO IMPLEMENT
+        String deleted = rest.logicalDeleteDocument()
+            .withParam("id", document_id)
+            .withParam("OS", this.os)
+            .withParam("deleteAllVersion", true)
+            .postForString();
+        System.out.println("deleted");
+        System.out.println(deleted);
     }
 
     public void getContent(String document_id) {
