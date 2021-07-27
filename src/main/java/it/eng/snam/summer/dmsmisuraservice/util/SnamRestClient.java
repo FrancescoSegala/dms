@@ -2,9 +2,6 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -28,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 public class SnamRestClient {
 
     @Value("${external.audit.rest_client_headers}")
-    private boolean headers_debug = true;
+    private boolean headers_debug = false;
 
     @Value("${external.audit.rest_client_response}")
     private boolean response_debug = true;

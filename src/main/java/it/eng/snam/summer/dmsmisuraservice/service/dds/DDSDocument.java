@@ -43,8 +43,9 @@ public class DDSDocument extends DDSEntity {
     DDSSubfolder subfolderService;
 
     public List<Entity> list(DocumentSearch params) {
-        if (params.getLimit() <= 10)
-            params.setLimit(100000L);
+        Long limit = params.getLimit();
+        params.setLimit(10000L);
+
         //@formatter:off
         List<Entity> docs = new SnamSQLClient(template)
         .withTable("v_documenti")
@@ -62,6 +63,7 @@ public class DDSDocument extends DDSEntity {
         return docs.stream()
             .map(e -> merge(e, pickDDSDocumentById(ddsDocs, e.getAsString("id") ) ) )
             .filter(e -> e != null )
+            .limit(limit)
             .collect(Collectors.toList());
         //@formatter:on
     }
@@ -74,21 +76,51 @@ public class DDSDocument extends DDSEntity {
         .get();
         //@formatter:on
         //@formatter:off
-        Entity dds =  rest.getDocumentBySQL()
-        .withParam("OS", this.os )
-        .withParam("select", listOf("*"))
-        .withParam("where", clause("_id", document_id, "=") )
-        .postForList().get(0);
+        List<Entity> ddsList =  rest.getDocumentBySQL()
+            .withParam("OS", this.os )
+            .withParam("select", listOf("*"))
+            .withParam("where", clause("_id", document_id, "=") )
+            .postForList();
         //@formatter:on
-        return merge(doc, dds);
+        if (ddsList.size() <= 0 ){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity "+ document_id + " not found" );
+        }
+        return merge(doc, ddsList.get(0));
+    }
+
+    public Entity get(String document_id , String folder , String subfolder ){
+        //@formatter:off
+        Entity doc =  new SnamSQLClient(template)
+        .withTable("v_documenti")
+        .withParams(new IdSearch(document_id))
+        .get();
+        //@formatter:on
+        DocumentSearch params = new DocumentSearch()
+            .withFolder(folder)
+            .withSubfolder(subfolder);
+        //@formatter:off
+        List<Entity> ddsList =  rest.getDocumentBySQL()
+            .withParam("OS", this.os )
+            .withParam("select", listOf("*"))
+            .withParam("where", clause("_id", document_id, "=") + " and " + where(params) )
+            .postForList();
+        //@formatter:on
+        if (ddsList.size() <= 0 ){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity "+ document_id + " not found in /" + folder +"/"+ subfolder  );
+        }
+        return merge(doc, ddsList.get(0));
     }
 
     public Entity post(DocumentCreate params, MultipartFile file) {
-        // TODO validazione info ?
+        // TODO validazione info other than remi ?
         validatePath(params.getFolder(), params.getSubfolder());
+        Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
+        if (remi != null) {
+            summerRemi.get(remi.getAsString("remi"));
+        }
 
         Entity ddsDoc = toDDSpayload(params);
-        String sseMessage = this.postToDDS(ddsDoc, file);
+        String sseMessage = postToDDS(ddsDoc, file);
 
         if (!sseMessage.contains("\"status\" : 200")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
@@ -122,6 +154,7 @@ public class DDSDocument extends DDSEntity {
         //@formatter:off
         //il parametro isLogicalDeleted non cambia valore anche si imposta il flag
         // basandosi sullo status -_-
+        //TODO si puo usare la delete per settare il valore isLogicalDeleted a true ma come fare a fare l'opposto?
         Entity systemAttributes = Entity.build("OS", this.os)
             .with("name",params.getName() != null ? params.getName() : ddsPreSysAttr.getAsString("name"))
             .with("documentTitle", params.getTitle() != null ? params.getTitle() : ddsPreSysAttr.getAsString("documentTitle"))
@@ -168,13 +201,13 @@ public class DDSDocument extends DDSEntity {
     }
 
     public void delete(String document_id) {
-        String deleted = rest.logicalDeleteDocument()
+        //@formatter:off
+        rest.logicalDeleteDocument()
             .withParam("id", document_id)
             .withParam("OS", this.os)
             .withParam("deleteAllVersion", true)
             .postForString();
-        System.out.println("deleted");
-        System.out.println(deleted);
+        //@formatter:on
     }
 
     public void getContent(String document_id) {
@@ -273,7 +306,9 @@ public class DDSDocument extends DDSEntity {
     @Override
     protected List<String> clauses(Pagination p) {
         DocumentSearch params = (DocumentSearch) p;
-        return listOf(clause("isLogicalDeleted", "inactive".equalsIgnoreCase(params.getStatus())));
+        String notDeleted = clause("isLogicalDeleted", "inactive".equalsIgnoreCase(params.getStatus()));
+        String inSubfolder = params.getFolder() != null && params.getSubfolder() != null ? clause("foldersParents", "/" + params.getFolder() + "/" + params.getSubfolder() , "="):"";
+        return listOf( notDeleted, inSubfolder );
     }
 
 }

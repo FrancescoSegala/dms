@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
@@ -81,7 +80,7 @@ public class FolderController {
             System.out.println(countMap);
         return dds.listSubfolders(folder_id, params)
             .stream()
-             .peek( e -> System.out.println(e))
+            //.peek( e -> System.out.println(e))
             .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[2], 0L)))
             .collect(Collectors.toList());
         //@formatter:on
@@ -116,24 +115,27 @@ public class FolderController {
         dds.deleteSubfolder(folder_id + "/" + subfolder_id);
     }
 
-    // TODO qui
+
+    //------------------------- documents and subfolder ---------------------------
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents")
-    public List<Document> listDocumentsInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,
-            @RequestParam @Valid DocumentSearch params) {
+    public List<Document> listDocumentsInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id, @Valid DocumentSearch params) {
+        params.setFolder(folder_id);
+        params.setSubfolder(subfolder_id);
         return dds.listDocuments(params);
     }
+
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}")
     public Document getDocumentInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,
             @PathVariable String document_id) {
-        return dds.getDocument(document_id);
+        return dds.getDocument(document_id, folder_id, subfolder_id);
     }
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}/content")
-    public Document getContent(@PathVariable String folder_id, @PathVariable String subfolder_id,
+    public void getContent(@PathVariable String folder_id, @PathVariable String subfolder_id,
             @PathVariable String document_id) {
-        return dds.getDocument(document_id);
+        dds.getContent(document_id);
     }
 
 }

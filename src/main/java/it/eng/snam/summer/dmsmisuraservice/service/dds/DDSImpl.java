@@ -112,6 +112,11 @@ public class DDSImpl implements DDS {
     }
 
     @Override
+    public Document getDocument(String document_id, String folder, String subfodler) {
+        return toDocument(ddsDocument.get(document_id, folder , subfodler));
+    }
+
+    @Override
     public Document createDocument(DocumentCreate params, MultipartFile file ) {
         return toDocument(ddsDocument.post(params, file ));
     }
