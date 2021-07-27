@@ -6,33 +6,78 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class DocumentSearch extends Pagination {
 
-    @ApiModelProperty("folder description")
+    @ApiModelProperty("name of the document")
     public String name;
+
+    @ApiModelProperty("document status, can be one of 'active', 'inactive'")
     @Pattern(regexp = "(active|inactive)")
     public String status;
-    public String data_documento_gt;
-    public String data_documento_lt;
-    public String linea;
-    public String codice_centro;
-    public String codice_distretto;
-    public String codice_area_tecnica;
-    public String codice_polo;
-    public String ragione_sociale;
-    public String ragione_sociale_like;
-    public String ubicazione;
-    public String ubicazione_like;
-    public String provincia;
-    public String comune;
-    public String regione;
-    public String codice_aop;
-    public String codice_ateco;
-    public String data_entrata_esercizio_gt;
-    public String data_entrata_esercizio_lt;
-    public String folder;
-    public String subfolder;
-    public String remi_terzo;
-    public String reti_trasporto;
 
+    @ApiModelProperty("start of date range search")
+    public String data_documento_gt;
+
+    @ApiModelProperty("end of date range search")
+    public String data_documento_lt;
+
+    @ApiModelProperty("linea ")
+    public String linea;
+
+    @ApiModelProperty("codice centro ")
+    public String codice_centro;
+
+    @ApiModelProperty("codice distretto")
+    public String codice_distretto;
+
+    @ApiModelProperty("codice area tecnica")
+    public String codice_area_tecnica;
+
+    @ApiModelProperty("codice polo")
+    public String codice_polo;
+
+    @ApiModelProperty("rargione sociale")
+    public String ragione_sociale;
+
+    @ApiModelProperty("substring of rargione sociale")
+    public String ragione_sociale_like;
+
+    @ApiModelProperty("ubicazione")
+    public String ubicazione;
+
+    @ApiModelProperty("substring of ubicazione")
+    public String ubicazione_like;
+
+    @ApiModelProperty("provincia")
+    public String provincia;
+
+    @ApiModelProperty("comune")
+    public String comune;
+
+    @ApiModelProperty("regione")
+    public String regione;
+
+    @ApiModelProperty("codice aop")
+    public String codice_aop;
+
+    @ApiModelProperty("codice ateco")
+    public String codice_ateco;
+
+    @ApiModelProperty("start of data entrata esercizio")
+    public String data_entrata_esercizio_gt;
+
+    @ApiModelProperty("end of data entrata esercizio")
+    public String data_entrata_esercizio_lt;
+
+    @ApiModelProperty("folder")
+    public String folder;
+
+    @ApiModelProperty("subfolder")
+    public String subfolder;
+
+    @ApiModelProperty("remi terzo")
+    public String remi_terzo;
+
+    @ApiModelProperty("reti trasporto")
+    public String reti_trasporto;
 
     @ApiModelProperty("the remi")
     @Pattern(regexp = "^[A-Za-z0-9]+[-_A-Za-z0-9]*$")

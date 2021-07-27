@@ -70,44 +70,30 @@ public class DDSDocument extends DDSEntity {
     }
 
     public Entity get(String document_id) {
-        //@formatter:off
-        Entity doc =  new SnamSQLClient(template)
-        .withTable("v_documenti")
-        .withParams(new IdSearch(document_id))
-        .get();
-        //@formatter:on
-        //@formatter:off
-        List<Entity> ddsList =  rest.getDocumentBySQL()
-            .withParam("OS", this.os )
-            .withParam("select", listOf("*"))
-            .withParam("where", clause("_id", document_id, "=") )
-            .postForList();
-        //@formatter:on
-        if (ddsList.size() <= 0 ){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity "+ document_id + " not found" );
-        }
-        return merge(doc, ddsList.get(0));
+        return this.get(document_id, clause("_id", document_id, "="));
     }
 
-    public Entity get(String document_id , String folder , String subfolder ){
+    public Entity get(String document_id, String folder, String subfolder) {
+        DocumentSearch params = new DocumentSearch().withFolder(folder).withSubfolder(subfolder);
+        return this.get(document_id, clause("_id", document_id, "=") + " and " + where(params));
+    }
+
+    private Entity get(String document_id, String clause) {
         //@formatter:off
         Entity doc =  new SnamSQLClient(template)
         .withTable("v_documenti")
         .withParams(new IdSearch(document_id))
         .get();
         //@formatter:on
-        DocumentSearch params = new DocumentSearch()
-            .withFolder(folder)
-            .withSubfolder(subfolder);
         //@formatter:off
         List<Entity> ddsList =  rest.getDocumentBySQL()
             .withParam("OS", this.os )
             .withParam("select", listOf("*"))
-            .withParam("where", clause("_id", document_id, "=") + " and " + where(params) )
+            .withParam("where", clause )
             .postForList();
         //@formatter:on
-        if (ddsList.size() <= 0 ){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity "+ document_id + " not found in /" + folder +"/"+ subfolder  );
+        if (ddsList.size() <= 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document " + document_id + "not found in path");
         }
         return merge(doc, ddsList.get(0));
     }
@@ -115,22 +101,18 @@ public class DDSDocument extends DDSEntity {
     public Entity post(DocumentCreate params, MultipartFile file) {
         // TODO validazione info other than remi ?
         validatePath(params.getFolder(), params.getSubfolder());
+        // validate remi
         Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }
 
         Entity ddsDoc = toDDSpayload(params);
-        String sseMessage = postToDDS(ddsDoc, file);
+        String sseMessage = postDocumentToDDS(ddsDoc, file);
 
-        System.out.println("sseMessage");
-        System.out.println(sseMessage);
+        boolean successClause = sseMessage.contains("event: message") && sseMessage.contains("data : DMSMIS_");
 
-        boolean success = sseMessage.contains("\"status\" : 200")
-                            || sseMessage.contains("event: message")
-                            || sseMessage.contains("data : DMSMIS_");
-
-        if ( !success ) {
+        if (!successClause) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
         }
         int rows = new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, ddsDoc.id()));
@@ -288,21 +270,19 @@ public class DDSDocument extends DDSEntity {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
-    private String postToDDS(Entity ddsDoc, MultipartFile file) {
+    private String postDocumentToDDS(Entity ddsDoc, MultipartFile file) {
         String sseMessage = "Document creation failed";
         ResponseEntity<byte[]> res = null;
         try {
-            byte[] fileStream = file.getBytes();
             res = rest.createDocument().withParam("document", ddsDoc)
-            .withParam("file", new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()) )
-            //.withParam("filename", file.getOriginalFilename())
-            .postMultipart();
+                    .withParam("file",
+                            new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()))
+                    .postMultipart();
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (res == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
-
         InputStream is = new ByteArrayInputStream(res.getBody());
         sseMessage = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
@@ -318,8 +298,10 @@ public class DDSDocument extends DDSEntity {
     protected List<String> clauses(Pagination p) {
         DocumentSearch params = (DocumentSearch) p;
         String notDeleted = clause("isLogicalDeleted", "inactive".equalsIgnoreCase(params.getStatus()));
-        String inSubfolder = params.getFolder() != null && params.getSubfolder() != null ? clause("foldersParents", "/" + params.getFolder() + "/" + params.getSubfolder() , "="):"";
-        return listOf( notDeleted, inSubfolder );
+        String inSubfolder = params.getFolder() != null && params.getSubfolder() != null
+                ? clause("foldersParents", "/" + params.getFolder() + "/" + params.getSubfolder(), "=")
+                : "";
+        return listOf(notDeleted, inSubfolder);
     }
 
 }
