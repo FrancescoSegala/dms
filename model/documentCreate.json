@@ -1,0 +1,52 @@
+{
+    "folder": "TDOC1",
+    "name": "name",
+    "title": "title",
+    "subfolder": "TRDOC2",
+    "info": [ {
+            "remi": "validRemi"
+        },
+        {
+            "linea": "linea"
+        },
+        {
+            "codice_centro": "codice_centro"
+        },
+        {
+            "codice_distretto": "codice_distretto"
+        },
+        {
+            "codice_area_tecnica": "codice_area_tecnica"
+        },
+        {
+            "codice_polo": "codice_polo"
+        },
+        {
+            "ragione_sociale": "ragione_sociale"
+        },
+        {
+            "ubicazione": "ubicazione"
+        },
+        {
+            "provincia": "provincia"
+        },
+        {
+            "comune": "comune"
+        },
+        {
+            "regione": "regione"
+        },
+        {
+            "codice_aop": "codice_aop"
+        },
+        {
+            "codice_ateco": "codice_ateco"
+        },
+        {
+            "remi_terzo": "remi_terzo"
+        },
+        {
+            "reti_trasporto": "reti_trasporto"
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 package it.eng.snam.summer.dmsmisuraservice.model.create;
 
+import java.util.ArrayList;
 import java.util.List;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.DOCUMENT_REGEX;
 
@@ -8,9 +9,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-
 import io.swagger.annotations.ApiModelProperty;
 import it.eng.snam.summer.dmsmisuraservice.model.Info;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
+
 
 public class DocumentCreate {
 
@@ -21,7 +23,7 @@ public class DocumentCreate {
 
     @ApiModelProperty("list of infos about the document ")
     @NotEmpty(message = "info must be not empty")
-    private List<Info> info; // es {"remi" : "codice_remi"}
+    private List<Info> info = new ArrayList<>(); // es {"remi" : "codice_remi"}
 
     @ApiModelProperty("title of the document")
     @NotBlank(message = "title must be not empty")
@@ -35,6 +37,17 @@ public class DocumentCreate {
     @ApiModelProperty("the id of the 2nd level folder")
     @NotBlank(message = "subfolder must be not empty")
     private String subfolder;
+
+
+    public DocumentCreate fromEntity(Entity e ){
+        this.setFolder(e.getAsString("folder"));
+        this.setSubfolder(e.getAsString("subfolder"));
+        this.setName(e.getAsString("name"));
+        this.setTitle(e.getAsString("title"));
+        this.info.addAll(e.getAsList("info"));
+        return this;
+    }
+
 
     public String getName() {
         return name;
@@ -75,6 +88,8 @@ public class DocumentCreate {
         return "{folder :" + folder + ", info :" + info + ", name :" + name + ", subfolder :" + subfolder
                 + ", title :" + title + "}";
     }
+
+
 
 
 }

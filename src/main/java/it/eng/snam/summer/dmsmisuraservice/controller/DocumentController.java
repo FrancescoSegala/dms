@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +43,11 @@ public class DocumentController {
         dds.getContent(document_id);
     }
 
-    @PostMapping(path = "/documents",  consumes = {"multipart/form-data"})
-    public Document post( @RequestPart("document") @Valid DocumentCreate params, @RequestPart("file") MultipartFile file) {
-        return dds.createDocument(params, file );
+    @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
+    public Document post(@RequestPart("document") @Valid DocumentCreate document,
+            @RequestPart("file") MultipartFile file) {
+        return dds.createDocument(document, file);
     }
 
     @PutMapping("/documents/{document_id}")
@@ -52,9 +55,8 @@ public class DocumentController {
         return dds.updateDocument(document_id, params);
     }
 
-
     @DeleteMapping("/documents/{document_id}")
-    public void delete(@PathVariable String document_id){
+    public void delete(@PathVariable String document_id) {
         dds.deleteDocument(document_id);
     }
 

@@ -45,6 +45,8 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { Exception.class })
     protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
+        //System.out.println("EX");
+        //ex.printStackTrace();
         return new ResponseEntity<>(mapOf("message", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

@@ -1,15 +1,14 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +98,6 @@ public class DDSDocument extends DDSEntity {
     }
 
     public Entity post(DocumentCreate params, MultipartFile file) {
-        // TODO validazione info other than remi ?
         validatePath(params.getFolder(), params.getSubfolder());
         // validate remi
         Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
@@ -107,10 +105,19 @@ public class DDSDocument extends DDSEntity {
             summerRemi.get(remi.getAsString("remi"));
         }
 
-        Entity ddsDoc = toDDSpayload(params);
+        System.out.println("REMI");
+        System.out.println(remi);
+
+        System.out.println("params");
+        System.out.println(params);
+
+        System.out.println("params.getInfo()");
+        System.out.println(params.getInfo());
+
+        Entity ddsDoc = toDDSpayload(params, this.os);
         String sseMessage = postDocumentToDDS(ddsDoc, file);
 
-        boolean successClause = sseMessage.contains("event: message") && sseMessage.contains("data : DMSMIS_");
+        boolean successClause = sseMessage.contains("event: message") && sseMessage.contains("data: DMSMIS_");
 
         if (!successClause) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
@@ -124,12 +131,10 @@ public class DDSDocument extends DDSEntity {
 
     public Entity put(String document_id, DocumentUpdate params) {
         // TODO validate document update DTO infos other than remi ?
-
         Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }
-
         //@formatter:off
         List<Entity> ddsList = rest.getDocumentBySQL()
                 .withParam("OS", this.os)
@@ -141,32 +146,7 @@ public class DDSDocument extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document " + document_id + "not found");
         }
         Entity ddsPreSysAttr = ddsList.get(0).getAsEntity("systemAttributes");
-        //@formatter:off
-        //il parametro isLogicalDeleted non cambia valore anche si imposta il flag
-        // basandosi sullo status -_-
-        //TODO si puo usare la delete per settare il valore isLogicalDeleted a true ma come fare a fare l'opposto?
-        Entity systemAttributes = Entity.build("OS", this.os)
-            .with("name",params.getName() != null ? params.getName() : ddsPreSysAttr.getAsString("name"))
-            .with("documentTitle", params.getTitle() != null ? params.getTitle() : ddsPreSysAttr.getAsString("documentTitle"))
-            .with("isLogicalDeleted", ddsPreSysAttr.getAsBoolean("isLogicalDeleted"))
-            .with("nameCheckOut", ddsPreSysAttr.getAsString("nameCheckOut"))
-            .with("creator", ddsPreSysAttr.getAsString("creator"))
-            .with("lastModifier", ddsPreSysAttr.getAsString("lastModifier"))
-            .with("foldersParents", ddsPreSysAttr.getAsListString("foldersParents"))
-            .with("documentClass", ddsPreSysAttr.getAsString("documentClass"))
-            .with("dateCreated", ddsPreSysAttr.getAsEntity("dateCreated").get("$date"))
-            .with("dateLastModified", ddsPreSysAttr.getAsEntity("dateLastModified").get("$date"))
-            .with("owner", ddsPreSysAttr.getAsString("owner"))
-            .with("annotations", ddsPreSysAttr.getAsString("annotations"))
-            .with("isCheckedOut", ddsPreSysAttr.getAsBoolean("isCheckedOut"))
-            .with("dateContentsLastAccessed", ddsPreSysAttr.getAsEntity("dateContentsLastAccessed").get("$date"))
-            .with("versionSeriesId", ddsPreSysAttr.getAsString("versionSeriesId"))
-            .with("lockTimeout", ddsPreSysAttr.getAsEntity("lockTimeout").getAsString("$date"))
-            .with("lockOwner", ddsPreSysAttr.getAsString("lockOwner"))
-            .with("reservationId", ddsPreSysAttr.getAsString("reservationId"))
-            .with("isReserved", ddsPreSysAttr.getAsBoolean("isReserved"));
-        //@formatter:on
-
+        Entity systemAttributes = toUpdateDocPayload(params, this.os, ddsPreSysAttr);
         //@formatter:off
         String res = rest.updateDocument()
             .withParam("id", document_id)
@@ -174,7 +154,6 @@ public class DDSDocument extends DDSEntity {
             .withParam("systemAttributes", systemAttributes)
             .postForString();
         //@formatter:on
-
         if (res != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, res);
         }
@@ -206,30 +185,6 @@ public class DDSDocument extends DDSEntity {
 
     private Entity pickDDSDocumentById(List<Entity> list, String id) {
         return list.stream().filter(e -> id.equals(e.getAsString("_id"))).findFirst().orElse(null);
-    }
-
-    private Entity toSQLpayload(DocumentCreate params, String id) {
-        //@formatter:off
-        return Entity.build("id", id).with("data", Instant.now().toString())
-                .with("c_remi_ass",
-                        params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst()
-                                .orElse((Info) Info.build().with("remi", null)).getAsString("remi"))
-                .with("folder", params.getFolder()).with("subfolder", params.getSubfolder());
-        //@formatter:on
-    }
-
-    private Entity toDDSpayload(DocumentCreate doc) {
-        String id = "DMSMIS_" + UUID.randomUUID().toString();
-        //@formatter:off
-        return Entity.build("OS", this.os)
-            .with("documentalClass", "ALTRO")
-            .with("id", id)
-            .with("name", doc.getName())
-            .with("documentTitle", doc.getTitle()).with("customAttributes", listOf())
-            .with("customPermissions", listOf())
-            .with("folders", listOf("/" + doc.getFolder() + "/" + doc.getSubfolder()))
-            .with("folderClass", "dms_DMSFolder").with("createFolderIfNotExist", false);
-        //@formatter:on
     }
 
     private Entity merge(Entity doc, Entity dds) {
@@ -277,7 +232,7 @@ public class DDSDocument extends DDSEntity {
             res = rest.createDocument().withParam("document", ddsDoc)
                     .withParam("file",
                             new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()))
-                    .postMultipart();
+                    .postMultipartForm();
         } catch (Exception e) {
             e.printStackTrace();
         }
