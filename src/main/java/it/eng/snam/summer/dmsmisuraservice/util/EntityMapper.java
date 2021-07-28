@@ -1,4 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.MDC;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import java.time.Instant;
@@ -10,8 +14,10 @@ import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.SubfolderPermission;
+import it.eng.snam.summer.dmsmisuraservice.security.JwtConstants;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
+
 public class EntityMapper {
 
 
@@ -24,13 +30,29 @@ public class EntityMapper {
 
     public static Subfolder toSubfolder(Entity e){
         System.out.println( "Entity mapper "+ e);
+        boolean create = true;
+		boolean modify = true;
+		
+        /* Prendo le authorities definite nel security context */
+		String mdcAuth = MDC.get(JwtConstants.MDC_CONSTANTS_SECURITY_AUTHORITY);
+		
+		/* Se ci sono parametri nell'MDC, allora eseguo il controllo controllo */
+		if (!Utility.isEmpty(mdcAuth)) {
+			List<String> authorities = Arrays.asList(mdcAuth.split(","));
+			
+			if(!authorities.contains("create"))
+				create = false;
+			if(!authorities.contains("modify"))
+				modify = false;
+		}
+        
         return new Subfolder()
                     .withId(e.getAsEntity("systemAttributes").getAsString("name"))
                     .withFolder(e.getAsEntity("systemAttributes").getAsString("name").split("/")[1] )
                     .withDescription(e.getAsEntity("systemAttributes").getAsString("annotations"))
                     .withStatus(e.getAsEntity("systemAttributes").getAsBoolean("isLogicalDeleted") ? "inactive" : "active" )
                     .withSource("P8")
-                    .withPermission(new SubfolderPermission(true, true, true));
+                    .withPermission(new SubfolderPermission(true, modify, create));
     }
 
 
