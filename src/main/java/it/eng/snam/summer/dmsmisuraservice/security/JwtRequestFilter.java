@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -64,10 +65,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 				/* Se la security è disabilitata, setto il il context con superUser (abilitato a tutto) */
 				List<SimpleGrantedAuthority> singletonList = new ArrayList<>();
-				singletonList.add(new SimpleGrantedAuthority("SUPER"));
+				singletonList.add(new SimpleGrantedAuthority("search"));
+				singletonList.add(new SimpleGrantedAuthority("download"));
+				singletonList.add(new SimpleGrantedAuthority("view"));
+				singletonList.add(new SimpleGrantedAuthority("upload"));
+				singletonList.add(new SimpleGrantedAuthority("update"));
+				singletonList.add(new SimpleGrantedAuthority("delete"));
+				singletonList.add(new SimpleGrantedAuthority("modify"));
+				singletonList.add(new SimpleGrantedAuthority("create"));
 
-				SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken("superUser", null, singletonList));
+				SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("superUser", null, singletonList));
 
 				chain.doFilter(request, response);
 				return;
@@ -77,6 +84,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		final String jwtToken = request.getHeader( JwtConstants.HEADER_AUTHORIZATION);
 		String userID = null;
 		String profile = null;
+		List<Funzionalita> listaFunzionalita = new ArrayList<>();
+		String authorities = null;
 
 		/* Controllo token */
 		if (!Utility.isEmpty(jwtToken)) {
@@ -110,64 +119,58 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			/* Se non è già autenticato, autentichiamolo */
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-				/* TODO: ATTENZIONE - Super utente con tutti i permessi */
-				if (userID.equals("superUser"))
-					profile = "superUser";
-				/* TODO: ATTENZIONE - Super utente con tutti i permessi */
+				/* Chiamata microservizio profilazione */
+				final String url = profilerUrl + userID;
+				RestTemplate restTemplate = new RestTemplate();
+				ProfiliResponse result = null;
 
-				else {
+				try {
+					result = restTemplate.getForObject(url, ProfiliResponse.class);
 
-					/* Chiamata microservizio profilazione */
-					final String url = profilerUrl + userID;
-					RestTemplate restTemplate = new RestTemplate();
-					ProfiliResponse result = null;
+				} catch (ResourceAccessException e) {
+					loggerSummer.info("SecurityLog: Chiamata non effettuata. Url errato o servizio non raggiungibile.");
+					chain.doFilter(request, response);
+					return;
 
-					try {
-						result = restTemplate.getForObject(url, ProfiliResponse.class);
+				} catch (IllegalArgumentException e) {
+					loggerSummer.info("SecurityLog: Url non completo.");
+					chain.doFilter(request, response);
+					return;
 
-					} catch (ResourceAccessException e) {
-						loggerSummer.info("SecurityLog: Chiamata non effettuata. Url errato o servizio non raggiungibile.");
-						chain.doFilter(request, response);
-						return;
-
-					} catch (IllegalArgumentException e) {
-						loggerSummer.info("SecurityLog: Url non completo.");
-						chain.doFilter(request, response);
-						return;
-
-					} catch (HttpClientErrorException e) {
-						loggerSummer.info("SecurityLog: Risposta negativa dal server. StatusCode: " + e.getRawStatusCode());
-						chain.doFilter(request, response);
-						return;
-					}
-
-					/* Recupero profilo dalla response */
-					profile = result.getProfilo();
+				} catch (HttpClientErrorException e) {
+					loggerSummer.info("SecurityLog: Risposta negativa dal server. StatusCode: " + e.getRawStatusCode());
+					chain.doFilter(request, response);
+					return;
 				}
 
-				/* Controllo esistenza profilo */
-				// if (!abilitazioneProfiloRepository.existsByProfiliContaining(profile)) {
-				// 	logger.warn("Profilo \"{}\" non trovato.", profile);
-				// 	chain.doFilter(request, response);
-				// 	return;
-				// }
+				/* Recupero profilo dalla response */
+				profile = result.getProfilo();
 
-				// List<AbilitazioneProfilo> abilitazioni = abilitazioneProfiloRepository.findByProfiliContaining(profile);
+				listaFunzionalita = result.getListFunzionalita();
 
-				/* Recupero informazioni profilo da DB e creo la lista delle Authorities*/
-				// List<SimpleGrantedAuthority> java8Auth = abilitazioni
-				// 		.stream()
-				// 		.map(ap -> new SimpleGrantedAuthority(ap.getAuthority()))
-				// 		.collect(Collectors.toList());
+				List<Map<String, List<String>>> permessiPerCampi = listaFunzionalita
+						.stream()
+						.filter(f -> (JwtConstants.DMS_GEST_DOCUMENTI.equals(f.getLabel()) ||
+								JwtConstants.DMS_GEST_TDOC.equals(f.getLabel())))
+						.map(f -> f.getPermessiPerCampi())
+						.collect(Collectors.toList());
 
-				// SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(profile, null, java8Auth));
+				List<SimpleGrantedAuthority> java8Auth = new ArrayList<>();
+				for(Map<String, List<String>> map : permessiPerCampi) {
+					java8Auth.addAll(map.entrySet()
+							.stream()
+							.map(Map.Entry::getKey)
+							.map(key -> new SimpleGrantedAuthority(key))
+							.collect(Collectors.toList()));
+				}
+				
+				SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(profile, null, java8Auth));
 
-				// /* Conservo le authorities per gestione lato aspect @RequestAuthority */
-				// String authorities = java8Auth.stream()
-				// 		.map(SimpleGrantedAuthority::getAuthority)
-				// 		.collect(Collectors.joining(","));
+				authorities = java8Auth.stream()
+						.map(SimpleGrantedAuthority::getAuthority)
+						.collect(Collectors.joining(","));
 
-				// MDC.put(Utility.MDC_CONSTANTS_SECURITY_AUTHORITY, authorities);
+				MDC.put(JwtConstants.MDC_CONSTANTS_SECURITY_AUTHORITY, authorities);
 				MDC.put(JwtConstants.MDC_CONSTANTS_SECURITY_PROFILE, profile);
 				MDC.put(JwtConstants.MDC_CONSTANTS_SECURITY_USERID, userID);
 			}

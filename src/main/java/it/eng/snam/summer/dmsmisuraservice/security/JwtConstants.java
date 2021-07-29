@@ -21,4 +21,8 @@ public class JwtConstants {
     public static final String COMPANY_ID = "companyID";
 
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    
+    public static final String DMS_GEST_DOCUMENTI = "DMS_Gest_Documenti";
+    
+    public static final String DMS_GEST_TDOC = "DMS_Gest_TDOC";
 }
