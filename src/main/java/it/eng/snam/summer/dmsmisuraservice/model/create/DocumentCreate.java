@@ -1,17 +1,23 @@
 package it.eng.snam.summer.dmsmisuraservice.model.create;
 
-import java.util.ArrayList;
-import java.util.List;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.DOCUMENT_REGEX;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import io.swagger.annotations.ApiModelProperty;
 import it.eng.snam.summer.dmsmisuraservice.model.Info;
-import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 
 public class DocumentCreate {
@@ -37,17 +43,6 @@ public class DocumentCreate {
     @ApiModelProperty("the id of the 2nd level folder")
     @NotBlank(message = "subfolder must be not empty")
     private String subfolder;
-
-
-    public DocumentCreate fromEntity(Entity e ){
-        this.setFolder(e.getAsString("folder"));
-        this.setSubfolder(e.getAsString("subfolder"));
-        this.setName(e.getAsString("name"));
-        this.setTitle(e.getAsString("title"));
-        this.info.addAll(e.getAsList("info"));
-        return this;
-    }
-
 
     public String getName() {
         return name;
@@ -90,6 +85,19 @@ public class DocumentCreate {
     }
 
 
+    public static DocumentCreate parseJson(String document ){
+        DocumentCreate doc = null ;
+        try {
+            doc = new ObjectMapper().readValue(document, DocumentCreate.class);
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JSON for DocumentCreate");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JSON for DocumentCreate");
+        }
+        return doc ;
+    }
 
 
 }

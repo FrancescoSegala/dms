@@ -20,8 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 public class SnamRestClient {
@@ -94,39 +92,35 @@ public class SnamRestClient {
         return aux;
     }
 
-    public ResponseEntity<byte[]> postMultipartForm() {
-        MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
-        // HttpHeaders requestHeaders = new HttpHeaders();
-        // requestHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+    // public ResponseEntity<byte[]> postMultipartForm() {
+    //     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+    //     multipartRequest.set("file",params.get("file"));
 
-        multipartRequest.set("file",params.get("file"));
+    //     HttpHeaders requestHeadersJSON = new HttpHeaders();
+    //     requestHeadersJSON.setContentType(MediaType.APPLICATION_JSON);
+    //     HttpEntity<Entity> requestEntityJSON = new HttpEntity<>(params.getAsEntity("document"), requestHeadersJSON);
+    //     multipartRequest.set("document",requestEntityJSON);
 
-        HttpHeaders requestHeadersJSON = new HttpHeaders();
-        requestHeadersJSON.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Entity> requestEntityJSON = new HttpEntity<>(params.getAsEntity("document"), requestHeadersJSON);
+    //     HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(multipartRequest,headers);
 
-        multipartRequest.set("document",requestEntityJSON);
-
-        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(multipartRequest,headers);
-
-        ResponseEntity<byte[]> aux = template().postForEntity(url, requestEntity, byte[].class);
-        if (aux.getStatusCode().equals(HttpStatus.OK)) {
-            return aux;
-        }
-        return null;
-    }
-
-    // public ResponseEntity<byte[]> postMultipart() {
-    //     Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ? params.toMultiValueMap()
-    //             : params.toString();
-    //     template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
-
-    //     ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
+    //     ResponseEntity<byte[]> aux = template().postForEntity(url, requestEntity, byte[].class);
     //     if (aux.getStatusCode().equals(HttpStatus.OK)) {
     //         return aux;
     //     }
     //     return null;
     // }
+
+    public ResponseEntity<byte[]> postMultipart() {
+        Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ? params.toMultiValueMap()
+                : params.toString();
+        template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
+
+        ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
+        if (aux.getStatusCode().equals(HttpStatus.OK)) {
+            return aux;
+        }
+        return null;
+    }
 
     public Entity post() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()

@@ -232,7 +232,7 @@ public class DDSDocument extends DDSEntity {
             res = rest.createDocument().withParam("document", ddsDoc)
                     .withParam("file",
                             new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()))
-                    .postMultipartForm();
+                    .postMultipart();
         } catch (Exception e) {
             e.printStackTrace();
         }

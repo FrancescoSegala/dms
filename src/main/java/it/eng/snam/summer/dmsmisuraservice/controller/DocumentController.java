@@ -1,8 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import java.util.List;
-
 import javax.validation.Valid;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -45,9 +45,8 @@ public class DocumentController {
 
     @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
-    public Document post(@RequestPart("document") @Valid DocumentCreate document,
-            @RequestPart("file") MultipartFile file) {
-        return dds.createDocument(document, file);
+    public Document post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {
+        return dds.createDocument(DocumentCreate.parseJson(document), file);
     }
 
     @PutMapping("/documents/{document_id}")
