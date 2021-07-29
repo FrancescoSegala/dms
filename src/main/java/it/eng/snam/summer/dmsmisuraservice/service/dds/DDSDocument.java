@@ -104,16 +104,6 @@ public class DDSDocument extends DDSEntity {
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }
-
-        System.out.println("REMI");
-        System.out.println(remi);
-
-        System.out.println("params");
-        System.out.println(params);
-
-        System.out.println("params.getInfo()");
-        System.out.println(params.getInfo());
-
         Entity ddsDoc = toDDSpayload(params, this.os);
         String sseMessage = postDocumentToDDS(ddsDoc, file);
 
