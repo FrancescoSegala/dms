@@ -29,23 +29,22 @@ public class EntityMapper {
 
 
     public static Subfolder toSubfolder(Entity e){
-        System.out.println( "Entity mapper "+ e);
         boolean create = true;
 		boolean modify = true;
-		
+
         /* Prendo le authorities definite nel security context */
 		String mdcAuth = MDC.get(JwtConstants.MDC_CONSTANTS_SECURITY_AUTHORITY);
-		
+
 		/* Se ci sono parametri nell'MDC, allora eseguo il controllo controllo */
 		if (!Utility.isEmpty(mdcAuth)) {
 			List<String> authorities = Arrays.asList(mdcAuth.split(","));
-			
+
 			if(!authorities.contains("create"))
 				create = false;
 			if(!authorities.contains("modify"))
 				modify = false;
 		}
-        
+
         return new Subfolder()
                     .withId(e.getAsEntity("systemAttributes").getAsString("name"))
                     .withFolder(e.getAsEntity("systemAttributes").getAsString("name").split("/")[1] )
@@ -71,25 +70,21 @@ public class EntityMapper {
             .withLink(e.getAsString("link"))
             .withCreatedAt(e.getAsString("created_at"))
             .withCreatedBy(e.getAsString("created_by"))
-            .withInfo(
-                Info.build()
-                    .with("remi", e.getAsString("remi"))
-                    .with("linea", e.getAsString("linea"))
-                    .with("codice_centro", e.getAsString("codice_centro"))
-                    .with("codice_distretto", e.getAsString("codice_distretto"))
-                    .with("codice_area_tecnica", e.getAsString("codice_area_tecnica"))
-                    .with("codice_polo", e.getAsString("codice_polo"))
-                    .with("ragione_sociale", e.getAsString("ragione_sociale"))
-                    .with("ubicazione", e.getAsString("ubicazione"))
-                    .with("provincia", e.getAsString("provincia"))
-                    .with("comune", e.getAsString("comune"))
-                    .with("regione", e.getAsString("regione"))
-                    .with("codice_aop", (Long) e.get("codice_aop"))
-                    .with("codice_ateco", e.getAsString("codice_ateco"))
-                    .with("remi_terzo", e.getAsString("remi_terzo"))
-                    .with("reti_trasporto", e.getAsString("reti_trasporto"))
-            )
-
+            .withInfo( Info.build().with("remi", e.getAsString("remi")) )
+            .withInfo( Info.build().with("linea", e.getAsString("linea")) )
+            .withInfo( Info.build().with("codice_centro", e.getAsString("codice_centro")))
+            .withInfo( Info.build().with("codice_distretto", e.getAsString("codice_distretto")))
+            .withInfo( Info.build().with("codice_area_tecnica", e.getAsString("codice_area_tecnica")))
+            .withInfo( Info.build().with("codice_polo", e.getAsString("codice_polo")))
+            .withInfo( Info.build().with("ragione_sociale", e.getAsString("ragione_sociale")))
+            .withInfo( Info.build().with("ubicazione", e.getAsString("ubicazione")))
+            .withInfo( Info.build().with("provincia", e.getAsString("provincia")))
+            .withInfo( Info.build().with("comune", e.getAsString("comune")))
+            .withInfo( Info.build().with("regione", e.getAsString("regione")))
+            .withInfo( Info.build().with("codice_aop", (Long) e.get(")codice_aop")))
+            .withInfo( Info.build().with("codice_ateco", e.getAsString("codice_ateco")))
+            .withInfo( Info.build().with("remi_terzo", e.getAsString("remi_terzo")))
+            .withInfo( Info.build().with("reti_trasporto", e.getAsString("reti_trasporto")))
         ;
     }
 
