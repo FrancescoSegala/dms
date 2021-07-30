@@ -58,7 +58,7 @@ public interface DDS {
 
     public void deleteDocument(String document_id );
 
-    public void getContent( String document_id );
+    public byte[] getContent( String document_id);
 
 
 

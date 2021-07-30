@@ -57,11 +57,11 @@ logging:
 
 external:
     audit:
-        rest_client_request: true
+        rest_client_request: false
         rest_client_response: true
-        rest_client_headers: true
+        rest_client_headers: false
         sql_client_sql: false
-        sql_client_resopnse: false
+        sql_client_response: false
     dds:
         fake: false
         OS: DMSMIS
@@ -76,6 +76,8 @@ external:
         jwt_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi/secure/token?rie=RI00674
         remi_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi
         user_url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente
+
+
 
 controlm-jks:
   password: "summerjks"

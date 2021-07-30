@@ -134,8 +134,8 @@ public class FolderController {
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}/content")
     public void getContent(@PathVariable String folder_id, @PathVariable String subfolder_id,
-            @PathVariable String document_id) {
-        dds.getContent(document_id);
+            @PathVariable String document_id ) {
+        dds.getContent(document_id );
     }
 
 }

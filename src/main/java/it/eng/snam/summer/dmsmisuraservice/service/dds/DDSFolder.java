@@ -36,7 +36,7 @@ public class DDSFolder extends DDSEntity {
             .withParam("select", listOf("*"))
             .withParam("where", where(params))
             .postForList();
-            //@formatter:on
+        //@formatter:on
     }
 
     @ExecutionTime

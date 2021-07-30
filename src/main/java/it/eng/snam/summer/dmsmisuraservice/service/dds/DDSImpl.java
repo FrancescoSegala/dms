@@ -132,8 +132,8 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public void getContent(String document_id) {
-        ddsDocument.getContent(document_id);
+    public byte[] getContent(String document_id ) {
+        return ddsDocument.getContent(document_id);
     }
 
     @Override

@@ -16,10 +16,12 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 
 public class SnamSQLClient {
 
-    @Value("${external.debug.sql_client.sql}")
+    @Value("${external.rest_client_request}")
     private boolean debugSQL = true;
     @Value("${external.debug.sql_client.response}")
     private boolean debugResponse;
+    // @Autowired
+    // AuditValues audit;
 
     private NamedParameterJdbcOperations template;
     private String table;

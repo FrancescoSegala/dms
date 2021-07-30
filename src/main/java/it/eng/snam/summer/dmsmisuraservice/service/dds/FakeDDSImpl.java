@@ -180,7 +180,7 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public void getContent(String document_id) {
+    public byte[] getContent(String document_id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -213,6 +213,11 @@ public class FakeDDSImpl implements DDS {
     public List<Entity> tree() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void getContent(String document_id, String content_name) {
+        // TODO Auto-generated method stub
+
     }
 
 }

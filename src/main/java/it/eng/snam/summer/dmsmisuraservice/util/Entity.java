@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
+
 public class Entity extends HashMap<String, Object> {
 
     private static final long serialVersionUID = 1L;
@@ -31,7 +33,7 @@ public class Entity extends HashMap<String, Object> {
         return result;
     }
 
-    public static Entity build(String k , Object v){
+    public static Entity build(String k, Object v) {
         return new Entity().with(k, v);
     }
 
@@ -47,7 +49,6 @@ public class Entity extends HashMap<String, Object> {
         super();
     }
 
-
     public void inTo(MultiValueMap<String, Object> dest) {
         dest.setAll(this.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
     }
@@ -60,23 +61,24 @@ public class Entity extends HashMap<String, Object> {
         return this.get(k) != null;
     }
 
-
     public String getAsString(String k) {
         return (String) this.get(k);
     }
 
-
-    public <T> List<T> getAsList(String k ){
-        if (! this.containsKey(k)){
+    public <T> List<T> getAsList(String k) {
+        if (!this.containsKey(k)) {
             return Collections.emptyList();
         }
         return (List<T>) this.get(k);
     }
 
-    public List<String> getAsListString(String k){
+    public List<Entity> getAsListEntity(String k) {
         return this.getAsList(k);
     }
 
+    public List<String> getAsListString(String k) {
+        return this.getAsList(k);
+    }
 
     public Entity with(String k, Object v) {
         this.put(k, v);
@@ -88,10 +90,9 @@ public class Entity extends HashMap<String, Object> {
         return this.with(k, v).withType(k, type);
     }
 
-    public Entity getAsEntity(String k ){
-        return new Entity( (Map<String, Object>) this.get(k));
+    public Entity getAsEntity(String k) {
+        return new Entity((Map<String, Object>) this.get(k));
     }
-
 
     private Map<String, String> types = new HashMap<>();
 
@@ -108,56 +109,57 @@ public class Entity extends HashMap<String, Object> {
         return types().getOrDefault(k, "varchar");
     }
 
-
-    public Map<String, String> toMap(){
-        return this.keySet()
-            .stream()
-            .collect( Collectors.toMap(e -> e, e -> this.getAsString(e) ));
+    public Map<String, String> toMap() {
+        return this.keySet().stream().collect(Collectors.toMap(e -> e, e -> this.getAsString(e)));
     }
 
-    public Map<String, Object> toMapObject(){
-        return this.keySet()
-            .stream()
-            .collect( Collectors.toMap(e -> e, e -> this.get(e) ));
+    public Map<String, Object> toMapObject() {
+        return this.keySet().stream().collect(Collectors.toMap(e -> e, e -> this.get(e)));
     }
 
-    public MultiValueMap<String, Object> toMultiValueMap(){
+    public MultiValueMap<String, Object> toMultiValueMap() {
         MultiValueMap<String, Object> res = new LinkedMultiValueMap<>();
-        this.keySet().forEach(
-            k -> res.add(k, this.get(k))
-        );
-        return res ;
+        this.keySet().forEach(k -> res.add(k, this.get(k)));
+        return res;
     }
 
     public static Entity parseJson(String input) {
-		ObjectMapper om = new ObjectMapper();
-		try {
-			return om.readValue(input, Entity.class);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-
-    public static List<Entity> parseJsonAsList(String input){
         ObjectMapper om = new ObjectMapper();
         try {
-            return om.readValue(input , new TypeReference<List<Entity>>(){}) ;
+            return om.readValue(input, Entity.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static List<Entity> parseJsonAsList(String input) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.readValue(input, new TypeReference<List<Entity>>() {
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public String stringfy() {
-		ObjectMapper om = new ObjectMapper();
-		try {
-			return om.writeValueAsString(this);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static List<DDSDoc> parseJsonAsListOfDDSDocs(String input) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+                        return om.readValue(input, new TypeReference<List<DDSDoc>>() {
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public String stringfy() {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.writeValueAsString(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public String toString() {

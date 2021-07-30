@@ -101,7 +101,7 @@ public class DocumentControllerTest  {
     @Test
     public void testGetDocumentContent(){
         try {
-            controller.getContent("1");
+            controller.getContent("1" );
         } catch (ResponseStatusException e) {
             assertEquals(HttpStatus.NOT_IMPLEMENTED , e.getStatus());
             return ;

@@ -11,6 +11,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,16 +23,21 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
+
 public class SnamRestClient {
 
-    @Value("${external.audit.rest_client_headers}")
-    private boolean headers_debug = false;
+    // @Autowired
+    // AuditValues audit ;
 
-    @Value("${external.audit.rest_client_response}")
-    private boolean response_debug = true;
+    // @Value("${external.dds.OS}")
+    public boolean rest_client_headers = false ;
 
-    @Value("${external.summer.rest_client_request}")
-    private boolean request_debug = true;
+    // @Value("${francesco.rest_client.response}")
+    private boolean response_debug = true ;
+
+    // @Value("${francesco.rest_client.request}")
+    private boolean request_debug  = true ;
 
     private Entity params = new Entity();
     private MediaType contentType;
@@ -131,6 +137,15 @@ public class SnamRestClient {
         return aux;
     }
 
+
+    public byte[] postForContent(){
+        Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
+                : params.toMultiValueMap();
+        ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
+        return aux.getBody();
+    }
+
+
     public String postForString() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
                 : params.toMultiValueMap();
@@ -138,6 +153,15 @@ public class SnamRestClient {
         String aux = template().postForObject(url, new HttpEntity<>(body, headers), String.class);
         printResponse(aux);
         return aux;
+    }
+
+    public List<DDSDoc> postForDocs() {
+        Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
+                : params.toMultiValueMap();
+        printRequest();
+        String aux = template().postForObject(url, new HttpEntity<>(body, headers), String.class);
+        printResponse(aux);
+        return Entity.parseJsonAsListOfDDSDocs(aux);
     }
 
     public List<Entity> postForList() {
@@ -149,6 +173,7 @@ public class SnamRestClient {
         return Entity.parseJsonAsList(aux);
     }
 
+
     private void printRequest() {
         String method = "";
         try {
@@ -158,7 +183,7 @@ public class SnamRestClient {
         }
         if (request_debug)
             System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
-        if (headers_debug)
+        if (rest_client_headers )
             System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method, this.headers);
         if (request_debug)
             System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method, this.params);
@@ -171,9 +196,6 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-        // TODO perche non funziona ?
-        // System.out.println("debugRequest");
-        // System.out.println(request_debug);
         if (response_debug)
             System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method, response);
     }

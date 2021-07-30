@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
 import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
@@ -169,9 +171,41 @@ public class DDSDocument extends DDSEntity {
         //@formatter:on
     }
 
-    public void getContent(String document_id) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    public byte[] getContent(String document_id  ) {
+        System.out.println("getContentName(document_id)");
+        System.out.println(getContentName(document_id));
+        return  rest.getDocumentContent()
+            .withParam("id", document_id)
+            .withParam("OS", this.os)
+            .withParam("contentName", getContentName(document_id) )
+            .postForContent();
     }
+
+    private String getContentName(String document_id){
+        DDSDoc dds = rest.getDocumentBySQL()
+            .withParam("OS", this.os )
+            .withParam("select", listOf("*"))
+            .withParam("where", "_id = '" + document_id + "'")
+            .postForDocs().get(0);
+        List<Entity> contents = dds.contents;
+        System.out.println("contents");
+        System.out.println(contents.toString());
+        Entity c = contents.get(0);
+        return c.getAsString("contentsName");
+    }
+
+    // private List<String> getContentNames(String document_id){
+    //     Entity dds = rest.getDocumentBySQL()
+    //     .withParam("OS", this.os )
+    //     .withParam("select", listOf("*"))
+    //     .withParam("where", "_id = '" + document_id + "'")
+    //     .postForList().get(0);
+
+    //     return dds.getAsListEntity("contents").stream()
+    //         .map(e -> e.getAsString("ContentsName") )
+    //         .collect(Collectors.toList());
+    // }
+
 
     private Entity pickDDSDocumentById(List<Entity> list, String id) {
         return list.stream().filter(e -> id.equals(e.getAsString("_id"))).findFirst().orElse(null);
@@ -198,7 +232,7 @@ public class DDSDocument extends DDSEntity {
     }
 
     private String link(Entity dds) {
-        return "/link/" + dds.getAsString("_id");
+        return "/documents/" + dds.getAsString("_id") + "/content";
     }
 
     private void validatePath(String folder, String subfolder) {

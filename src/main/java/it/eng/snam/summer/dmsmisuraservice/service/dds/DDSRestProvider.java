@@ -122,4 +122,10 @@ public class DDSRestProvider {
         return rest(getPrecall(document_write_precall_url, "deletedoc", "logicalDeleteDocument"))
                 .withHeader("OAM_REMOTE_USER", "user1");
     }
+
+    @ExecutionTime
+    public SnamRestClient getDocumentContent() {
+        return rest(getPrecall(document_read_precall_url, "getdoc", "getContentElements"))
+                .withHeader("OAM_REMOTE_USER", "user1");
+    }
 }
