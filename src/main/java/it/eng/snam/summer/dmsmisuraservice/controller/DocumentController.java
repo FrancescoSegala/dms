@@ -46,7 +46,6 @@ public class DocumentController {
     @GetMapping("/documents/{document_id}/content")
     public void getContent( HttpServletResponse response, @PathVariable String document_id) {
         byte[] c = dds.getContent(document_id );
-        response.setContentType("application/pdf");
         try {
             response.getOutputStream().write(c);
         } catch (IOException e) {
