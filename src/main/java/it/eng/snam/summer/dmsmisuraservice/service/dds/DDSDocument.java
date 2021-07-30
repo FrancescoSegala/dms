@@ -190,6 +190,9 @@ public class DDSDocument extends DDSEntity {
         List<Entity> contents = dds.contents;
         System.out.println("contents");
         System.out.println(contents.toString());
+        if (contents.size() <= 0 ){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This document hash no content");
+        }
         Entity c = contents.get(0);
         return c.getAsString("contentsName");
     }
