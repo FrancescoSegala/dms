@@ -1,0 +1,89 @@
+[ {
+        "OS": "DMSMIS",
+        "documentalClass": "ALTRO",
+        "id": "postman_test_txt",
+        "name": "test a",
+        "documentTitle": "test a pdf title",
+        "customAttributes": [],
+        "customPermissions": [],
+        "folders": [
+            "/ISRS"
+        ],
+        "folderClass": "dms_DMSFolder",
+        "createFolderIfNotExist": true
+    },
+    {
+        "OS": "DMSMIS",
+        "documentalClass": "ALTRO",
+        "id": "postman_test_txt",
+        "name": "test a",
+        "documentTitle": "test a pdf title",
+        "customAttributes": [],
+        "customPermissions": [],
+        "folders": [
+            "/ISRS"
+        ],
+        "folderClass": "dms_DMSFolder",
+        "createFolderIfNotExist": true
+    },
+
+
+
+    {
+        "id": "postman_test_pdf",
+        "OS": "DMSMIS",
+        "systemAttributes": {
+            "nameCheckOut": "inseritoCustom",
+            "OS": "DMSMIS",
+            "creator": "inseritoCustom",
+            "lastModifier": "",
+            "foldersParents": [
+                "/ISRS/RISCHI"
+            ],
+            "documentClass": "DocAmbientale",
+            "dateCreated": "2020-06-19T16:38:05.484Z",
+            "dateLastModified": "2020-06-19T16:38:05.484Z",
+            "name": "inseritoCustom",
+            "documentTitle": "inseritoCustom",
+            "owner": "inseritoCustom",
+            "annotations": "inseritoCustom",
+            "isLogicalDeleted": false,
+            "isCheckedOut": false,
+            "dateContentsLastAccessed": "2020-06-19T16:38:05.484Z",
+            "versionSeriesId": "GEIM_654e7ebd-f56a-4d32-a37b-c440be36f48a",
+            "lockTimeout": "2099-12-31T00:00:00.000Z",
+            "lockOwner": "inseritoCustom",
+            "reservationId": "inseritoCustom",
+            "isReserved": false
+        }
+    }
+
+
+    ,
+    {
+        "OS": "GEIM",
+        "documentalClass": "DocAmbientale",
+        "id": "postman_test_idDocInsertedStreaming",
+        "name": "docName",
+        "documentTitle": "docTitle",
+        "customAttributes": [ {
+            "key": "Anno",
+            "value": 2020
+        } ],
+        "customPermissions": [ {
+            "name": "userName",
+            "type": "user",
+            "permissionList": {
+                "w": true,
+                "r": true,
+                "d": true,
+                "p": true
+            }
+        } ],
+        "folders": [
+            "/postman_test_folderCreated"
+        ],
+        "folderClass": "FolderAmbientaleAnno",
+        "createFolderIfNotExist": true
+    }
+]

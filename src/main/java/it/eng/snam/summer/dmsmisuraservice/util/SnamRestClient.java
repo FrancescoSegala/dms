@@ -1,5 +1,7 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -9,14 +11,33 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
+
 public class SnamRestClient {
+
+    // @Autowired
+    // AuditValues audit ;
+
+    // @Value("${external.dds.OS}")
+    public boolean rest_client_headers = false ;
+
+    // @Value("${francesco.rest_client.response}")
+    private boolean response_debug = true ;
+
+    // @Value("${francesco.rest_client.request}")
+    private boolean request_debug  = true ;
 
     private Entity params = new Entity();
     private MediaType contentType;
@@ -77,6 +98,36 @@ public class SnamRestClient {
         return aux;
     }
 
+    // public ResponseEntity<byte[]> postMultipartForm() {
+    //     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+    //     multipartRequest.set("file",params.get("file"));
+
+    //     HttpHeaders requestHeadersJSON = new HttpHeaders();
+    //     requestHeadersJSON.setContentType(MediaType.APPLICATION_JSON);
+    //     HttpEntity<Entity> requestEntityJSON = new HttpEntity<>(params.getAsEntity("document"), requestHeadersJSON);
+    //     multipartRequest.set("document",requestEntityJSON);
+
+    //     HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(multipartRequest,headers);
+
+    //     ResponseEntity<byte[]> aux = template().postForEntity(url, requestEntity, byte[].class);
+    //     if (aux.getStatusCode().equals(HttpStatus.OK)) {
+    //         return aux;
+    //     }
+    //     return null;
+    // }
+
+    public ResponseEntity<byte[]> postMultipart() {
+        Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ? params.toMultiValueMap()
+                : params.toString();
+        template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
+
+        ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
+        if (aux.getStatusCode().equals(HttpStatus.OK)) {
+            return aux;
+        }
+        return null;
+    }
+
     public Entity post() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
                 : params.toMultiValueMap();
@@ -86,6 +137,15 @@ public class SnamRestClient {
         return aux;
     }
 
+
+    public byte[] postForContent(){
+        Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
+                : params.toMultiValueMap();
+        ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
+        return aux.getBody();
+    }
+
+
     public String postForString() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
                 : params.toMultiValueMap();
@@ -93,6 +153,15 @@ public class SnamRestClient {
         String aux = template().postForObject(url, new HttpEntity<>(body, headers), String.class);
         printResponse(aux);
         return aux;
+    }
+
+    public List<DDSDoc> postForDocs() {
+        Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
+                : params.toMultiValueMap();
+        printRequest();
+        String aux = template().postForObject(url, new HttpEntity<>(body, headers), String.class);
+        printResponse(aux);
+        return Entity.parseJsonAsListOfDDSDocs(aux);
     }
 
     public List<Entity> postForList() {
@@ -104,6 +173,7 @@ public class SnamRestClient {
         return Entity.parseJsonAsList(aux);
     }
 
+
     private void printRequest() {
         String method = "";
         try {
@@ -111,11 +181,12 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-         System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
-        //  System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method,
-        //  this.headers);
-         System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method,
-         this.params);
+        if (request_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
+        if (rest_client_headers )
+            System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method, this.headers);
+        if (request_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method, this.params);
     }
 
     private void printResponse(Object response) {
@@ -125,8 +196,8 @@ public class SnamRestClient {
         } catch (RuntimeException e) {
             method = e.getStackTrace()[1].getMethodName();
         }
-         System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method,
-         response);
+        if (response_debug)
+            System.out.printf("[SNAM-REST-CLIENT][%s] - response %s \n", method, response);
     }
 
     public RestTemplate SSLtemplate() {

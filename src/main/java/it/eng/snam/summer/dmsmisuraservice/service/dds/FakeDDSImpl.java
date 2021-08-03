@@ -15,6 +15,7 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.micrometer.core.instrument.util.IOUtils;
@@ -155,12 +156,12 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public Document createDocument( @Valid DocumentCreate params) {
+    public Document createDocument( @Valid DocumentCreate params, MultipartFile file) {
         return new Document()
                     .withName(params.getName())
                     .withFolder(params.getFolder())
                     .withSubfolder(params.getSubfolder())
-                    .withInfo(params.getInfo());
+                    .withInfo(params.getInfo().get(0));
 
     }
 
@@ -168,11 +169,9 @@ public class FakeDDSImpl implements DDS {
     public Document updateDocument(String document_id, @Valid DocumentUpdate params) {
         return new Document()
                     .withName(params.name)
-                    .withNotes(params.notes)
-                    .withFolder(params.folder)
+                    .withNotes(params.title)
                     .withStatus(params.status)
-                    .withSubfolder(params.subfolder)
-                    .withInfo(params.info);
+                    .withInfo(params.info.get(0));
     }
 
     @Override
@@ -181,7 +180,7 @@ public class FakeDDSImpl implements DDS {
     }
 
     @Override
-    public void getContent(String document_id) {
+    public byte[] getContent(String document_id) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -214,6 +213,11 @@ public class FakeDDSImpl implements DDS {
     public List<Entity> tree() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void getContent(String document_id, String content_name) {
+        // TODO Auto-generated method stub
+
     }
 
 }

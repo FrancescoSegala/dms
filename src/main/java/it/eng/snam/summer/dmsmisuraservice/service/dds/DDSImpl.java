@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
@@ -62,6 +63,7 @@ public class DDSImpl implements DDS {
 
     @Override
     public List<Subfolder> listSubfolders(String folder_id, SubfolderSearch params) {
+        System.out.println("list subfolders dds impl ");
         //@formatter:off
         return ddsSubfolder
             .list(folder_id, params)
@@ -110,13 +112,18 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public Document createDocument(DocumentCreate params) {
-        return toDocument(ddsDocument.post(params));
+    public Document getDocument(String document_id, String folder, String subfodler) {
+        return toDocument(ddsDocument.get(document_id, folder , subfodler));
+    }
+
+    @Override
+    public Document createDocument(DocumentCreate params, MultipartFile file ) {
+        return toDocument(ddsDocument.post(params, file ));
     }
 
     @Override
     public Document updateDocument(String document_id, DocumentUpdate params) {
-        return toDocument(ddsDocument.put(params));
+        return toDocument(ddsDocument.put(document_id , params));
     }
 
     @Override
@@ -125,8 +132,8 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public void getContent(String document_id) {
-        ddsDocument.getContent(document_id);
+    public byte[] getContent(String document_id ) {
+        return ddsDocument.getContent(document_id);
     }
 
     @Override
@@ -137,6 +144,7 @@ public class DDSImpl implements DDS {
             .filter(e -> "/".equals(e.getAsEntity("systemAttributes").getAsListString("foldersParents").get(0)) )
             .map(e -> new Entity()
                     .with("id", e.getAsEntity("systemAttributes").getAsString("name"))
+                    .with("description", e.getAsEntity("systemAttributes").getAsString("annotations"))
                     .with("subfolders",
                             tree
                             .stream()

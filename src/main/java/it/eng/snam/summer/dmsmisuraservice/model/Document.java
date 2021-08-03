@@ -1,6 +1,10 @@
 package it.eng.snam.summer.dmsmisuraservice.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 public class Document {
 
@@ -16,7 +20,7 @@ public class Document {
     public String notes;
     public String published_at;
     public String name;
-    public List<Info> info;
+    public List<Info> info = new ArrayList<>();
 
     public Document withId(String id) {
         this.id = id;
@@ -78,8 +82,14 @@ public class Document {
         return this;
     }
 
-    public Document withInfo(List<Info> info) {
-        this.info = info;
+    public Document withInfo( Entity info) {
+        this.info.add((Info) info) ;
+        return this;
+    }
+
+    public Document withInfo( Map<String, Object> info) {
+
+        this.info.add( (Info) Entity.build(info)) ;
         return this;
     }
 
@@ -186,6 +196,8 @@ public class Document {
     public void setInfo(List<Info> info) {
         this.info = info;
     }
+
+
 
 
 }

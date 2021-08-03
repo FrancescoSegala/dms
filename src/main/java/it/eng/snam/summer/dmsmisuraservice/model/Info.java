@@ -1,7 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.model;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
-import java.util.HashMap;
-
-public class Info extends HashMap<String, Object>  {
-
+public class Info extends Entity  {
+    public static Info build(){
+        return new Info();
+    }
 }

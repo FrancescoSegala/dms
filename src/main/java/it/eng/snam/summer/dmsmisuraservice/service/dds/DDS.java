@@ -2,6 +2,8 @@ package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
@@ -46,15 +48,17 @@ public interface DDS {
 
     public Document getDocument(String document_id);
 
+    public Document getDocument(String document_id, String folder, String subfolder);
+
     public List<Document> listDocuments(DocumentSearch params);
 
-    public Document createDocument(DocumentCreate params);
+    public Document createDocument(DocumentCreate params, MultipartFile file );
 
     public Document updateDocument(String document_id , DocumentUpdate params);
 
     public void deleteDocument(String document_id );
 
-    public void getContent( String document_id );
+    public byte[] getContent( String document_id);
 
 
 

@@ -9,6 +9,7 @@ public class Subfolder {
     public String status;
     public String description;
     public String source;
+    //TODO array di sistemi dove va mandato i documenti all'interno della cartella
     public List<String> send_to = new ArrayList<>();
     public String folder;
     public Long document_count = 0L;
@@ -65,5 +66,15 @@ public class Subfolder {
         this.permission = perm ;
          return this;
     }
+
+
+    @Override
+    public String toString() {
+        return "{description :" + description + ", document_count :" + document_count + ", folder :" + folder
+                + ", id :" + id + ", permission :" + permission + ", send_to :" + send_to + ", source :" + source
+                + ", status :" + status + "}";
+    }
+
+
 
 }

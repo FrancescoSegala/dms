@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.aspect.ExecutionTime;
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
@@ -22,6 +23,7 @@ public class DDSSubfolder extends DDSEntity {
     @Autowired
     DDSFolder ddsFolder;
 
+    @ExecutionTime
     public List<Entity> list(String folder_id , SubfolderSearch params ){
         return rest.getFolderBySQL()
             .withParam("OS", this.os )
@@ -31,6 +33,7 @@ public class DDSSubfolder extends DDSEntity {
     }
 
 
+    @ExecutionTime
     public Entity get(String folder_id , String subfolder_id ){
         List<Entity> list = rest.getFolderBySQL()
             .withParam("OS", this.os )
@@ -45,6 +48,7 @@ public class DDSSubfolder extends DDSEntity {
     }
 
 
+    @ExecutionTime
     public void delete(String id ){
         rest.deleteFolder()
             .withParam("OS", this.os)
@@ -53,12 +57,13 @@ public class DDSSubfolder extends DDSEntity {
     }
 
 
+    @ExecutionTime
     public Entity post(String folder_id, SubfolderCreate params){
         params.setId( folder_id + "/" + params.getId() );
         return ddsFolder.post(params);
     }
 
-
+    @ExecutionTime
     public Entity put(String id, SubfolderUpdate params){
         Entity folder = ddsFolder.get(id);
         Entity systemAttributes = folder.getAsEntity("systemAttributes")

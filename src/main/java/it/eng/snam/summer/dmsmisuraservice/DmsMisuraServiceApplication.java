@@ -15,7 +15,6 @@ import it.eng.snam.summer.dmsmisuraservice.service.dds.FakeDDSImpl;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.FakeSummerImpl;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerImpl;
-import it.eng.snam.summer.dmsmisuraservice.util.UtilityControlM;
 
 @SpringBootApplication
 public class DmsMisuraServiceApplication {
@@ -33,7 +32,7 @@ public class DmsMisuraServiceApplication {
 	@PostConstruct
     public void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Rome"));
-        UtilityControlM.setSslProperties(password, trustStorePath);
+        //UtilityControlM.setSslProperties(password, trustStorePath);
     }
 
     @Bean

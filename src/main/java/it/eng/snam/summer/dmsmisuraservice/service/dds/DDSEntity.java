@@ -20,19 +20,18 @@ public abstract class DDSEntity {
     @Value("${external.dds.OS}")
     protected String os;
 
-
-    protected abstract String sortField( String field );
+    protected abstract String sortField(String field);
 
     protected String clause(String field, String value, String operator) {
         return isEmpty(value) ? "" : String.format(" %s %s '%s' ", field, operator, value);
     }
 
-    protected String clause(String field , Boolean value ) {
-        return value == null ? "" : String.format(" %s = %s ", field,  value);
+    protected String clause(String field, Boolean value) {
+        return value == null ? "" : String.format(" %s = %s ", field, value);
     }
 
-    protected String clause(String field, String value, String operator, String prefix, String postfix){
-        return isEmpty(value) ? "" : String.format(" %s %s '%s%s%s' ", field, operator, prefix ,value, postfix);
+    protected String clause(String field, String value, String operator, String prefix, String postfix) {
+        return isEmpty(value) ? "" : String.format(" %s %s '%s%s%s' ", field, operator, prefix, value, postfix);
     }
 
     protected String clause(String field, String[] values, String operator) {
@@ -55,21 +54,19 @@ public abstract class DDSEntity {
         //@formatter:on
     }
 
-
     protected abstract List<String> clauses(Pagination p);
-
 
     /**
      * it requires clauses function to be implemented in the child class
+     *
      * @param p DTO that creates the condtion for dds calls
-     * @return the string representing the where condition fot the ms call
+     * @return the string representing the where condition for the ms call
      */
     protected String where(Pagination p) {
         //@formatter:off
-        System.out.println(clauses(p));
         return Stream.concat(
-            listOf("_id is not null").stream(),
-            clauses(p).stream())
+            listOf("_id is not null and name != '/parentFolder' ").stream(), //stream1
+            clauses(p).stream()) //stream2
         .filter(e -> ! isEmpty(e))
         .collect(Collectors.joining(" and "))
         + pagination(p);

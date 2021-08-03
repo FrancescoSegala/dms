@@ -23,11 +23,12 @@ public class DDSFolder extends DDSEntity {
        return rest.getFolderBySQL()
         .withParam("OS", this.os )
         .withParam("select", listOf("*"))
-        .withParam("where", "" )
+        .withParam("where", " name != '/parentFolder'" )
         .postForList();
        //@formatter:on
     }
 
+    @ExecutionTime
     public List<Entity> list(FolderSearch params) {
         //@formatter:off
         return rest.getFolderBySQL()
@@ -35,9 +36,10 @@ public class DDSFolder extends DDSEntity {
             .withParam("select", listOf("*"))
             .withParam("where", where(params))
             .postForList();
-            //@formatter:on
+        //@formatter:on
     }
 
+    @ExecutionTime
     private Entity update(FolderCreate params) {
         Entity folder = get(params.getId());
 
@@ -52,6 +54,7 @@ public class DDSFolder extends DDSEntity {
         return get(params.getId());
     }
 
+    @ExecutionTime
     public Entity get(String id) {
         try {
             //@formatter:off
@@ -67,6 +70,7 @@ public class DDSFolder extends DDSEntity {
         }
     }
 
+    @ExecutionTime
     public Entity post(FolderCreate params) {
         //@formatter:off
         rest.createFolder()
@@ -80,7 +84,7 @@ public class DDSFolder extends DDSEntity {
 
     @Override
     protected List<String> clauses(Pagination p) {
-        FolderSearch params = (FolderSearch) p;
+        //FolderSearch params = (FolderSearch) p;
         return Utility.listOf(clause("foldersParents", "/", "="));
     }
 

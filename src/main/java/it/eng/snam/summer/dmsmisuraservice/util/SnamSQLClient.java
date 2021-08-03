@@ -6,13 +6,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 
 public class SnamSQLClient {
+
+    @Value("${external.rest_client_request}")
+    private boolean debugSQL = true;
+    @Value("${external.debug.sql_client.response}")
+    private boolean debugResponse;
+    // @Autowired
+    // AuditValues audit;
 
     private NamedParameterJdbcOperations template;
     private String table;
@@ -39,27 +48,33 @@ public class SnamSQLClient {
         String where = "from " + table + " where 1=1 " + conditions();
         String sql = "select * " + where + getOrderByString() + " offset " + pagination.getOffset()
                 + " rows fetch first " + pagination.getLimit() + " rows only ";
-        System.out.println(sql);
-        System.out.println(params());
+
+        if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(params());
+        }
         return template.queryForList(sql, params()).stream().map(Entity::build).collect(Collectors.toList());
     }
 
     public Long count() {
         String where = "from " + table + " where 1=1 " + conditions();
         String sql = "select count(*) " + where;
-        System.out.println(sql);
+        if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(params());
+        }
         return template.queryForObject(sql, params(), Long.class);
     }
 
     public Map<String, Long> countByField(String field) {
         String where = " from " + table + " where 1=1 " + conditions();
         String sql = "select count(*) as count , " + field + where + " group by " + field;
-        System.out.println(sql);
-        System.out.println(params());
-        return template.queryForList(sql, params() )
-            .stream()
-            .collect(Collectors.toMap(e -> (String) e.get(field), e ->  Long.parseLong(e.get("count").toString()) ))
-        ;
+        if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(params());
+        }
+        return template.queryForList(sql, params()).stream()
+                .collect(Collectors.toMap(e -> (String) e.get(field), e -> Long.parseLong(e.get("count").toString())));
     }
 
     private String conditions() {
@@ -109,6 +124,44 @@ public class SnamSQLClient {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
         }
         return res;
+    }
+
+    public int insert(Entity entity) {
+        String fieldList = entity.keySet().stream().collect(Collectors.joining(","));
+        String paramList = entity.keySet().stream().map(e -> ":" + e).collect(Collectors.joining(","));
+
+        String sql = String.format("INSERT INTO %s (%s) VALUES(%s)", table, fieldList, paramList);
+        int rows = template.update(sql, entity);
+        if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(entity);
+            System.out.println("affected " + rows + " rows");
+        }
+        // return find(entity.id());
+        return rows;
+    }
+
+    public int update(Entity entity, String id ) {
+        String paramList = entity.entrySet().stream().filter(e -> !e.getKey().equals("id"))
+                .map(e -> e.getKey() + "=:" + e.getKey()).collect(Collectors.joining(","));
+        String sql = String.format("update %s set %s where id = '%s'", table, paramList,  id );
+        return template.update(sql, entity);
+    }
+
+    public void delete(String id) {
+        String sql = "";
+        int rows = template.update(sql, mapOf("id", id));
+        if (debugSQL) {
+            System.out.println(sql);
+            System.out.println(params());
+            System.out.println("affected " + rows + " rows");
+        }
+    }
+
+    public Entity find(String id) {
+        IdSearch idSearch = new IdSearch(id);
+        this.pagination = idSearch;
+        return this.find();
     }
 
     public Entity find() {
