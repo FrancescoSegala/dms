@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
-import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
@@ -119,6 +118,7 @@ public class DDSDocument extends DDSEntity {
         return merge(doc, ddsList.get(0));
     }
 
+
     private static List<InfoValidator> base = listOf(stringOf("StatoDocumento", 64), stringOf("Note", 1024),
             stringOf("Tag", 64), stringOf("CreatoDa", 64));
     private static Entity validators = new Entity().with("INTE", concat(base, listOf(stringOf("CodiceRemi", 32))));
@@ -126,11 +126,11 @@ public class DDSDocument extends DDSEntity {
     public Entity post(DocumentCreate params, MultipartFile file) {
         validatePath(params);
         List<InfoValidator> v = validators.getAsList(params.getSubfolder());
-        v.stream().map(e -> e.apply(params.getInfo())).filter(e -> e != null).findAny().ifPresent(e -> {
+        v.stream().map( e -> e.apply(params.getInfo() ) ).filter(e -> e != null).findAny().ifPresent(e -> {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);
         });
 
-        Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
+        Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }
@@ -149,7 +149,7 @@ public class DDSDocument extends DDSEntity {
 
     public Entity put(String document_id, DocumentUpdate params) {
         // TODO validate document update DTO infos other than remi ?
-        Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
+        Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }

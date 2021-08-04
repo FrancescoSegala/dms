@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
-import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.SubfolderPermission;
@@ -70,21 +69,21 @@ public class EntityMapper {
             .withLink(e.getAsString("link"))
             .withCreatedAt(e.getAsString("created_at"))
             .withCreatedBy(e.getAsString("created_by"))
-            .withInfo( Info.build().with("remi", e.getAsString("remi")) )
-            .withInfo( Info.build().with("linea", e.getAsString("linea")) )
-            .withInfo( Info.build().with("codice_centro", e.getAsString("codice_centro")))
-            .withInfo( Info.build().with("codice_distretto", e.getAsString("codice_distretto")))
-            .withInfo( Info.build().with("codice_area_tecnica", e.getAsString("codice_area_tecnica")))
-            .withInfo( Info.build().with("codice_polo", e.getAsString("codice_polo")))
-            .withInfo( Info.build().with("ragione_sociale", e.getAsString("ragione_sociale")))
-            .withInfo( Info.build().with("ubicazione", e.getAsString("ubicazione")))
-            .withInfo( Info.build().with("provincia", e.getAsString("provincia")))
-            .withInfo( Info.build().with("comune", e.getAsString("comune")))
-            .withInfo( Info.build().with("regione", e.getAsString("regione")))
-            .withInfo( Info.build().with("codice_aop", (Long) e.get(")codice_aop")))
-            .withInfo( Info.build().with("codice_ateco", e.getAsString("codice_ateco")))
-            .withInfo( Info.build().with("remi_terzo", e.getAsString("remi_terzo")))
-            .withInfo( Info.build().with("reti_trasporto", e.getAsString("reti_trasporto")))
+            .withInfo( Entity.build("remi", e.getAsString("remi")) )
+            .withInfo( Entity.build("linea", e.getAsString("linea")) )
+            .withInfo( Entity.build("codice_centro", e.getAsString("codice_centro")))
+            .withInfo( Entity.build("codice_distretto", e.getAsString("codice_distretto")))
+            .withInfo( Entity.build("codice_area_tecnica", e.getAsString("codice_area_tecnica")))
+            .withInfo( Entity.build("codice_polo", e.getAsString("codice_polo")))
+            .withInfo( Entity.build("ragione_sociale", e.getAsString("ragione_sociale")))
+            .withInfo( Entity.build("ubicazione", e.getAsString("ubicazione")))
+            .withInfo( Entity.build("provincia", e.getAsString("provincia")))
+            .withInfo( Entity.build("comune", e.getAsString("comune")))
+            .withInfo( Entity.build("regione", e.getAsString("regione")))
+            .withInfo( Entity.build("codice_aop", (Long) e.get(")codice_aop")))
+            .withInfo( Entity.build("codice_ateco", e.getAsString("codice_ateco")))
+            .withInfo( Entity.build("remi_terzo", e.getAsString("remi_terzo")))
+            .withInfo( Entity.build("reti_trasporto", e.getAsString("reti_trasporto")))
         ;
     }
 
@@ -102,7 +101,7 @@ public class EntityMapper {
         Entity res =  Entity.build("id", id).with("data", Instant.now().toString())
                 .with("c_remi_ass",
                         params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst()
-                                .orElse((Info) Info.build().with("remi", null)).getAsString("remi"))
+                                .orElse(  Entity.build("remi", null)).getAsString("remi"))
                 .with("folder", params.getFolder()).with("subfolder", params.getSubfolder());
         //@formatter:on
         return res ;

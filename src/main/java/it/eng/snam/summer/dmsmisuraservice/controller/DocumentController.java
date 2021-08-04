@@ -2,11 +2,8 @@ package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import java.io.IOException;
 import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import it.eng.snam.summer.dmsmisuraservice.model.Attachment;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.create.AttachmentCreate;
@@ -93,7 +89,7 @@ public class DocumentController {
         //nop
     }
 
-    //TODO return type ?
+    //TODO
     @PutMapping("/documents/{document_id}/attachements/{attachment_id}/content")
     public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,HttpServletResponse response){
         //nop

@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.annotations.ApiModelProperty;
-import it.eng.snam.summer.dmsmisuraservice.model.Info;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 
 public class DocumentCreate {
@@ -29,7 +29,7 @@ public class DocumentCreate {
 
     @ApiModelProperty("list of infos about the document ")
     @NotEmpty(message = "info must be not empty")
-    private List<Info> info = new ArrayList<>(); // es {"remi" : "codice_remi"}
+    private List<Entity> info = new ArrayList<>(); // es {"remi" : "codice_remi"}
 
     @ApiModelProperty("title of the document")
     @NotBlank(message = "title must be not empty")
@@ -51,14 +51,12 @@ public class DocumentCreate {
         this.name = name;
     }
 
-    public List<Info> getInfo() {
+    public List<Entity> getInfo() {
         return info;
     }
-    public void setInfo(List<Info> info) {
+    public void setInfo(List<Entity> info) {
         this.info = info;
     }
-
-
     public String getTitle() {
         return title;
     }
