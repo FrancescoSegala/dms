@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Utility {
 
@@ -54,6 +56,14 @@ public class Utility {
     public static <T> Set<T> setOf(T... e) {
         return new HashSet<>(Arrays.asList(e));
 
+    }
+
+
+    public static <T> List<T> concat(List<T> ... l ){
+        return Stream.of(l)
+            // .flatMap( List::stream )
+            .flatMap(e -> e.stream() )
+            .collect(Collectors.toList());
     }
 
 

@@ -22,11 +22,7 @@ public class CachedFunction<K,V> implements Function<K,V> {
 
 
     private boolean containsKey(K key) {
-        // System.out.println("contains k "+ key);
-        // System.out.println("expires "+ expireAfterMillis);
-        boolean res =  map.containsKey(key) && expirations.get(key) + this.expireAfterMillis > Instant.now().toEpochMilli()  ;
-        //System.out.println((res ? "HIT " : "MISS " ) + "for " + key );
-        return res;
+        return map.containsKey(key) && expirations.get(key) + this.expireAfterMillis > Instant.now().toEpochMilli()  ;
     }
 
     public V get(K key) {

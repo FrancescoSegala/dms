@@ -2,8 +2,14 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
@@ -11,12 +17,9 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -31,13 +34,13 @@ public class SnamRestClient {
     // AuditValues audit ;
 
     // @Value("${external.dds.OS}")
-    public boolean rest_client_headers = false ;
+    public boolean rest_client_headers = false;
 
     // @Value("${francesco.rest_client.response}")
-    private boolean response_debug = true ;
+    private boolean response_debug = true;
 
     // @Value("${francesco.rest_client.request}")
-    private boolean request_debug  = true ;
+    private boolean request_debug = true;
 
     private Entity params = new Entity();
     private MediaType contentType;
@@ -98,34 +101,15 @@ public class SnamRestClient {
         return aux;
     }
 
-    // public ResponseEntity<byte[]> postMultipartForm() {
-    //     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
-    //     multipartRequest.set("file",params.get("file"));
-
-    //     HttpHeaders requestHeadersJSON = new HttpHeaders();
-    //     requestHeadersJSON.setContentType(MediaType.APPLICATION_JSON);
-    //     HttpEntity<Entity> requestEntityJSON = new HttpEntity<>(params.getAsEntity("document"), requestHeadersJSON);
-    //     multipartRequest.set("document",requestEntityJSON);
-
-    //     HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(multipartRequest,headers);
-
-    //     ResponseEntity<byte[]> aux = template().postForEntity(url, requestEntity, byte[].class);
-    //     if (aux.getStatusCode().equals(HttpStatus.OK)) {
-    //         return aux;
-    //     }
-    //     return null;
-    // }
-
-    public ResponseEntity<byte[]> postMultipart() {
+    public String postMultipart() {
         Object body = MediaType.MULTIPART_FORM_DATA.equals(this.contentType) ? params.toMultiValueMap()
                 : params.toString();
         template().setMessageConverters(listOf(new ByteArrayHttpMessageConverter()));
-
         ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
-        if (aux.getStatusCode().equals(HttpStatus.OK)) {
-            return aux;
-        }
-        return null;
+        InputStream is = new ByteArrayInputStream(aux.getBody());
+        return new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines()
+                .collect(Collectors.joining("\n"));
+
     }
 
     public Entity post() {
@@ -137,14 +121,12 @@ public class SnamRestClient {
         return aux;
     }
 
-
-    public byte[] postForContent(){
+    public byte[] postForContent() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
                 : params.toMultiValueMap();
         ResponseEntity<byte[]> aux = template().postForEntity(url, new HttpEntity<>(body, headers), byte[].class);
         return aux.getBody();
     }
-
 
     public String postForString() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
@@ -173,7 +155,6 @@ public class SnamRestClient {
         return Entity.parseJsonAsList(aux);
     }
 
-
     private void printRequest() {
         String method = "";
         try {
@@ -183,7 +164,7 @@ public class SnamRestClient {
         }
         if (request_debug)
             System.out.printf("[SNAM-REST-CLIENT][%s] - url %s \n", method, this.url);
-        if (rest_client_headers )
+        if (rest_client_headers)
             System.out.printf("[SNAM-REST-CLIENT][%s] - headers %s \n", method, this.headers);
         if (request_debug)
             System.out.printf("[SNAM-REST-CLIENT][%s] - params %s \n", method, this.params);

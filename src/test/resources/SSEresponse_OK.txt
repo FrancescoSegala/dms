@@ -1,0 +1,17 @@
+data: {
+"status" : "Checking permission for insert document in folder",
+"progress" : 25
+}
+event: wait
+data: {
+"status" : "Uploading File",
+"progress" : 50
+}
+event: wait
+data: {
+"status" : "Sending Metadata",
+"progress" : 75
+}
+event: wait
+data: postman_test_idDocInsertedStreaming
+event: message

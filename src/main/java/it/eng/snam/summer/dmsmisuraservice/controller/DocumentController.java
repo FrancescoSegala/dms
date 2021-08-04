@@ -21,9 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.Attachment;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
+import it.eng.snam.summer.dmsmisuraservice.model.create.AttachmentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
+import it.eng.snam.summer.dmsmisuraservice.model.search.AttachmentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
+import it.eng.snam.summer.dmsmisuraservice.model.update.AttachmentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 
@@ -52,6 +56,50 @@ public class DocumentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
         }
     }
+
+    //TODO
+    @GetMapping("/documents/{document_id}/attachments")
+    public List<Attachment> listAttachment(@Valid AttachmentSearch params ){
+        return null ;
+    }
+
+    //TODO
+    @PostMapping("/docuemnts/{document_id}/attachments")
+    public Attachment postAttachment(@Valid AttachmentCreate params){
+        return null ;
+    }
+
+    //TODO
+    @GetMapping("/documents/{document_id}/attachements/{attachment_id}")
+    public Attachment getAttachment( @PathVariable String document_id, @PathVariable String attachment_id ){
+        return null ;
+    }
+
+    //TODO
+    @PutMapping("/documents/{document_id}/attachements/{attachment_id}")
+    public Attachment putAttachment(@PathVariable String document_id, @PathVariable String attachment_id , @Valid AttachmentUpdate body ){
+        return null ;
+    }
+
+    //TODO
+    @DeleteMapping("/documents/{document_id}/attachements/{attachment_id}")
+    public void deleteAttachment(@PathVariable String document_id, @PathVariable String attachment_id){
+        //nop
+    }
+
+    //TODO
+    @GetMapping("/documents/{document_id}/attachements/{attachment_id}/content")
+    public void getAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,HttpServletResponse response){
+        //nop
+    }
+
+    //TODO return type ?
+    @PutMapping("/documents/{document_id}/attachements/{attachment_id}/content")
+    public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,HttpServletResponse response){
+        //nop
+    }
+
+
 
     @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
