@@ -1,5 +1,8 @@
 package it.eng.snam.summer.dmsmisuraservice.service.summer;
-import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.*;
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toRemi;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
@@ -7,13 +10,14 @@ import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 public class SummerImpl implements Summer  {
 
-
-
     @Autowired
     SummerRemi remi;
 
     @Autowired
     SummerUser users;
+
+    @Autowired
+    SummerSqlProvider sql ;
 
 
     @Override
@@ -23,7 +27,17 @@ public class SummerImpl implements Summer  {
 
     @Override
     public Entity getProfile(String user_id){
-        return users.getUserProfile(user_id); //TODO make profile model?
+        return users.getUserProfile(user_id);
+    }
+
+    @Override
+    public Long getDocumentCount(String folder_id, String subfolder_id) {
+        return sql.getDocumentCount(folder_id, subfolder_id);
+    }
+
+    @Override
+    public Map<String, Long> getDocumentCount(String folder_id) {
+         return sql.getDocumentCount(folder_id);
     }
 
 }

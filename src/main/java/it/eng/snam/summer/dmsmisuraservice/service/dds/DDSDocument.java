@@ -1,7 +1,6 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toDDSpayload;
-import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSQLpayload;
 import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toUpdateDocPayload;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.concat;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
@@ -22,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,26 +28,25 @@ import org.springframework.web.server.ResponseStatusException;
 import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerRemi;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProvider;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.MultipartInputStreamFileResource;
-import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
 
 @Component
 public class DDSDocument extends DDSEntity {
 
     @Autowired
-    NamedParameterJdbcOperations template;
-
-    @Autowired
     SummerRemi summerRemi;
 
     @Autowired
     DDSSubfolder subfolderService;
+
+    @Autowired
+    SummerSqlProvider summerSqlProvider;
 
     static ScriptEngine engine = null;
     static String parser = null;
@@ -66,19 +63,13 @@ public class DDSDocument extends DDSEntity {
     public List<Entity> list(DocumentSearch params) {
         Long limit = params.getLimit();
         params.setLimit(10000L);
-
-        //@formatter:off
-        List<Entity> docs = new SnamSQLClient(template)
-        .withTable("v_documenti")
-        .withParams(params)
-        .list();
-        //@formatter:on
+        List<Entity> docs = summerSqlProvider.getDocuments(params);
         //@formatter:off
         List<Entity> ddsDocs =  rest.getDocumentBySQL()
-        .withParam("OS", this.os )
-        .withParam("select", listOf("*"))
-        .withParam("where", where(params) )
-        .postForList();
+                                    .withParam("OS", this.os )
+                                    .withParam("select", listOf("*"))
+                                    .withParam("where", where(params) )
+                                    .postForList();
         //@formatter:on
         //@formatter:off
         return docs.stream()
@@ -99,12 +90,7 @@ public class DDSDocument extends DDSEntity {
     }
 
     private Entity get(String document_id, String clause) {
-        //@formatter:off
-        Entity doc =  new SnamSQLClient(template)
-        .withTable("v_documenti")
-        .withParams(new IdSearch(document_id))
-        .get();
-        //@formatter:on
+        Entity doc = summerSqlProvider.getDocument(document_id);
         //@formatter:off
         List<Entity> ddsList =  rest.getDocumentBySQL()
             .withParam("OS", this.os )
@@ -118,7 +104,6 @@ public class DDSDocument extends DDSEntity {
         return merge(doc, ddsList.get(0));
     }
 
-
     private static List<InfoValidator> base = listOf(stringOf("StatoDocumento", 64), stringOf("Note", 1024),
             stringOf("Tag", 64), stringOf("CreatoDa", 64));
     private static Entity validators = new Entity().with("INTE", concat(base, listOf(stringOf("CodiceRemi", 32))));
@@ -126,7 +111,7 @@ public class DDSDocument extends DDSEntity {
     public Entity post(DocumentCreate params, MultipartFile file) {
         validatePath(params);
         List<InfoValidator> v = validators.getAsList(params.getSubfolder());
-        v.stream().map( e -> e.apply(params.getInfo() ) ).filter(e -> e != null).findAny().ifPresent(e -> {
+        v.stream().map(e -> e.apply(params.getInfo())).filter(e -> e != null).findAny().ifPresent(e -> {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);
         });
 
@@ -138,9 +123,10 @@ public class DDSDocument extends DDSEntity {
         List<Entity> sseStream = postDocumentToDDS(ddsDoc, file);
 
         if (!"message".equals(sseStream.get(sseStream.size() - 1).getAsString("event"))) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, sseStream.get(sseStream.size() - 1).getAsEntity("data").getAsString("reason"));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    sseStream.get(sseStream.size() - 1).getAsEntity("data").getAsString("reason"));
         }
-        int rows = new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, ddsDoc.id()));
+        int rows = summerSqlProvider.insertDocument(params, ddsDoc.id() );
         if (rows <= 0) {
             this.handleSQLfail(ddsDoc.id(), "Insert document failed");
         }
@@ -176,12 +162,8 @@ public class DDSDocument extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, res);
         }
         if (remi != null) {
-        //@formatter:off
-            int rows = new SnamSQLClient(template)
-                .withTable("documenti")
-                .update(Entity.build("c_remi_ass", remi.get("remi")), document_id);
-        //@formatter:on
-            if (rows <= 0)
+             int rows = summerSqlProvider.updateDocument(document_id, remi.getAsString("remi"));
+             if (rows <= 0)
                 handleSQLfail(document_id, "Update document failed");
         }
         return get(document_id);
@@ -286,7 +268,6 @@ public class DDSDocument extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-
 
     @Override
     protected String sortField(String field) {

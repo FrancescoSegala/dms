@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,14 +20,13 @@ import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
-import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentCount;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
-import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
 @RestController
 public class FolderController {
@@ -36,9 +34,9 @@ public class FolderController {
     @Autowired
     DDS dds;
 
-    @Autowired
-    private NamedParameterJdbcOperations template;
 
+    @Autowired
+    Summer summer;
 
     @GetMapping("/tree")
     public List<Entity> tree(){
@@ -73,12 +71,9 @@ public class FolderController {
     @GetMapping("/folders/{folder_id}/subfolders")
     public List<Subfolder> listSubfolders(@PathVariable String folder_id, @Valid SubfolderSearch params) {
         //@formatter:off
-        Map<String, Long> countMap = new SnamSQLClient(template)
-            .withTable("documenti")
-            .withParams(new DocumentCount(folder_id, null))
-            .countByField("subfolder");
-            System.out.println(countMap);
-        return dds.listSubfolders(folder_id, params)
+        Map<String, Long> countMap = summer.getDocumentCount(folder_id);
+
+         return dds.listSubfolders(folder_id, params)
             .stream()
             //.peek( e -> System.out.println(e))
             .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[2], 0L)))
@@ -91,10 +86,8 @@ public class FolderController {
         //@formatter:off
         return dds.getSubfolder(folder_id, subfolder_id)
             .withDocumentCount(
-                new SnamSQLClient(template)
-                    .withTable("documenti")
-                    .withParams(new DocumentCount(folder_id, subfolder_id))
-                    .count());
+                summer.getDocumentCount(folder_id, subfolder_id)
+            );
         //@formatter:on
     }
 
