@@ -15,12 +15,14 @@ import org.springframework.context.annotation.Bean;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSImpl;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.FakeDDSImpl;
-import it.eng.snam.summer.dmsmisuraservice.service.summer.FakeSummerImpl;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerImpl;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProvider;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProviderImpl;
+import it.eng.snam.summer.dmsmisuraservice.util.fake.FakeSummerSqlProvider;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class}) //TODO lo fa sempre?
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 public class DmsMisuraServiceApplication {
 
 	@Value("${controlm-jks.password:default}")
@@ -40,14 +42,18 @@ public class DmsMisuraServiceApplication {
     }
 
     @Bean
-    public DDS dds(@Value("${external.dds.fake:false}") boolean fake ){
-        return fake ? new FakeDDSImpl() : new DDSImpl();
+    public DDS dds(){
+        return new DDSImpl();
     }
 
     @Bean
-    public Summer summer(@Value("${external.summer.fake:false}") boolean fake){
-        return fake ? new FakeSummerImpl() : new SummerImpl();
+    public Summer summer(){
+        return   new SummerImpl();
     }
 
+    @Bean
+    public SummerSqlProvider sqlProvider(@Value("${external.summer.fake:false}") boolean fake){
+        return fake ? new FakeSummerSqlProvider() : new SummerSqlProviderImpl();
+    }
 
 }

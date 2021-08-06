@@ -38,7 +38,7 @@ server:
     min-spare-threads: 50
 
 jwt:
-  enabled: false
+  enabled: true
   secret: f894d43095c5fe39cc915b4c56ecb332
   profiler-url: http://localhost:8091/editable-fields-service/anagraficaUtenti/getProfiloUtente/
   #profiler-url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente/

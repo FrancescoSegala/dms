@@ -30,8 +30,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
-import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerRemi;
-import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProvider;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.MultipartInputStreamFileResource;
 import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
@@ -39,14 +38,13 @@ import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
 @Component
 public class DDSDocument extends DDSEntity {
 
-    @Autowired
-    SummerRemi summerRemi;
+
 
     @Autowired
     DDSSubfolder subfolderService;
 
     @Autowired
-    SummerSqlProvider summerSqlProvider;
+    Summer summer;
 
     static ScriptEngine engine = null;
     static String parser = null;
@@ -62,8 +60,7 @@ public class DDSDocument extends DDSEntity {
 
     public List<Entity> list(DocumentSearch params) {
         Long limit = params.getLimit();
-        params.setLimit(10000L);
-        List<Entity> docs = summerSqlProvider.getDocuments(params);
+        List<Entity> docs = summer.getDocuments(params);
         //@formatter:off
         List<Entity> ddsDocs =  rest.getDocumentBySQL()
                                     .withParam("OS", this.os )
@@ -90,7 +87,7 @@ public class DDSDocument extends DDSEntity {
     }
 
     private Entity get(String document_id, String clause) {
-        Entity doc = summerSqlProvider.getDocument(document_id);
+        Entity doc = summer.getDocument(document_id);
         //@formatter:off
         List<Entity> ddsList =  rest.getDocumentBySQL()
             .withParam("OS", this.os )
@@ -117,7 +114,7 @@ public class DDSDocument extends DDSEntity {
 
         Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
-            summerRemi.get(remi.getAsString("remi"));
+            summer.get(remi.getAsString("remi"));
         }
         Entity ddsDoc = toDDSpayload(params, this.os);
         List<Entity> sseStream = postDocumentToDDS(ddsDoc, file);
@@ -126,7 +123,7 @@ public class DDSDocument extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     sseStream.get(sseStream.size() - 1).getAsEntity("data").getAsString("reason"));
         }
-        int rows = summerSqlProvider.insertDocument(params, ddsDoc.id() );
+        int rows = summer.insertDocument(params, ddsDoc.id() );
         if (rows <= 0) {
             this.handleSQLfail(ddsDoc.id(), "Insert document failed");
         }
@@ -137,7 +134,7 @@ public class DDSDocument extends DDSEntity {
         // TODO validate document update DTO infos other than remi ?
         Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
-            summerRemi.get(remi.getAsString("remi"));
+            summer.get(remi.getAsString("remi"));
         }
         //@formatter:off
         List<Entity> ddsList = rest.getDocumentBySQL()
@@ -162,7 +159,7 @@ public class DDSDocument extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, res);
         }
         if (remi != null) {
-             int rows = summerSqlProvider.updateDocument(document_id, remi.getAsString("remi"));
+             int rows = summer.updateDocument(document_id, remi.getAsString("remi"));
              if (rows <= 0)
                 handleSQLfail(document_id, "Update document failed");
         }

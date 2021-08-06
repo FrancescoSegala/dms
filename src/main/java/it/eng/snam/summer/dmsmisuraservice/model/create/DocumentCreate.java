@@ -37,7 +37,6 @@ public class DocumentCreate {
     private String title; //solo su dds
 
     @ApiModelProperty("the id of the 1st level folder")
-    @NotBlank(message = "folder must be not empty")
     private String folder;
 
     @ApiModelProperty("the id of the 2nd level folder")

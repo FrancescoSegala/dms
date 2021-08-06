@@ -76,7 +76,7 @@ public class FolderController {
          return dds.listSubfolders(folder_id, params)
             .stream()
             //.peek( e -> System.out.println(e))
-            .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[2], 0L)))
+            .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[e.id.split("/").length-1], 0L))) //TODO 2? o e.id.split("/").length-1
             .collect(Collectors.toList());
         //@formatter:on
     }
