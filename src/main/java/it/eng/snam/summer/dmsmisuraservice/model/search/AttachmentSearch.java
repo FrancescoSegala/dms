@@ -1,5 +1,10 @@
 package it.eng.snam.summer.dmsmisuraservice.model.search;
 
-public class AttachmentSearch {
+public class AttachmentSearch extends Pagination {
+
+
+
+
+
 
 }

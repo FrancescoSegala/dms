@@ -31,7 +31,6 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
-import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerRemi;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.MultipartInputStreamFileResource;
 import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
@@ -39,8 +38,7 @@ import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
 @Component
 public class DDSDocument extends DDSEntity {
 
-    @Autowired
-    SummerRemi summerRemi;
+
 
     @Autowired
     DDSSubfolder subfolderService;
@@ -116,7 +114,7 @@ public class DDSDocument extends DDSEntity {
 
         Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
-            summerRemi.get(remi.getAsString("remi"));
+            summer.get(remi.getAsString("remi"));
         }
         Entity ddsDoc = toDDSpayload(params, this.os);
         List<Entity> sseStream = postDocumentToDDS(ddsDoc, file);
@@ -136,7 +134,7 @@ public class DDSDocument extends DDSEntity {
         // TODO validate document update DTO infos other than remi ?
         Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
-            summerRemi.get(remi.getAsString("remi"));
+            summer.get(remi.getAsString("remi"));
         }
         //@formatter:off
         List<Entity> ddsList = rest.getDocumentBySQL()

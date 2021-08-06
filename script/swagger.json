@@ -1,0 +1,1700 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Il microservizio espone i metodi per il DMS.",
+        "version": "1.0.0",
+        "title": "dms-misura-service"
+    },
+    "host": "localhost:8090",
+    "basePath": "/dms-misura-service",
+    "tags": [ {
+        "name": "status-controller",
+        "description": "Status Controller"
+    }, {
+        "name": "remi-controller",
+        "description": "Remi Controller"
+    }, {
+        "name": "folder-controller",
+        "description": "Folder Controller"
+    }, {
+        "name": "DMS Misura",
+        "description": "DMS Misura"
+    }, {
+        "name": "document-controller",
+        "description": "Document Controller"
+    }, {
+        "name": "Regex",
+        "description": "Inserisci o modifica una regex"
+    } ],
+    "paths": {
+        "/api/status": {
+            "get": {
+                "tags": [ "status-controller" ],
+                "summary": "status",
+                "operationId": "statusUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents": {
+            "get": {
+                "tags": [ "document-controller" ],
+                "summary": "list",
+                "operationId": "listUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "linea_in",
+                    "in": "query",
+                    "description": "the list of 'linea' to include the research",
+                    "required": false,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "collectionFormat": "multi"
+                }, {
+                    "name": "sort",
+                    "in": "query",
+                    "description": "sort field, it indicates the id to perform the sorting",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "direction",
+                    "in": "query",
+                    "description": "sort direction, must be 'asc' or 'desc' (default = 'asc')",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "limit the number of records given as result, must be an integer greater than 0 and less than 100",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "the offset from where start giving the result, must be an integer greater than 0",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "name",
+                    "in": "query",
+                    "description": "name of the document",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "status",
+                    "in": "query",
+                    "description": "document status, can be one of 'active', 'inactive'",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_documento_gt",
+                    "in": "query",
+                    "description": "start of date range search",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_documento_lt",
+                    "in": "query",
+                    "description": "end of date range search",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "linea",
+                    "in": "query",
+                    "description": "linea ",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_centro",
+                    "in": "query",
+                    "description": "codice centro ",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_distretto",
+                    "in": "query",
+                    "description": "codice distretto",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_area_tecnica",
+                    "in": "query",
+                    "description": "codice area tecnica",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_polo",
+                    "in": "query",
+                    "description": "codice polo",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ragione_sociale",
+                    "in": "query",
+                    "description": "rargione sociale",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ragione_sociale_like",
+                    "in": "query",
+                    "description": "substring of rargione sociale",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ubicazione",
+                    "in": "query",
+                    "description": "ubicazione",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ubicazione_like",
+                    "in": "query",
+                    "description": "substring of ubicazione",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "provincia",
+                    "in": "query",
+                    "description": "provincia",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "comune",
+                    "in": "query",
+                    "description": "comune",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "regione",
+                    "in": "query",
+                    "description": "regione",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_aop",
+                    "in": "query",
+                    "description": "codice aop",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_ateco",
+                    "in": "query",
+                    "description": "codice ateco",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_entrata_esercizio_gt",
+                    "in": "query",
+                    "description": "start of data entrata esercizio",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_entrata_esercizio_lt",
+                    "in": "query",
+                    "description": "end of data entrata esercizio",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "folder",
+                    "in": "query",
+                    "description": "folder",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "subfolder",
+                    "in": "query",
+                    "description": "subfolder",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "remi_terzo",
+                    "in": "query",
+                    "description": "remi terzo",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "reti_trasporto",
+                    "in": "query",
+                    "description": "reti trasporto",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "remi",
+                    "in": "query",
+                    "description": "the remi",
+                    "required": false,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Document"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [ "document-controller" ],
+                "summary": "post",
+                "operationId": "postUsingPOST",
+                "consumes": [ "multipart/form-data" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document",
+                    "in": "formData",
+                    "description": "document",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "file",
+                    "in": "formData",
+                    "description": "file",
+                    "required": true,
+                    "type": "file"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Document"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/{document_id}": {
+            "get": {
+                "tags": [ "document-controller" ],
+                "summary": "get",
+                "operationId": "getUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Document"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [ "document-controller" ],
+                "summary": "put",
+                "operationId": "putUsingPUT",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "in": "body",
+                    "name": "params",
+                    "description": "params",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/DocumentUpdate"
+                    }
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Document"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [ "document-controller" ],
+                "summary": "delete",
+                "operationId": "deleteUsingDELETE",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/documents/{document_id}/attachments": {
+            "get": {
+                "tags": [ "document-controller" ],
+                "summary": "listAttachment",
+                "operationId": "listAttachmentUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "sort",
+                    "in": "query",
+                    "description": "sort field, it indicates the id to perform the sorting",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "direction",
+                    "in": "query",
+                    "description": "sort direction, must be 'asc' or 'desc' (default = 'asc')",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "limit the number of records given as result, must be an integer greater than 0 and less than 100",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "the offset from where start giving the result, must be an integer greater than 0",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Attachment"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [ "document-controller" ],
+                "summary": "postAttachment",
+                "operationId": "postAttachmentUsingPOST",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "in": "body",
+                    "name": "params",
+                    "description": "params",
+                    "required": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/AttachmentCreate"
+                        }
+                    }
+                }, {
+                    "name": "file",
+                    "in": "query",
+                    "description": "file",
+                    "required": false,
+                    "type": "array",
+                    "items": {
+                        "type": "file"
+                    },
+                    "collectionFormat": "multi"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Attachment"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/{document_id}/attachments/{attachment_id}": {
+            "get": {
+                "tags": [ "document-controller" ],
+                "summary": "getAttachment",
+                "operationId": "getAttachmentUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "attachment_id",
+                    "in": "path",
+                    "description": "attachment_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Attachment"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [ "document-controller" ],
+                "summary": "putAttachment",
+                "operationId": "putAttachmentUsingPUT",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "attachment_id",
+                    "in": "path",
+                    "description": "attachment_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "in": "body",
+                    "name": "body",
+                    "description": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/AttachmentUpdate"
+                    }
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Attachment"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [ "document-controller" ],
+                "summary": "deleteAttachment",
+                "operationId": "deleteAttachmentUsingDELETE",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "attachment_id",
+                    "in": "path",
+                    "description": "attachment_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/documents/{document_id}/attachments/{attachment_id}/content": {
+            "get": {
+                "tags": [ "document-controller" ],
+                "summary": "getAttachmentContent",
+                "operationId": "getAttachmentContentUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "attachment_id",
+                    "in": "path",
+                    "description": "attachment_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "tags": [ "document-controller" ],
+                "summary": "putAttachmentContent",
+                "operationId": "putAttachmentContentUsingPUT",
+                "consumes": [ "multipart/form-data" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "attachment_id",
+                    "in": "path",
+                    "description": "attachment_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "file",
+                    "in": "formData",
+                    "description": "file",
+                    "required": false,
+                    "type": "file"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/documents/{document_id}/content": {
+            "get": {
+                "tags": [ "document-controller" ],
+                "summary": "getContent",
+                "operationId": "getContentUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/folders": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "list",
+                "operationId": "listUsingGET_1",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "sort",
+                    "in": "query",
+                    "description": "sort field, it indicates the id to perform the sorting",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "direction",
+                    "in": "query",
+                    "description": "sort direction, must be 'asc' or 'desc' (default = 'asc')",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "limit the number of records given as result, must be an integer greater than 0 and less than 100",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "the offset from where start giving the result, must be an integer greater than 0",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Folder"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [ "folder-controller" ],
+                "summary": "postFolder",
+                "operationId": "postFolderUsingPOST",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "in": "body",
+                    "name": "params",
+                    "description": "params",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/FolderCreate"
+                    }
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Folder"
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{folder_id}/subfolders": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "listSubfolders",
+                "operationId": "listSubfoldersUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "sort",
+                    "in": "query",
+                    "description": "sort field, it indicates the id to perform the sorting",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "direction",
+                    "in": "query",
+                    "description": "sort direction, must be 'asc' or 'desc' (default = 'asc')",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "limit the number of records given as result, must be an integer greater than 0 and less than 100",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "the offset from where start giving the result, must be an integer greater than 0",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "status",
+                    "in": "query",
+                    "description": "the status of the subfolder, should be either 'active' or 'inactive'",
+                    "required": false,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Subfolder"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [ "folder-controller" ],
+                "summary": "postSubfolder",
+                "operationId": "postSubfolderUsingPOST",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "in": "body",
+                    "name": "params",
+                    "description": "params",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/SubfolderCreate"
+                    }
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Subfolder"
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{folder_id}/subfolders/{subfolder_id}": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "getSubfolder",
+                "operationId": "getSubfolderUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "subfolder_id",
+                    "in": "path",
+                    "description": "subfolder_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Subfolder"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [ "folder-controller" ],
+                "summary": "putSubfolder",
+                "operationId": "putSubfolderUsingPUT",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "subfolder_id",
+                    "in": "path",
+                    "description": "subfolder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "in": "body",
+                    "name": "params",
+                    "description": "params",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/SubfolderUpdate"
+                    }
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Subfolder"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [ "folder-controller" ],
+                "summary": "deleteSubfolder",
+                "operationId": "deleteSubfolderUsingDELETE",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "subfolder_id",
+                    "in": "path",
+                    "description": "subfolder_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/folders/{folder_id}/subfolders/{subfolder_id}/documents": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "listDocumentsInSubfolder",
+                "operationId": "listDocumentsInSubfolderUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "subfolder_id",
+                    "in": "path",
+                    "description": "subfolder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "linea_in",
+                    "in": "query",
+                    "description": "the list of 'linea' to include the research",
+                    "required": false,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "collectionFormat": "multi"
+                }, {
+                    "name": "sort",
+                    "in": "query",
+                    "description": "sort field, it indicates the id to perform the sorting",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "direction",
+                    "in": "query",
+                    "description": "sort direction, must be 'asc' or 'desc' (default = 'asc')",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "limit the number of records given as result, must be an integer greater than 0 and less than 100",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "the offset from where start giving the result, must be an integer greater than 0",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int64"
+                }, {
+                    "name": "name",
+                    "in": "query",
+                    "description": "name of the document",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "status",
+                    "in": "query",
+                    "description": "document status, can be one of 'active', 'inactive'",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_documento_gt",
+                    "in": "query",
+                    "description": "start of date range search",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_documento_lt",
+                    "in": "query",
+                    "description": "end of date range search",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "linea",
+                    "in": "query",
+                    "description": "linea ",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_centro",
+                    "in": "query",
+                    "description": "codice centro ",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_distretto",
+                    "in": "query",
+                    "description": "codice distretto",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_area_tecnica",
+                    "in": "query",
+                    "description": "codice area tecnica",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_polo",
+                    "in": "query",
+                    "description": "codice polo",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ragione_sociale",
+                    "in": "query",
+                    "description": "rargione sociale",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ragione_sociale_like",
+                    "in": "query",
+                    "description": "substring of rargione sociale",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ubicazione",
+                    "in": "query",
+                    "description": "ubicazione",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "ubicazione_like",
+                    "in": "query",
+                    "description": "substring of ubicazione",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "provincia",
+                    "in": "query",
+                    "description": "provincia",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "comune",
+                    "in": "query",
+                    "description": "comune",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "regione",
+                    "in": "query",
+                    "description": "regione",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_aop",
+                    "in": "query",
+                    "description": "codice aop",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "codice_ateco",
+                    "in": "query",
+                    "description": "codice ateco",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_entrata_esercizio_gt",
+                    "in": "query",
+                    "description": "start of data entrata esercizio",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "data_entrata_esercizio_lt",
+                    "in": "query",
+                    "description": "end of data entrata esercizio",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "folder",
+                    "in": "query",
+                    "description": "folder",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "subfolder",
+                    "in": "query",
+                    "description": "subfolder",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "remi_terzo",
+                    "in": "query",
+                    "description": "remi terzo",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "reti_trasporto",
+                    "in": "query",
+                    "description": "reti trasporto",
+                    "required": false,
+                    "type": "string"
+                }, {
+                    "name": "remi",
+                    "in": "query",
+                    "description": "the remi",
+                    "required": false,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Document"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "getDocumentInSubfolder",
+                "operationId": "getDocumentInSubfolderUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "subfolder_id",
+                    "in": "path",
+                    "description": "subfolder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Document"
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}/content": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "getContent",
+                "operationId": "getContentUsingGET_1",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "folder_id",
+                    "in": "path",
+                    "description": "folder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "subfolder_id",
+                    "in": "path",
+                    "description": "subfolder_id",
+                    "required": true,
+                    "type": "string"
+                }, {
+                    "name": "document_id",
+                    "in": "path",
+                    "description": "document_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/folders/{id}": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "get",
+                "operationId": "getUsingGET_1",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "id",
+                    "in": "path",
+                    "description": "id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Folder"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [ "folder-controller" ],
+                "summary": "delete",
+                "operationId": "deleteUsingDELETE_1",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "id",
+                    "in": "path",
+                    "description": "id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/remi/user/{user_id}": {
+            "get": {
+                "tags": [ "remi-controller" ],
+                "summary": "getProfile",
+                "operationId": "getProfileUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "user_id",
+                    "in": "path",
+                    "description": "user_id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/remi/{id}": {
+            "get": {
+                "tags": [ "remi-controller" ],
+                "summary": "get",
+                "operationId": "getUsingGET_2",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "parameters": [ {
+                    "name": "id",
+                    "in": "path",
+                    "description": "id",
+                    "required": true,
+                    "type": "string"
+                } ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Remi"
+                        }
+                    }
+                }
+            }
+        },
+        "/tree": {
+            "get": {
+                "tags": [ "folder-controller" ],
+                "summary": "tree",
+                "operationId": "treeUsingGET",
+                "consumes": [ "application/json" ],
+                "produces": [ "*/*" ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Entity"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Attachment": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "mime": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "AttachmentCreate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "AttachmentUpdate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "Document": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "folder": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "info": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Entity"
+                    }
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "published_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "subfolder": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "DocumentUpdate": {
+            "type": "object",
+            "properties": {
+                "info": {
+                    "type": "array",
+                    "description": "List of infos about the document",
+                    "items": {
+                        "$ref": "#/definitions/Entity"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "description": "document name"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "status of the document"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "title of the document"
+                }
+            }
+        },
+        "Entity": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object"
+            }
+        },
+        "File": {
+            "type": "object",
+            "properties": {
+                "absolute": {
+                    "type": "boolean"
+                },
+                "absoluteFile": {
+                    "$ref": "#/definitions/File"
+                },
+                "absolutePath": {
+                    "type": "string"
+                },
+                "canonicalFile": {
+                    "$ref": "#/definitions/File"
+                },
+                "canonicalPath": {
+                    "type": "string"
+                },
+                "directory": {
+                    "type": "boolean"
+                },
+                "executable": {
+                    "type": "boolean"
+                },
+                "file": {
+                    "type": "boolean"
+                },
+                "freeSpace": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "hidden": {
+                    "type": "boolean"
+                },
+                "lastModified": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent": {
+                    "type": "string"
+                },
+                "parentFile": {
+                    "$ref": "#/definitions/File"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "readable": {
+                    "type": "boolean"
+                },
+                "totalSpace": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "usableSpace": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "writable": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "Folder": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "FolderCreate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "folder description"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "folder id"
+                }
+            }
+        },
+        "InputStream": {
+            "type": "object"
+        },
+        "Remi": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "Resource": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "file": {
+                    "$ref": "#/definitions/File"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "inputStream": {
+                    "$ref": "#/definitions/InputStream"
+                },
+                "open": {
+                    "type": "boolean"
+                },
+                "readable": {
+                    "type": "boolean"
+                },
+                "uri": {
+                    "$ref": "#/definitions/URI"
+                },
+                "url": {
+                    "$ref": "#/definitions/URL"
+                }
+            }
+        },
+        "Subfolder": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "document_count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "folder": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "permission": {
+                    "$ref": "#/definitions/SubfolderPermission"
+                },
+                "send_to": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "source": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "SubfolderCreate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "folder description"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "folder id"
+                },
+                "send_to": {
+                    "type": "array",
+                    "description": "the list of system addresses to send the subfolder",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "source": {
+                    "type": "string",
+                    "description": "the source system for this subfolder"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "the initial status of the subfolder"
+                }
+            }
+        },
+        "SubfolderPermission": {
+            "type": "object",
+            "properties": {
+                "search": {
+                    "type": "boolean"
+                },
+                "update": {
+                    "type": "boolean"
+                },
+                "upload": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "SubfolderUpdate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "the new description for this subfolder"
+                }
+            }
+        },
+        "URI": {
+            "type": "object",
+            "properties": {
+                "absolute": {
+                    "type": "boolean"
+                },
+                "authority": {
+                    "type": "string"
+                },
+                "fragment": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "opaque": {
+                    "type": "boolean"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "rawAuthority": {
+                    "type": "string"
+                },
+                "rawFragment": {
+                    "type": "string"
+                },
+                "rawPath": {
+                    "type": "string"
+                },
+                "rawQuery": {
+                    "type": "string"
+                },
+                "rawSchemeSpecificPart": {
+                    "type": "string"
+                },
+                "rawUserInfo": {
+                    "type": "string"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "schemeSpecificPart": {
+                    "type": "string"
+                },
+                "userInfo": {
+                    "type": "string"
+                }
+            }
+        },
+        "URL": {
+            "type": "object",
+            "properties": {
+                "authority": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "object"
+                },
+                "defaultPort": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "deserializedFields": {
+                    "$ref": "#/definitions/URLStreamHandler"
+                },
+                "file": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "protocol": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "ref": {
+                    "type": "string"
+                },
+                "serializedHashCode": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "userInfo": {
+                    "type": "string"
+                }
+            }
+        },
+        "URLStreamHandler": {
+            "type": "object"
+        }
+    }
+}

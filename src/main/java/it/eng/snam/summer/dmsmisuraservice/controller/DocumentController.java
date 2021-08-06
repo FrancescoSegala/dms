@@ -60,38 +60,38 @@ public class DocumentController {
     }
 
     //TODO
-    @PostMapping("/docuemnts/{document_id}/attachments")
-    public Attachment postAttachment(@Valid AttachmentCreate params){
+    @PostMapping("/documents/{document_id}/attachments")
+    public Attachment postAttachment( @RequestBody @Valid AttachmentCreate[] params,  MultipartFile[] file ){
         return null ;
     }
 
     //TODO
-    @GetMapping("/documents/{document_id}/attachements/{attachment_id}")
+    @GetMapping("/documents/{document_id}/attachments/{attachment_id}")
     public Attachment getAttachment( @PathVariable String document_id, @PathVariable String attachment_id ){
         return null ;
     }
 
     //TODO
-    @PutMapping("/documents/{document_id}/attachements/{attachment_id}")
-    public Attachment putAttachment(@PathVariable String document_id, @PathVariable String attachment_id , @Valid AttachmentUpdate body ){
+    @PutMapping("/documents/{document_id}/attachments/{attachment_id}")
+    public Attachment putAttachment(@PathVariable String document_id, @PathVariable String attachment_id ,  @RequestBody @Valid AttachmentUpdate body ){
         return null ;
     }
 
     //TODO
-    @DeleteMapping("/documents/{document_id}/attachements/{attachment_id}")
+    @DeleteMapping("/documents/{document_id}/attachments/{attachment_id}")
     public void deleteAttachment(@PathVariable String document_id, @PathVariable String attachment_id){
         //nop
     }
 
     //TODO
-    @GetMapping("/documents/{document_id}/attachements/{attachment_id}/content")
+    @GetMapping("/documents/{document_id}/attachments/{attachment_id}/content")
     public void getAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,HttpServletResponse response){
         //nop
     }
 
     //TODO
-    @PutMapping("/documents/{document_id}/attachements/{attachment_id}/content")
-    public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,HttpServletResponse response){
+    @PutMapping("/documents/{document_id}/attachments/{attachment_id}/content")
+    public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id, MultipartFile file, HttpServletResponse response){
         //nop
     }
 
