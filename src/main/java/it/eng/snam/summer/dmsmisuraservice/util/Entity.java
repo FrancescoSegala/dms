@@ -72,10 +72,6 @@ public class Entity extends HashMap<String, Object> {
         return (List<T>) this.get(k);
     }
 
-    public List<Entity> getAsListEntity(String k) {
-        return this.getAsList(k);
-    }
-
     public List<String> getAsListString(String k) {
         return this.getAsList(k);
     }

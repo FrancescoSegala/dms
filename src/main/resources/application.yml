@@ -7,6 +7,10 @@ spring:
         url: jdbc:sqlserver://SNSRD00156:1970;database=summer_anag_remi
         username: summer_svil
         password: xAnlxhx8xfMH
+#   autoconfigure:
+#    exclude:
+#    - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+#    - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
   jpa:
     properties:
@@ -34,7 +38,7 @@ server:
     min-spare-threads: 50
 
 jwt:
-  enabled: false
+  enabled: true
   secret: f894d43095c5fe39cc915b4c56ecb332
   profiler-url: http://localhost:8091/editable-fields-service/anagraficaUtenti/getProfiloUtente/
   #profiler-url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente/
@@ -56,14 +60,8 @@ logging:
     historyMaxSizeMB: 150
 
 external:
-    audit:
-        rest_client_request: false
-        rest_client_response: true
-        rest_client_headers: false
-        sql_client_sql: false
-        sql_client_response: false
     dds:
-        fake: false
+        fake: true
         OS: DMSMIS
         folder_precall_url: https://dds-folder-t.snam.it/precall
         document_read_precall_url: https://dds-doc-read-t.snam.it/precall
@@ -72,7 +70,7 @@ external:
         client_secret: 4eb4ca2b54bfc5fa7f7c539afe950637
         cache_expire: 10000
     summer:
-        fake: false
+        fake: true
         jwt_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi/secure/token?rie=RI00674
         remi_url: http://api-route-dati-remi-1499-d-summer.apps.ocp-gc.snamretegas.priv/anagrafica-remi-service/anagrafica-remi
         user_url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente

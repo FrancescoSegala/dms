@@ -1,45 +1,43 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
-import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.*;
-import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.*;
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toDDSpayload;
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toUpdateDocPayload;
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.concat;
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.stringOf;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
-import it.eng.snam.summer.dmsmisuraservice.model.Info;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.Pagination;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerRemi;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.MultipartInputStreamFileResource;
-import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
-import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators;
 
 @Component
 public class DDSDocument extends DDSEntity {
-
-    @Autowired
-    NamedParameterJdbcOperations template;
 
     @Autowired
     SummerRemi summerRemi;
@@ -47,22 +45,30 @@ public class DDSDocument extends DDSEntity {
     @Autowired
     DDSSubfolder subfolderService;
 
+    @Autowired
+    Summer summer;
+
+    static ScriptEngine engine = null;
+    static String parser = null;
+    static {
+        try {
+            parser = Files.readAllLines(Paths.get(DDSDocument.class.getResource("/SSEparser.js").toURI())).stream()
+                    .collect(Collectors.joining("\n"));
+        } catch (IOException | URISyntaxException e1) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e1.getMessage());
+        }
+        engine = new ScriptEngineManager().getEngineByName("graal.js");
+    }
+
     public List<Entity> list(DocumentSearch params) {
         Long limit = params.getLimit();
-        params.setLimit(10000L);
-
-        //@formatter:off
-        List<Entity> docs = new SnamSQLClient(template)
-        .withTable("v_documenti")
-        .withParams(params)
-        .list();
-        //@formatter:on
+        List<Entity> docs = summer.getDocuments(params);
         //@formatter:off
         List<Entity> ddsDocs =  rest.getDocumentBySQL()
-        .withParam("OS", this.os )
-        .withParam("select", listOf("*"))
-        .withParam("where", where(params) )
-        .postForList();
+                                    .withParam("OS", this.os )
+                                    .withParam("select", listOf("*"))
+                                    .withParam("where", where(params) )
+                                    .postForList();
         //@formatter:on
         //@formatter:off
         return docs.stream()
@@ -83,12 +89,7 @@ public class DDSDocument extends DDSEntity {
     }
 
     private Entity get(String document_id, String clause) {
-        //@formatter:off
-        Entity doc =  new SnamSQLClient(template)
-        .withTable("v_documenti")
-        .withParams(new IdSearch(document_id))
-        .get();
-        //@formatter:on
+        Entity doc = summer.getDocument(document_id);
         //@formatter:off
         List<Entity> ddsList =  rest.getDocumentBySQL()
             .withParam("OS", this.os )
@@ -102,41 +103,29 @@ public class DDSDocument extends DDSEntity {
         return merge(doc, ddsList.get(0));
     }
 
-    private static List<InfoValidator> base =  listOf(
-                                                stringOf("StatoDocumento", 64),
-                                                stringOf("Note", 1024),
-                                                stringOf("Tag", 64),
-                                                stringOf("CreatoDa", 64)
-                                                );
-    private static Entity validators = new Entity().with(
-        "INTE", concat(base, listOf(stringOf("CodiceRemi", 32)))
-        );
-
+    private static List<InfoValidator> base = listOf(stringOf("StatoDocumento", 64), stringOf("Note", 1024),
+            stringOf("Tag", 64), stringOf("CreatoDa", 64));
+    private static Entity validators = new Entity().with("INTE", concat(base, listOf(stringOf("CodiceRemi", 32))));
 
     public Entity post(DocumentCreate params, MultipartFile file) {
-        validatePath( params );
-        // validate remi
+        validatePath(params);
         List<InfoValidator> v = validators.getAsList(params.getSubfolder());
-        v.stream()
-            .map(e -> e.apply(params.getInfo())  )
-            .filter(e -> e != null )
-            .findAny()
-            .ifPresent( e ->{ throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);} );
+        v.stream().map(e -> e.apply(params.getInfo())).filter(e -> e != null).findAny().ifPresent(e -> {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);
+        });
 
-
-        Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
+        Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }
         Entity ddsDoc = toDDSpayload(params, this.os);
-        String sseMessage = postDocumentToDDS(ddsDoc, file);
+        List<Entity> sseStream = postDocumentToDDS(ddsDoc, file);
 
-        boolean successClause = sseMessage.contains("event: message") && sseMessage.contains("data: DMSMIS_");
-
-        if (!successClause) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
+        if (!"message".equals(sseStream.get(sseStream.size() - 1).getAsString("event"))) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    sseStream.get(sseStream.size() - 1).getAsEntity("data").getAsString("reason"));
         }
-        int rows = new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, ddsDoc.id()));
+        int rows = summer.insertDocument(params, ddsDoc.id() );
         if (rows <= 0) {
             this.handleSQLfail(ddsDoc.id(), "Insert document failed");
         }
@@ -145,7 +134,7 @@ public class DDSDocument extends DDSEntity {
 
     public Entity put(String document_id, DocumentUpdate params) {
         // TODO validate document update DTO infos other than remi ?
-        Info remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
+        Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
         if (remi != null) {
             summerRemi.get(remi.getAsString("remi"));
         }
@@ -172,12 +161,8 @@ public class DDSDocument extends DDSEntity {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, res);
         }
         if (remi != null) {
-        //@formatter:off
-            int rows = new SnamSQLClient(template)
-                .withTable("documenti")
-                .update(Entity.build("c_remi_ass", remi.get("remi")), document_id);
-        //@formatter:on
-            if (rows <= 0)
+             int rows = summer.updateDocument(document_id, remi.getAsString("remi"));
+             if (rows <= 0)
                 handleSQLfail(document_id, "Update document failed");
         }
         return get(document_id);
@@ -193,26 +178,20 @@ public class DDSDocument extends DDSEntity {
         //@formatter:on
     }
 
-    public byte[] getContent(String document_id  ) {
+    public byte[] getContent(String document_id) {
         System.out.println("getContentName(document_id)");
         System.out.println(getContentName(document_id));
-        return  rest.getDocumentContent()
-            .withParam("id", document_id)
-            .withParam("OS", this.os)
-            .withParam("contentName", getContentName(document_id) )
-            .postForContent();
+        return rest.getDocumentContent().withParam("id", document_id).withParam("OS", this.os)
+                .withParam("contentName", getContentName(document_id)).postForContent();
     }
 
-    private String getContentName(String document_id){
-        DDSDoc dds = rest.getDocumentBySQL()
-            .withParam("OS", this.os )
-            .withParam("select", listOf("*"))
-            .withParam("where", "_id = '" + document_id + "'")
-            .postForDocs().get(0);
+    private String getContentName(String document_id) {
+        DDSDoc dds = rest.getDocumentBySQL().withParam("OS", this.os).withParam("select", listOf("*"))
+                .withParam("where", "_id = '" + document_id + "'").postForDocs().get(0);
         List<Entity> contents = dds.contents;
         System.out.println("contents");
         System.out.println(contents.toString());
-        if (contents.size() <= 0 ){
+        if (contents.size() <= 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This document hash no content");
         }
         Entity c = contents.get(0);
@@ -220,17 +199,16 @@ public class DDSDocument extends DDSEntity {
     }
 
     // private List<String> getContentNames(String document_id){
-    //     Entity dds = rest.getDocumentBySQL()
-    //     .withParam("OS", this.os )
-    //     .withParam("select", listOf("*"))
-    //     .withParam("where", "_id = '" + document_id + "'")
-    //     .postForList().get(0);
+    // Entity dds = rest.getDocumentBySQL()
+    // .withParam("OS", this.os )
+    // .withParam("select", listOf("*"))
+    // .withParam("where", "_id = '" + document_id + "'")
+    // .postForList().get(0);
 
-    //     return dds.getAsListEntity("contents").stream()
-    //         .map(e -> e.getAsString("ContentsName") )
-    //         .collect(Collectors.toList());
+    // return dds.getAsListEntity("contents").stream()
+    // .map(e -> e.getAsString("ContentsName") )
+    // .collect(Collectors.toList());
     // }
-
 
     private Entity pickDDSDocumentById(List<Entity> list, String id) {
         return list.stream().filter(e -> id.equals(e.getAsString("_id"))).findFirst().orElse(null);
@@ -274,23 +252,20 @@ public class DDSDocument extends DDSEntity {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
-    private String postDocumentToDDS(Entity ddsDoc, MultipartFile file) {
+    private List<Entity> postDocumentToDDS(Entity ddsDoc, MultipartFile file) {
         String sseMessage = "Document creation failed";
-        ResponseEntity<byte[]> res = null;
+
         try {
-            res = rest.createDocument().withParam("document", ddsDoc)
+            sseMessage = rest.createDocument().withParam("document", ddsDoc)
                     .withParam("file",
                             new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()))
                     .postMultipart();
+            String res = (String) engine.eval(parser + "JSON.stringify( parse.parse(`" + sseMessage + "`) )");
+            return new ObjectMapper().readValue(res, new TypeReference<List<Entity>>() {
+            });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        if (res == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, sseMessage);
-        InputStream is = new ByteArrayInputStream(res.getBody());
-        sseMessage = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines()
-                .collect(Collectors.joining("\n"));
-        return sseMessage;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class Document {
     public String notes;
     public String published_at;
     public String name;
-    public List<Info> info = new ArrayList<>();
+    public List<Entity> info = new ArrayList<>();
 
     public Document withId(String id) {
         this.id = id;
@@ -83,13 +83,13 @@ public class Document {
     }
 
     public Document withInfo( Entity info) {
-        this.info.add((Info) info) ;
+        this.info.add(info) ;
         return this;
     }
 
     public Document withInfo( Map<String, Object> info) {
 
-        this.info.add( (Info) Entity.build(info)) ;
+        this.info.add(Entity.build(info)) ;
         return this;
     }
 
@@ -189,11 +189,11 @@ public class Document {
         this.name = name;
     }
 
-    public List<Info> getInfo() {
+    public List<Entity> getInfo() {
         return info;
     }
 
-    public void setInfo(List<Info> info) {
+    public void setInfo(List<Entity> info) {
         this.info = info;
     }
 
