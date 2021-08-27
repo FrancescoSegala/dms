@@ -45,7 +45,7 @@ public class ConoDatiController {
 	
 	@GetMapping("/check-cono-dati-tdoc")
 	@SummerLog(logExecutionTime = true)
-	//@RequestAuthority(AuthorityEnum.READ)
+	@RequestAuthority(AuthorityEnum.SUPER_DMS)
 	@ApiOperation(value = "", response = Void.class)
 	@ApiResponses(value = { 
 			@ApiResponse(code = 200, message = "Dati trovati", response = Void.class),
