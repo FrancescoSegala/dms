@@ -40,4 +40,14 @@ public class SummerImpl implements Summer  {
          return sql.getDocumentCount(folder_id);
     }
 
+    
+	@Override
+	public Entity getAreaTecnicaByUserId(String userId) {
+		return remi.getAreaTecnicaByUserId(userId);
+	}
+
+	@Override
+	public Entity[] getRemiByAreaTecnica(String areaTecnica) {
+		return remi.getRemiByAreaTecnica(areaTecnica);
+	}
 }

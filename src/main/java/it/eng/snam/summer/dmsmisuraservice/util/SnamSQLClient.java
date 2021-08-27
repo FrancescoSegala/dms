@@ -2,6 +2,8 @@ package it.eng.snam.summer.dmsmisuraservice.util;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -175,6 +177,20 @@ public class SnamSQLClient {
 
     public Boolean notExist() {
         return !exist();
+    }
+    
+    public List<String> getDocumentiByRemi(List<String> listaRemi) {
+		Map<String,Object> remiParameters = Collections.singletonMap("remis", listaRemi);
+    	List<Map<String, Object>> idDocs = template.queryForList( "SELECT d.id FROM documenti d "
+		        + "WHERE c_remi_ass in (:remis)", remiParameters);
+		
+		List<String> listDocuments=new ArrayList<String>();
+		for (Map<String, Object> mapId : idDocs) {
+			String idDoc = (String) mapId.get("id");
+			listDocuments.add(idDoc);
+		}
+		
+		return listDocuments;
     }
 
 }

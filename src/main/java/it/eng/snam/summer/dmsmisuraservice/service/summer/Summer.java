@@ -10,8 +10,12 @@ public interface Summer {
     public Remi get(String id );
 
     public Entity getProfile(String user_id);
+    
+    public Entity getAreaTecnicaByUserId(String userId);
+    
+    public Entity[] getRemiByAreaTecnica(String areaTecnica);
 
-    public Long getDocumentCount(String folder_id , String subfolder_id );
+	Long getDocumentCount(String folder_id, String subfolder_id);
 
-    public Map<String, Long> getDocumentCount(String folder_id );
+	Map<String, Long> getDocumentCount(String folder_id);
 }

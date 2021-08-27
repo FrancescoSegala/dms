@@ -18,7 +18,7 @@ import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 @Component
 public class SummerSqlProvider {
 
-    @Autowired(required = false )
+    @Autowired(required = true )
     private NamedParameterJdbcOperations template;
 
     public Long getDocumentCount(String folder_id, String subfolder_id) {
@@ -57,6 +57,10 @@ public class SummerSqlProvider {
         return new SnamSQLClient(template)
         .withTable("documenti")
         .update(Entity.build("c_remi_ass", remi ), document_id);
+    }
+    
+    public List<String> getDocumentiByRemi(List<String> listaRemi){
+    	return new SnamSQLClient(template).getDocumentiByRemi(listaRemi);
     }
 
 }

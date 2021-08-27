@@ -29,4 +29,16 @@ public class FakeSummerImpl implements Summer {
         return null;
     }
 
+	@Override
+	public Entity getAreaTecnicaByUserId(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Entity[] getRemiByAreaTecnica(String areaTecnica) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

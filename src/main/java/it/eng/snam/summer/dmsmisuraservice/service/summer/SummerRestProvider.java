@@ -20,6 +20,9 @@ public class SummerRestProvider {
 
     @Value("${external.summer.user_url}")
     private String user_url  ;
+    
+    @Value("${external.summer.contatti_url}")
+    private String contatti_url;
 
 
 
@@ -40,5 +43,24 @@ public class SummerRestProvider {
         return rest(getPrecall( user_url ,user_id));
     }
 
-
+    public SnamRestClient getAreaTecnicaByUserId(String user_id) {
+//    	String authorization = rest(jwt_url).getString();
+//    	Precall preCall = precall()
+//    			.withUrl(contatti_url+"/getAreaTecnicaByUserId")
+//    			.withAccessToken(authorization);
+//    	
+//    	return rest(preCall).withParam("userId", user_id);
+    	
+    	return rest(	precall()
+    	            .withUrl(contatti_url+"/getAreaTecnicaByUserId?userId=" + user_id ) );
+    		
+    	// return rest(getPrecall( contatti_url+"/getAreaTecnicaByUserId" ,user_id));
+	}
+    
+    
+    public SnamRestClient getRemiByAreaTecnica(String areaTecnica) {
+    	 return rest(getPrecall( anagrafica_remi_url+"/getRemiByAreaTecnica" ,areaTecnica));
+    	//return rest(	precall()
+	       //     .withUrl(anagrafica_remi_url+"/getRemiByAreaTecnica/" + areaTecnica) );
+	}
 }

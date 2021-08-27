@@ -120,7 +120,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
 				/* Chiamata microservizio profilazione */
-				final String url = profilerUrl + userID;
+				final String url = profilerUrl + userID+"/DMS_MISURA";
 				RestTemplate restTemplate = new RestTemplate();
 				ProfiliResponse result = null;
 

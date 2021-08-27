@@ -93,6 +93,15 @@ public class SnamRestClient {
         printResponse(aux);
         return aux;
     }
+    
+    public Entity[] getList() {
+        printRequest();
+        Entity[] aux = template()
+                .exchange(url, HttpMethod.GET, new HttpEntity<>(params.toMultiValueMap(), headers), Entity[].class)
+                .getBody();
+        printResponse(aux);
+        return aux;
+    }
 
     public String getString() {
         printRequest();
