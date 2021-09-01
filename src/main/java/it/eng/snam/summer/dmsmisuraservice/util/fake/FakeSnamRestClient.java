@@ -82,6 +82,12 @@ public class FakeSnamRestClient implements SnamRestClient {
         return null;
     }
 
+    @Override
+    public List<Entity> getForList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 
 
 

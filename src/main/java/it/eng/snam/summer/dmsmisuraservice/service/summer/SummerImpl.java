@@ -63,4 +63,14 @@ public class SummerImpl implements Summer  {
         return sql.updateDocument(document_id, remi);
     }
 
+
+	@Override
+	public Entity getAreaTecnicaByUserId(String userId) {
+		return remi.getAreaTecnicaByUserId(userId);
+	}
+
+	@Override
+	public Entity[] getRemiByAreaTecnica(String areaTecnica) {
+		return remi.getRemiByAreaTecnica(areaTecnica);
+	}
 }

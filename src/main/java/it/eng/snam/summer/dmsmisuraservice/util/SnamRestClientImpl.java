@@ -70,6 +70,15 @@ public class SnamRestClientImpl implements SnamRestClient {
         return aux;
     }
 
+
+    public List<Entity> getForList(){
+       String aux = template()
+                .exchange(url, HttpMethod.GET, new HttpEntity<>(params.toMultiValueMap(), headers), String.class)
+                .getBody();
+
+        return Entity.parseJsonAsList( aux) ;
+    }
+
     public String getString() {
 
         String aux = template().getForObject(url, String.class, new HttpEntity<>(params.toMultiValueMap(), headers));

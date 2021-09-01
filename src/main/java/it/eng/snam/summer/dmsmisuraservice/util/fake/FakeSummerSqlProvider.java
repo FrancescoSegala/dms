@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -107,6 +107,12 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
             .with("data_entrata_esercizio", "data_entrata_esercizio" )
             .with("remi_terzo", "remi_terzo" )
             .with("reti_trasporto", "reti_trasporto" );
+    }
+
+    @Override
+    public List<String> getDocumentiByRemi(List<String> listaRemi) {
+
+        return listOf( randomDoc().toString(),randomDoc().toString() );
     }
 
 

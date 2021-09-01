@@ -7,6 +7,9 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +31,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 
 @RestController
+@CrossOrigin
 public class DocumentController {
 
     @Autowired
@@ -35,7 +39,11 @@ public class DocumentController {
 
     @GetMapping("/documents")
     public List<Document> list(@Valid DocumentSearch params) {
-        return dds.listDocuments(params);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		//da authentication èpossibile recujperare il Profilo (tramite la proprietà Principale)
+		//e la lista delle funzionalità (proprietà authorioties) cui l'utente loggato è abilitato
+
+    	return dds.listDocuments(params);
     }
 
     @GetMapping("/documents/{document_id}")

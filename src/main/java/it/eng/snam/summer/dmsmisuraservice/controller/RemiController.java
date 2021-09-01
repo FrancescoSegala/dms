@@ -1,6 +1,7 @@
 package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 @RestController
+@CrossOrigin
 public class RemiController {
 
 

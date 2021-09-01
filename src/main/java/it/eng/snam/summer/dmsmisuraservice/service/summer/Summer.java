@@ -10,7 +10,7 @@ import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 public interface Summer {
 
-    public Remi get(String id );
+    public Remi get(String id);
 
     public Entity getProfile(String user_id);
 
@@ -25,4 +25,9 @@ public interface Summer {
     public int insertDocument(DocumentCreate params, String id);
 
     public int updateDocument(String document_id, String remi);
+
+    public Entity getAreaTecnicaByUserId(String userId);
+
+    public Entity[] getRemiByAreaTecnica(String areaTecnica);
+
 }

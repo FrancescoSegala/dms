@@ -21,4 +21,5 @@ public interface SummerSqlProvider {
 
     public int updateDocument(String document_id, String remi);
 
+    public List<String> getDocumentiByRemi(List<String> listaRemi);
 }

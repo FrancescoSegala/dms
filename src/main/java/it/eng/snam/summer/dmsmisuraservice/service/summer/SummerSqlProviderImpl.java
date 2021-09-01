@@ -1,5 +1,7 @@
 package it.eng.snam.summer.dmsmisuraservice.service.summer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +58,23 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
         return new SnamSQLClient(template)
         .withTable("documenti")
         .update(Entity.build("c_remi_ass", remi ), document_id);
+    }
+
+
+
+    public List<String> getDocumentiByRemi(List<String> listaRemi) {
+
+        //TODO uniformare agli altri --> bisogna aggiungere la gestione di in in snamSQLClient
+		Map<String,Object> remiParameters = Collections.singletonMap("remis", listaRemi);
+
+        List<Map<String, Object>> idDocs = template.queryForList( "SELECT d.id FROM documenti d "
+		        + "WHERE c_remi_ass in (:remis)", remiParameters);
+		List<String> listDocuments=new ArrayList<String>();
+		for (Map<String, Object> mapId : idDocs) {
+			String idDoc = (String) mapId.get("id");
+			listDocuments.add(idDoc);
+		}
+		return listDocuments;
     }
 
 }

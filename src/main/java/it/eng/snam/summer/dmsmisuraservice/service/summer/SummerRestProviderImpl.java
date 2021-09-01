@@ -21,8 +21,12 @@ public class SummerRestProviderImpl implements SummerRestProvider{
     @Value("${external.summer.user_url}")
     private String user_url  ;
 
+    @Value("${external.summer.contatti_url}")
+    private String contatti_url;
 
-    private Precall getPrecall( String url , String id){
+
+
+    public Precall getPrecall( String url , String id){
         String authorization = new RestClientBuilder().build(jwt_url).getString();
         return precall()
             .withUrl(url + "/" + id )
@@ -39,5 +43,13 @@ public class SummerRestProviderImpl implements SummerRestProvider{
         return new RestClientBuilder().build(getPrecall( user_url ,user_id));
     }
 
+
+    public SnamRestClient getAreaTecnicaByUserId(String user_id) {
+    	return new RestClientBuilder().build(getPrecall( contatti_url+"/getAreaTecnicaByUserId?userId=" + user_id , "") );
+	}
+
+    public SnamRestClient getRemiByAreaTecnica(String areaTecnica) {
+    	 return new RestClientBuilder().build(getPrecall (anagrafica_remi_url+"/getRemiByAreaTecnica" ,areaTecnica));
+	}
 
 }

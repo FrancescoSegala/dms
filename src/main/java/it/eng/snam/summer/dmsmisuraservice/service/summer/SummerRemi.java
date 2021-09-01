@@ -19,4 +19,25 @@ public class SummerRemi extends SummerEntity {
         return r;
     }
 
+    public Entity getAreaTecnicaByUserId(String userId) {
+        Entity r ;
+        try {
+            r = this.rest.getAreaTecnicaByUserId(userId).get();
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "area tecnica per userId " + userId + " not found");
+        }
+        return r;
+    }
+
+
+    public Entity[] getRemiByAreaTecnica(String areaTecnica) {
+        Entity[] r ;
+        try {
+            r =  this.rest.getRemiByAreaTecnica(areaTecnica).getForList().toArray(new Entity[0]);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "lista remi per areaTecnica " + areaTecnica + " not found");
+        }
+        return r;
+    }
 }

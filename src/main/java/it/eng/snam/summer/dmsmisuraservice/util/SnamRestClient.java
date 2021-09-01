@@ -18,6 +18,8 @@ public interface SnamRestClient {
 
     public Entity get();
 
+    public List<Entity> getForList();
+
     public String getString();
 
     public String postMultipart();

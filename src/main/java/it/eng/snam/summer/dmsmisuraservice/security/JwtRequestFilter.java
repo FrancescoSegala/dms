@@ -65,16 +65,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 				/* Se la security è disabilitata, setto il il context con superUser (abilitato a tutto) */
 				List<SimpleGrantedAuthority> singletonList = new ArrayList<>();
-				singletonList.add(new SimpleGrantedAuthority("search"));
-				singletonList.add(new SimpleGrantedAuthority("download"));
-				singletonList.add(new SimpleGrantedAuthority("view"));
-				singletonList.add(new SimpleGrantedAuthority("upload"));
-				singletonList.add(new SimpleGrantedAuthority("update"));
-				singletonList.add(new SimpleGrantedAuthority("delete"));
-				singletonList.add(new SimpleGrantedAuthority("modify"));
-				singletonList.add(new SimpleGrantedAuthority("create"));
+				singletonList.add(new SimpleGrantedAuthority("Search"));
+				singletonList.add(new SimpleGrantedAuthority("Download Content"));
+				singletonList.add(new SimpleGrantedAuthority("View Attributes"));
+				singletonList.add(new SimpleGrantedAuthority("Upload"));
+				singletonList.add(new SimpleGrantedAuthority("Update"));
+				singletonList.add(new SimpleGrantedAuthority("Delete"));
+				singletonList.add(new SimpleGrantedAuthority("Modify"));
+				singletonList.add(new SimpleGrantedAuthority("Create"));
 
-				SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("superUser", null, singletonList));
+				SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("AMM_DMS", null, singletonList));
 
 				chain.doFilter(request, response);
 				return;
@@ -120,7 +120,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
 				/* Chiamata microservizio profilazione */
-				final String url = profilerUrl + userID;
+				final String url = profilerUrl + userID+"/DMS_MISURA";
 				RestTemplate restTemplate = new RestTemplate();
 				ProfiliResponse result = null;
 

@@ -38,14 +38,15 @@ public class DDSRestProvider {
     RestClientBuilder rest;
 
     private static Map<String, Entity> SSO_EXPIRATION = new HashMap<>();
-    //private static CachedFunction<String, Entity> CACHED_PRECALL = new CachedFunction<>(1000000L,precallUrl -> rest.build(precallUrl).get());
+    // private static CachedFunction<String, Entity> CACHED_PRECALL = new
+    // CachedFunction<>(1000000L,precallUrl -> rest.build(precallUrl).get());
 
     public Precall getPrecall(String precallUrl, String fn, String method) {
 
         Long start = Instant.now().toEpochMilli();
         try {
-            Entity precall =rest.build(precallUrl).get();
-            //Entity precall = CACHED_PRECALL.apply(precallUrl);
+            Entity precall = rest.build(precallUrl).get();
+            // Entity precall = CACHED_PRECALL.apply(precallUrl);
             // Entity precall = rest(precallUrl).get();
             return precall().withUrl(precall.getAsString(fn) + "/" + method)
                     .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
@@ -93,8 +94,8 @@ public class DDSRestProvider {
 
     @ExecutionTime
     public SnamRestClient updateFolder() {
-        return rest.build(getPrecall(folder_precall_url, "upsertfolder", "setFoldersSystem")).withHeader("OAM_REMOTE_USER",
-                "user1");
+        return rest.build(getPrecall(folder_precall_url, "upsertfolder", "setFoldersSystem"))
+                .withHeader("OAM_REMOTE_USER", "user1");
     }
 
     @ExecutionTime
@@ -105,8 +106,8 @@ public class DDSRestProvider {
 
     @ExecutionTime
     public SnamRestClient getDocumentBySQL() {
-        return rest.build(getPrecall(document_read_precall_url, "getdoc", "getDocumentBySQL")).withHeader("OAM_REMOTE_USER",
-                "user1");
+        return rest.build(getPrecall(document_read_precall_url, "getdoc", "getDocumentBySQL"))
+                .withHeader("OAM_REMOTE_USER", "user1");
     }
 
     @ExecutionTime
@@ -126,6 +127,7 @@ public class DDSRestProvider {
         return rest.build(getPrecall(document_write_precall_url, "deletedoc", "logicalDeleteDocument"))
                 .withHeader("OAM_REMOTE_USER", "user1");
     }
+
 
     @ExecutionTime
     public SnamRestClient getDocumentContent() {
