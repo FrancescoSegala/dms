@@ -163,7 +163,28 @@
         <artifactId>javaee-api</artifactId>
         <version>8.0.1</version>
       </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.graalvm.js/js -->
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>21.2.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.graalvm.js/js-scriptengine -->
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>21.2.0</version>
+        </dependency>
+
+
+
     </dependencies>
+
+
+
+
 
     <build>
         <plugins>

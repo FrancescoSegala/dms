@@ -258,6 +258,8 @@ public class DDSDocument extends DDSEntity {
                     .withParam("file",
                             new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()))
                     .postMultipart();
+            System.out.println("sseMessage");
+            System.out.println(sseMessage);
             String res = (String) engine.eval(parser + "JSON.stringify( parse.parse(`" + sseMessage + "`) )");
             return new ObjectMapper().readValue(res, new TypeReference<List<Entity>>() {
             });

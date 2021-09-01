@@ -22,7 +22,7 @@ import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProviderImpl;
 import it.eng.snam.summer.dmsmisuraservice.util.fake.FakeSummerSqlProvider;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
+//@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 public class DmsMisuraServiceApplication {
 
 	@Value("${controlm-jks.password:default}")

@@ -12,18 +12,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import it.eng.snam.summer.common.SummerCommonLib;
 
-@Configuration
+//@Configuration
 public class WebAppConfig {
 
-    @Bean(name = "appDataSource")
-    @Primary
-    @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource dataSource() {
-        return DataSourceBuilder.create().build();
-    }
+    // @Bean(name = "appDataSource")
+    // @Primary
+    // @ConfigurationProperties(prefix = "spring.datasource")
+    // public DataSource dataSource() {
+    //     return DataSourceBuilder.create().build();
+    // }
 
-    @Bean(name = "applicationJdbcTemplate")
-    public JdbcTemplate applicationDataConnection(){
-        return new JdbcTemplate(dataSource());
-    }
+    // @Bean(name = "applicationJdbcTemplate")
+    // public JdbcTemplate applicationDataConnection(){
+    //     return new JdbcTemplate(dataSource());
+    // }
 }

@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +21,9 @@ import io.swagger.annotations.ApiResponses;
 import it.eng.snam.summer.common.annotation.RequestAuthority;
 import it.eng.snam.summer.common.annotation.SummerLog;
 import it.eng.snam.summer.common.combo.AuthorityEnum;
-import it.eng.snam.summer.common.entity.contatti.Contatto;
 import it.eng.snam.summer.common.exception.NotAlreadyExistsException;
-import it.eng.snam.summer.common.util.Utility;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.ConoDatiService;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
-import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 
 @CrossOrigin

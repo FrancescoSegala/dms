@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.Validator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -103,12 +105,18 @@ public class DocumentController {
         //nop
     }
 
-
+    @Autowired
+    Validator validator ;
 
     @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
     public Document post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {
-        return dds.createDocument(DocumentCreate.parseJson(document), file);
+        DocumentCreate dc = DocumentCreate.parseJson(document);
+        validator.validate(dc)
+        .stream()
+        .findAny()
+        .ifPresent(x -> {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, x.getMessage()); });
+        return dds.createDocument( dc, file);
     }
 
     @PutMapping("/documents/{document_id}")

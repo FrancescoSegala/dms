@@ -1,6 +1,6 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
 
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
@@ -134,8 +135,8 @@ public class SnamRestClientImpl implements SnamRestClient {
     public List<Entity> postForList() {
         Object body = MediaType.APPLICATION_JSON.equals(this.contentType) ? params.toString()
                 : params.toMultiValueMap();
-
-        String aux = template().postForObject(url, new HttpEntity<>(body, headers), String.class);
+        Entity b = Entity.build((MultiValueMap<String, Object>) body) ;
+        String aux = template().postForObject(url, new HttpEntity<>(b, headers), String.class);
 
         return Entity.parseJsonAsList(aux);
     }

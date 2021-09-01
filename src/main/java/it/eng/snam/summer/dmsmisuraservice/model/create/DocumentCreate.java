@@ -40,7 +40,7 @@ public class DocumentCreate {
     private String folder;
 
     @ApiModelProperty("the id of the 2nd level folder")
-    @NotBlank(message = "subfolder must be not empty")
+    @NotBlank(message = "subfolder must not be empty")
     private String subfolder;
 
     public String getName() {
