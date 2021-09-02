@@ -46,7 +46,7 @@ public class ConoDatiControllerTest {
     //SecurityContextHolder.getContext().getAuthentication()
 
     @Test
-    public void testConoDatiTDoc(){
+    public void testConoDatiTDoc() throws Exception{
 
     	List<Object> listaTDoc = new ArrayList<>();
     	listaTDoc.add("INTE");

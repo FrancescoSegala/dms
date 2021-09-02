@@ -41,8 +41,8 @@ server:
 jwt:
   enabled: true
   secret: f894d43095c5fe39cc915b4c56ecb332
-  profiler-url: http://localhost:8091/editable-fields-service/anagraficaUtenti/getProfiloUtente/
-  #profiler-url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente/
+  #profiler-url: http://localhost:8091/editable-fields-service/anagraficaUtenti/getProfiloUtente/
+  profiler-url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente/
   public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmAjLULRLI37iHqUTy8IZFXqR/EobjbyP1mYDsjbE3/0XoOXZVohiIeqDrRdwc9MSnQQ+vUV8BerN9aBsAhJTgzebwbZhdCGAD2I2Pl1wKXfrRn/HTaDpyE1OrOaJdGP015orrSy8WrirV4ZyS+xt/041yY/gJwVnTOyi6HqIc9VtN2TVv8keNO9Ev2PvaHBhmpOZcwI6xX63IQxTCjccIcVx1XCimnkvpWLLZ0ddv0WrSBepb/twLP1kxePxxk8qbvvOcZEkNm8fXtRtpvuooBRS5zJIj2xHdPuZbdYeofZP2kHRYdfNGyQLLOTNZ9W0Rg+lL6o0a98ZsGioZlV4qwIDAQAB
 
 logging.file.name: /work/logs/dms-misura-service/dms-misura-service.log

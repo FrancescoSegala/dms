@@ -7,11 +7,15 @@ import javax.validation.constraints.NotEmpty;
 
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import it.eng.snam.summer.common.exception.NotAlreadyExistsException;
+import it.eng.snam.summer.dmsmisuraservice.security.JwtRequestFilter.ProfiliResponse;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 @Service
@@ -22,9 +26,27 @@ public class ConoDatiService {
 
     @Autowired
     SummerSqlProvider summerSqlProvider;
+    
+    @Autowired
+    RestTemplate restTemplate;
+    
+	@Value("${jwt.profiler-url:default}")
+	private String profilerUrl;
 
-	public List<Object> checkConoDatiTDoc(@NotEmpty String profilo)  {
+	public List<Object> checkConoDatiTDoc(@NotEmpty String userId) throws Exception  {
 		
+		//recuperiamo il profilo dallo userId chiamando il ms editable-service getProfiloUtenteEsterno
+		final String url = profilerUrl + userId+"/DMS_MISURA";
+		ProfiliResponse result = null;
+		
+		try {
+			result = restTemplate.getForObject(url, ProfiliResponse.class);
+
+		} catch (Exception e) {
+			throw new Exception("Impossibile recuperare il profilo dallo userId");
+		}
+		
+		String profilo = result.getProfilo();
 		
 		String tDocPrimoLivello = summerSqlProvider.getTDocByProfilo(profilo);
 		
