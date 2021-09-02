@@ -115,6 +115,11 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
         return listOf( randomDoc().toString(),randomDoc().toString() );
     }
 
+	@Override
+	public String getTDocByProfilo(String profilo) {
+		return "COMM,APRI";
+	}
+
 
 
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSQLpayload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
@@ -77,4 +78,12 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
 		return listDocuments;
     }
 
+	@Override
+	public String getTDocByProfilo(String profilo) {
+		Map<String,String> params = Collections.singletonMap("profiloParam", profilo);
+
+		List<Map<String, Object>> result = template.queryForList("SELECT t.tdoc_primo_livello from profilo_tdoc t WHERE profilo=:profiloParam", params);
+		
+		return (String) result.get(0).get("tdoc_primo_livello");
+	}
 }
