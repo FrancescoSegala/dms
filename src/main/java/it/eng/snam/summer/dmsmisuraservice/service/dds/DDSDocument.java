@@ -52,9 +52,10 @@ public class DDSDocument extends DDSEntity {
         try {
             parser = Files.readAllLines(Paths.get(DDSDocument.class.getResource("/SSEparser.js").toURI())).stream()
                     .collect(Collectors.joining("\n"));
-        } catch (  Exception e1) {
+        } catch (IOException | URISyntaxException e1) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e1.getMessage());
         }
+
         engine = new ScriptEngineManager().getEngineByName("graal.js");
     }
 
