@@ -117,8 +117,8 @@ public class DDSImpl implements DDS {
     }
 
     @Override
-    public Document createDocument(DocumentCreate params, MultipartFile file ) {
-        return toDocument(ddsDocument.post(params, file ));
+    public List<Document> createDocument(DocumentCreate params, MultipartFile file ) {
+       return ddsDocument.post(params, file).stream().map(d -> toDocument(d)).collect(Collectors.toList());
     }
 
     @Override

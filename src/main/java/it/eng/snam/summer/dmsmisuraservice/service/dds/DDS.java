@@ -51,7 +51,7 @@ public interface DDS {
 
     public List<Document> listDocuments(DocumentSearch params);
 
-    public Document createDocument(DocumentCreate params, MultipartFile file );
+    public List<Document> createDocument(DocumentCreate params, MultipartFile file );
 
     public Document updateDocument(String document_id , DocumentUpdate params);
 

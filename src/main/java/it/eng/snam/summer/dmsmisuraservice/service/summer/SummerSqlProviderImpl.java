@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSQLpayload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentCount;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
+import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSFolder;
+import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSSubfolder;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
@@ -21,6 +24,9 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
 
     @Autowired
     private NamedParameterJdbcOperations template;
+
+    @Autowired
+    private DDSFolder folderService;
 
     public Long getDocumentCount(String folder_id, String subfolder_id) {
         return new SnamSQLClient(template).withTable("documenti").withParams(new DocumentCount(folder_id, subfolder_id))
@@ -49,8 +55,15 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
     }
 
 
-    public int insertDocument(DocumentCreate params , String id  ){
-        return new SnamSQLClient(template).withTable("documenti").insert(toSQLpayload(params, id ));
+    public void insertDocument(String path, String id, String remi , String linea ){
+         insertDocument(id, path.split("/")[1] , path.split("/")[2], remi , linea  ) ;
+    }
+
+    private int insertDocument(String id , String folder_id , String subfolder_id,String remi ,  String linea){
+        return new SnamSQLClient(template).withTable("documenti")
+        .insert(
+            toSQLpayload(id, folder_id, subfolder_id, remi, linea )
+            );
     }
 
 

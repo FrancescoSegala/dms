@@ -64,8 +64,7 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "entity "+ document_id + " not found"));
     }
 
-    @Override
-    public int insertDocument(DocumentCreate params, String id) {
+     public int insertDocument(DocumentCreate params, String id) {
         v_docments.add(randomDoc(id));
         return 1 ;
     }
@@ -113,6 +112,12 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
     public List<String> getDocumentiByRemi(List<String> listaRemi) {
 
         return listOf( randomDoc().toString(),randomDoc().toString() );
+    }
+
+    @Override
+    public void insertDocument(List<String> subfolders, String id, List<Entity> info) {
+        // TODO Auto-generated method stub
+
     }
 
 

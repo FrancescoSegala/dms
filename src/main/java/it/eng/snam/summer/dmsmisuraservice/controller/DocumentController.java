@@ -2,6 +2,8 @@ package it.eng.snam.summer.dmsmisuraservice.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
 import it.eng.snam.summer.dmsmisuraservice.model.Attachment;
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.create.AttachmentCreate;
@@ -41,10 +44,10 @@ public class DocumentController {
 
     @GetMapping("/documents")
     public List<Document> list(@Valid DocumentSearch params) {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //TODO a che serve ?
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		//da authentication èpossibile recujperare il Profilo (tramite la proprietà Principale)
 		//e la lista delle funzionalità (proprietà authorioties) cui l'utente loggato è abilitato
-
     	return dds.listDocuments(params);
     }
 
@@ -55,12 +58,19 @@ public class DocumentController {
 
     @GetMapping("/documents/{document_id}/content")
     public void getContent( HttpServletResponse response, @PathVariable String document_id) {
-        byte[] c = dds.getContent(document_id );
+        byte[] content = dds.getContent(document_id );
         try {
-            response.getOutputStream().write(c);
+            response.getOutputStream().write(content);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
         }
+    }
+
+
+    //TODO
+    @PutMapping("/documents/{document_id}/content")
+    public void putContent(@PathVariable String document_id , MultipartFile file, HttpServletResponse response){
+
     }
 
     //TODO
@@ -107,15 +117,19 @@ public class DocumentController {
 
     @Autowired
     Validator validator ;
+    private void validate(Object o){
+        List<String> errors = validator.validate(o)
+        .stream()
+        .map(x -> x.getMessage())
+        .collect(Collectors.toList());
+        if (errors.size() > 0)  {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errors.toString()); }
+    }
 
     @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
-    public Document post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {
+    public List<Document> post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {
         DocumentCreate dc = DocumentCreate.parseJson(document);
-        validator.validate(dc)
-        .stream()
-        .findAny()
-        .ifPresent(x -> {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, x.getMessage()); });
+        validate(dc);
         return dds.createDocument( dc, file);
     }
 

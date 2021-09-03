@@ -34,6 +34,16 @@ public class DDSSubfolder extends DDSEntity {
 
 
     @ExecutionTime
+    public Entity getFolderBySubfolder(String subfolder_id){
+        return rest.getFolderBySQL()
+            .withParam("OS", this.os)
+            .withParam("select", listOf("*"))
+            .withParam("where", "name like '/%/"+ subfolder_id + "' limit 1 offset 0" )
+            .postForList().get(0)
+            ;
+    }
+
+    @ExecutionTime
     public Entity get(String folder_id , String subfolder_id ){
         List<Entity> list = rest.getFolderBySQL()
             .withParam("OS", this.os )

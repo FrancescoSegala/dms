@@ -1,37 +1,5 @@
 package it.eng.snam.summer.dmsmisuraservice.service.dds;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import javax.validation.Valid;
-
-import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
-import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.*;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import io.micrometer.core.instrument.util.IOUtils;
-import it.eng.snam.summer.dmsmisuraservice.model.Document;
-import it.eng.snam.summer.dmsmisuraservice.model.Folder;
-import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
-import it.eng.snam.summer.dmsmisuraservice.model.SubfolderPermission;
-import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
-import it.eng.snam.summer.dmsmisuraservice.model.create.FolderCreate;
-import it.eng.snam.summer.dmsmisuraservice.model.create.SubfolderCreate;
-import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.search.FolderSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.search.SubfolderSearch;
-import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
-import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
-import it.eng.snam.summer.dmsmisuraservice.util.Entity;
-
-
 public class FakeDDSImpl   {
 
 

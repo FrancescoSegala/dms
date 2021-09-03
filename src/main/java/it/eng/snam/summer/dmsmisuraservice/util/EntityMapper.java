@@ -1,21 +1,23 @@
 package it.eng.snam.summer.dmsmisuraservice.util;
-import java.util.Arrays;
-import java.util.List;
-
-import org.slf4j.MDC;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.SubfolderPermission;
-import it.eng.snam.summer.dmsmisuraservice.security.JwtConstants;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
+import it.eng.snam.summer.dmsmisuraservice.security.JwtConstants;
+import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSSubfolder;
 
 public class EntityMapper {
 
@@ -96,13 +98,13 @@ public class EntityMapper {
 
 
 
-    public static Entity toSQLpayload(DocumentCreate params, String id) {
+    public static Entity toSQLpayload( String id, String folder, String subfolder,  String remi, String linea ) {
         //@formatter:off
         Entity res =  Entity.build("id", id).with("data", Instant.now().toString())
-                .with("c_remi_ass",
-                        params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst()
-                                .orElse(  Entity.build("remi", null)).getAsString("remi"))
-                .with("folder", params.getFolder()).with("subfolder", params.getSubfolder());
+                .with("c_remi_ass",remi)
+                .with("linea", linea)
+                .with("folder", folder)
+                .with("subfolder", subfolder);
         //@formatter:on
         return res ;
     }
@@ -140,16 +142,18 @@ public class EntityMapper {
 
 
 
-    public static Entity toDDSpayload(DocumentCreate doc, String OS) {
+    public static Entity toDDSpayload(DocumentCreate doc, String OS, String path ) {
         String id = "DMSMIS_" + UUID.randomUUID().toString();
-        //@formatter:off
+        List<String> folder = listOf(path);
+         //@formatter:off
+        //TODO il campo folders ha bisogno del path completo
         return Entity.build("OS", OS)
             .with("documentalClass", "ALTRO")
             .with("id", id)
             .with("name", doc.getName())
             .with("documentTitle", doc.getTitle()).with("customAttributes", listOf())
             .with("customPermissions", listOf())
-            .with("folders", listOf("/" + doc.getFolder() + "/" + doc.getSubfolder()))
+            .with("folders", folder )
             .with("folderClass", "dms_DMSFolder").with("createFolderIfNotExist", false);
         //@formatter:on
     }

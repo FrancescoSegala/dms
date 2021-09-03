@@ -17,7 +17,7 @@ public interface SummerSqlProvider {
 
     public Entity getDocument(String document_id);
 
-    public int insertDocument(DocumentCreate params, String id);
+    public void insertDocument(String path, String id, String remi , String linea);
 
     public int updateDocument(String document_id, String remi);
 

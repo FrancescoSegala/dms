@@ -29,19 +29,16 @@ public class DocumentCreate {
 
     @ApiModelProperty("list of infos about the document ")
     @NotEmpty(message = "info must be not empty")
-    private List<Entity> info = new ArrayList<>(); // es {"remi" : "codice_remi"}
+    private List<Entity> info = new ArrayList<>(); // es {"remi" : ["codice_remi"]} //TODO tieni traccia
 
     @ApiModelProperty("title of the document")
     @NotBlank(message = "title must be not empty")
     @Pattern(regexp = DOCUMENT_REGEX)
     private String title; //solo su dds
 
-    @ApiModelProperty("the id of the 1st level folder")
-    private String folder;
-
     @ApiModelProperty("the id of the 2nd level folder")
-    @NotBlank(message = "subfolder must not be empty")
-    private String subfolder;
+    //@NotBlank(message = "subfolder must not be empty")
+    private List<String> subfolders;
 
     public String getName() {
         return name;
@@ -63,21 +60,15 @@ public class DocumentCreate {
         this.title = title;
     }
 
-    public String getFolder() {
-        return folder;
+    public List<String> getSubfolders() {
+        return subfolders;
     }
-    public void setFolder(String folder) {
-        this.folder = folder;
-    }
-    public String getSubfolder() {
-        return subfolder;
-    }
-    public void setSubfolder(String subfolder) {
-        this.subfolder = subfolder;
+    public void setSubfolders(List<String> subfolders) {
+        this.subfolders = subfolders;
     }
     @Override
     public String toString() {
-        return "{folder :" + folder + ", info :" + info + ", name :" + name + ", subfolder :" + subfolder
+        return  "info :" + info + ", name :" + name + ", subfolders :" + subfolders
                 + ", title :" + title + "}";
     }
 
