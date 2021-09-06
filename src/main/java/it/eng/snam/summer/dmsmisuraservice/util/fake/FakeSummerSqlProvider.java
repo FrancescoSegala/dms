@@ -114,11 +114,18 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
         return listOf( randomDoc().toString(),randomDoc().toString() );
     }
 
+<<<<<<< HEAD
     @Override
     public void insertDocument(List<String> subfolders, String id, List<Entity> info) {
         // TODO Auto-generated method stub
 
     }
+=======
+	@Override
+	public String getTDocByProfilo(String profilo) {
+		return "COMM,APRI";
+	}
+>>>>>>> origin/develop
 
 
 

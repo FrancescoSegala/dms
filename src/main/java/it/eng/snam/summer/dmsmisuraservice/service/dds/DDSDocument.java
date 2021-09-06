@@ -6,13 +6,18 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.concat;
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.listOf;
 import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.stringOf;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -50,11 +55,17 @@ public class DDSDocument extends DDSEntity {
     static String parser = null;
     static {
         try {
-            parser = Files.readAllLines(Paths.get(DDSDocument.class.getResource("/SSEparser.js").toURI())).stream()
-                    .collect(Collectors.joining("\n"));
-        } catch (IOException | URISyntaxException e1) {
+        	InputStream is = DDSDocument.class.getResourceAsStream("/SSEparser.js");
+        	
+        	Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines();
+        	parser = stream.collect(Collectors.joining("\n"));
+        	
+//            parser = Files.readAllLines(Paths.get(DDSDocument.class.getResource("/SSEparser.js").toURI())).stream()
+//                    .collect(Collectors.joining("\n"));
+        } catch (Exception e1) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e1.getMessage());
         }
+
         engine = new ScriptEngineManager().getEngineByName("graal.js");
     }
 

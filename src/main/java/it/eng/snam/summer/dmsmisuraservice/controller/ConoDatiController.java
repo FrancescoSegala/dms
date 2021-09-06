@@ -56,12 +56,18 @@ public class ConoDatiController {
 		try {
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+<<<<<<< HEAD
 			//da authentication è possibile recuperare il Profilo (tramite la proprietà Principale)
 			//e la lista delle funzionalità cui l'utente loggato è  a fare
+=======
+			//da authentication è possibile recujperare il Profilo (tramite la proprietà Principale)
+			//e la lista delle funzionalità cui l'utente loggato è abilitato
+			
+>>>>>>> origin/develop
 
-			List<String> listFolders = conoDatiService.checkConoDatiTDoc(userID);
+			List<Object> listTDoc = conoDatiService.checkConoDatiTDoc(userID);
 
-			return new ResponseEntity<>(listFolders, HttpStatus.OK);
+			return new ResponseEntity<>(listTDoc, HttpStatus.OK);
 
 		}  catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
