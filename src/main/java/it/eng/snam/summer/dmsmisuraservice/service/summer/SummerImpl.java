@@ -72,4 +72,9 @@ public class SummerImpl implements Summer  {
 	public Entity[] getRemiByAreaTecnica(String areaTecnica) {
 		return remi.getRemiByAreaTecnica(areaTecnica);
 	}
+
+    @Override
+    public List<Entity> getDocuments(List<String> ids) {
+        return sql.getDocuments(ids);
+    }
 }

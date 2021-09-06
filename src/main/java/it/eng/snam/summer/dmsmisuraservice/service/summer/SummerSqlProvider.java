@@ -15,6 +15,8 @@ public interface SummerSqlProvider {
 
     public List<Entity> getDocuments(DocumentSearch params);
 
+    public List<Entity> getDocuments(List<String> ids );
+
     public Entity getDocument(String document_id);
 
     public void insertDocument(String path, String id, String remi , String linea);
@@ -22,6 +24,6 @@ public interface SummerSqlProvider {
     public int updateDocument(String document_id, String remi);
 
     public List<String> getDocumentiByRemi(List<String> listaRemi);
-    
+
     public String getTDocByProfilo(String profilo);
 }

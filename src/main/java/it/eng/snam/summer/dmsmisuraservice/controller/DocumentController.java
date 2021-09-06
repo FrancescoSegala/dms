@@ -117,6 +117,7 @@ public class DocumentController {
 
     @Autowired
     Validator validator ;
+
     private void validate(Object o){
         List<String> errors = validator.validate(o)
         .stream()

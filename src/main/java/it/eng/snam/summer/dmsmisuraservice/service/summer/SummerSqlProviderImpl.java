@@ -48,6 +48,15 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
         //@formatter:on
     }
 
+    public List<Entity> getDocuments(List<String> ids ){
+        //@formatter:off
+        return new SnamSQLClient(template)
+        .withTable("v_documenti")
+        .withParams(new IdSearch().withIds(ids))
+        .list();
+        //@formatter:on
+    }
+
     public Entity getDocument(String document_id ){
         return new SnamSQLClient(template)
         .withTable("v_documenti")
@@ -96,7 +105,7 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
 		Map<String,String> params = Collections.singletonMap("profiloParam", profilo);
 
 		List<Map<String, Object>> result = template.queryForList("SELECT t.tdoc_primo_livello from profilo_tdoc t WHERE profilo=:profiloParam", params);
-		
+
 		return (String) result.get(0).get("tdoc_primo_livello");
 	}
 }

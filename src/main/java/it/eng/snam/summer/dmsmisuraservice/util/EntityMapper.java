@@ -58,7 +58,7 @@ public class EntityMapper {
 
 
     public static Document toDocument(Entity e) {
-        return new Document()
+         return new Document()
             .withId(e.id())
             .withFolder(e.getAsString("folder"))
             .withSubfolder(e.getAsString("subfolder"))
@@ -142,11 +142,10 @@ public class EntityMapper {
 
 
 
-    public static Entity toDDSpayload(DocumentCreate doc, String OS, String path ) {
+    public static Entity toDDSPayload(DocumentCreate doc, String OS, String path ) {
         String id = "DMSMIS_" + UUID.randomUUID().toString();
         List<String> folder = listOf(path);
          //@formatter:off
-        //TODO il campo folders ha bisogno del path completo
         return Entity.build("OS", OS)
             .with("documentalClass", "ALTRO")
             .with("id", id)

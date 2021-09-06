@@ -56,14 +56,11 @@ public class ConoDatiController {
 		try {
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-<<<<<<< HEAD
 			//da authentication è possibile recuperare il Profilo (tramite la proprietà Principale)
 			//e la lista delle funzionalità cui l'utente loggato è  a fare
-=======
 			//da authentication è possibile recujperare il Profilo (tramite la proprietà Principale)
 			//e la lista delle funzionalità cui l'utente loggato è abilitato
-			
->>>>>>> origin/develop
+
 
 			List<Object> listTDoc = conoDatiService.checkConoDatiTDoc(userID);
 

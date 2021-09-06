@@ -35,12 +35,14 @@ public class DDSSubfolder extends DDSEntity {
 
     @ExecutionTime
     public Entity getFolderBySubfolder(String subfolder_id){
-        return rest.getFolderBySQL()
+        // only 1 result per subfolder
+        Entity res = rest.getFolderBySQL()
             .withParam("OS", this.os)
             .withParam("select", listOf("*"))
-            .withParam("where", "name like '/%/"+ subfolder_id + "' limit 1 offset 0" )
+            .withParam("where", clause("name", subfolder_id , "like", "/%/", "") + " limit 1 offset 0 order by name" )
             .postForList().get(0)
             ;
+        return res ;
     }
 
     @ExecutionTime

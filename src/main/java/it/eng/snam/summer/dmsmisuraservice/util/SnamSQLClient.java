@@ -30,7 +30,7 @@ public class SnamSQLClient {
     private Pagination pagination;
 
     private static Map<String, String> operators = new Entity().with("_eq", "=").with("_ge", ">=").with("_le", "<=")
-            .with("_like", "like").toMap();
+            .with("_like", "like").with("_in", "in").toMap();
 
     public SnamSQLClient(NamedParameterJdbcOperations template) {
         this.template = template;
@@ -87,7 +87,8 @@ public class SnamSQLClient {
     }
 
     private String name(String f) {
-        return "like".equals(operator(f)) ? "'%'+:" + f + "+'%'" : ":" + f;
+        String inOrDefault = "in".equals(operator(f)) ? "(:" + f + ")"  : ":" + f;
+        return "like".equals(operator(f)) ? "'%'+:" + f + "+'%'" :   inOrDefault;
     }
 
     private String column(String f) {

@@ -19,6 +19,8 @@ public interface Summer {
 
     public List<Entity> getDocuments(DocumentSearch params);
 
+    public List<Entity> getDocuments(List<String> ids);
+
     public Entity getDocument(String document_id);
 
     public void insertDocument( String path, String id, String remi , String linea ) ;
