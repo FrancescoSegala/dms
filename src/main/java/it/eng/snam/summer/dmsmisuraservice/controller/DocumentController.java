@@ -126,6 +126,20 @@ public class DocumentController {
         if (errors.size() > 0)  {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errors.toString()); }
     }
 
+    // TODO parte dei validatori per le classi documentali questa va nel controller o in generale prima dell'esecuzione della logica business
+    // private static List<InfoValidator> base = listOf(stringOf("StatoDocumento",
+    // 64), stringOf("Note", 1024),
+    // stringOf("Tag", 64), stringOf("CreatoDa", 64));
+    // private static Entity validators = new Entity().with("INTE", concat(base,
+    // listOf(stringOf("CodiceRemi", 32))));
+
+
+    // List<InfoValidator> v = validators.getAsList(params.getSubfolders());
+        // v.stream().map(e -> e.apply(params.getInfo())).filter(e -> e !=
+        // null).findAny().ifPresent(e -> {
+        // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);
+        // });
+
     @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
     public List<Document> post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {

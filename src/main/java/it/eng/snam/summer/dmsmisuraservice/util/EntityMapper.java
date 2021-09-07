@@ -10,6 +10,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
+import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
@@ -93,7 +94,8 @@ public class EntityMapper {
     public static Remi toRemi(Entity e ){
         return new Remi()
             .withId(e.getAsString("remiAss"))
-            .withDescription(e.getAsString("ragSociale"));
+            .withDescription(e.getAsString("ragSociale"))
+            .withLinea(e.getAsString("linea"));
     }
 
 
@@ -108,6 +110,18 @@ public class EntityMapper {
         //@formatter:on
         return res ;
     }
+
+    public static Entity toSQLpayload( DocumentSQL doc ) {
+        //@formatter:off
+        Entity res =  Entity.build("id", doc.getId()).with("data", Instant.now().toString())
+                .with("c_remi_ass",doc.getC_remi_ass())
+                .with("linea", doc.getLinea())
+                .with("folder", doc.getFolder())
+                .with("subfolder", doc.getSubfolder());
+        //@formatter:on
+        return res ;
+    }
+
 
 
 

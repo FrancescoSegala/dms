@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
@@ -76,5 +77,10 @@ public class SummerImpl implements Summer  {
     @Override
     public List<Entity> getDocuments(List<String> ids) {
         return sql.getDocuments(ids);
+    }
+
+    @Override
+    public void insertDocuments(List<DocumentSQL> list) {
+          sql.insertDocuments(list);
     }
 }

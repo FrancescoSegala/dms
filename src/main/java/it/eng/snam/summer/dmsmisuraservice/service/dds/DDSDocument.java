@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
+import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
+import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
@@ -57,17 +59,11 @@ public class DDSDocument extends DDSEntity {
     static {
         try {
             InputStream is = DDSDocument.class.getResourceAsStream("/SSEparser.js");
-
             Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines();
             parser = stream.collect(Collectors.joining("\n"));
-
-            // parser =
-            // Files.readAllLines(Paths.get(DDSDocument.class.getResource("/SSEparser.js").toURI())).stream()
-            // .collect(Collectors.joining("\n"));
         } catch (Exception e1) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e1.getMessage());
         }
-
         engine = new ScriptEngineManager().getEngineByName("graal.js");
     }
 
@@ -92,9 +88,8 @@ public class DDSDocument extends DDSEntity {
         //@formatter:on
     }
 
-
-    //TODO is it necessary?
-    private List<Entity> list(IdSearch idSearch ){
+    // TODO is it necessary?
+    private List<Entity> list(IdSearch idSearch) {
         Long limit = idSearch.getLimit();
         List<Entity> docs = summer.getDocuments(idSearch.getIds());
         //@formatter:off
@@ -141,49 +136,62 @@ public class DDSDocument extends DDSEntity {
 
     // --------------------------------------------------------------------
 
-    private static List<InfoValidator> base = listOf(stringOf("StatoDocumento", 64), stringOf("Note", 1024),
-            stringOf("Tag", 64), stringOf("CreatoDa", 64));
-    private static Entity validators = new Entity().with("INTE", concat(base, listOf(stringOf("CodiceRemi", 32))));
+
 
     public List<Entity> post(DocumentCreate params, MultipartFile file) {
-        params.getSubfolders().stream().forEach(x -> folderExist(x));
+
+        // TODO utilizzare la chiamata tree per fare queste due operazioni
+        params.getSubfolders().stream().forEach(x -> subfolderService.getFolderBySubfolder(x));
 
         List<String> subfoldersParams = params.getSubfolders().stream()
                 .map(e -> subfolderService.getFolderBySubfolder(e).getAsEntity("systemAttributes").getAsString("name"))
                 .collect(Collectors.toList());
 
-        // List<InfoValidator> v = validators.getAsList(params.getSubfolders());
-        // v.stream().map(e -> e.apply(params.getInfo())).filter(e -> e !=
-        // null).findAny().ifPresent(e -> {
-        // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);
-        // });
-
-        List<String> docIds = new ArrayList<>();
-        List<String> remis = getRemis(params);
+        List<Entity> inserted = new ArrayList<>();
+        List<Entity> remis = getRemis(params);
         if (remis.size() > 0) {
             //@formatter:off
             remis.stream()
             .forEach(r ->
                 subfoldersParams.stream()
-                    .forEach(path -> docIds.add( insertDocument(params, path, file, r)) )
+                    .forEach(path ->{
+                        Entity dds = insertDocumentDDS(params, path, file).with("remi", r);
+                        inserted.add(dds);
+                        } )
             );
             //@formatter:on
         } else {
-            subfoldersParams.stream().forEach(path -> docIds.add( insertDocument(params, path, file, null)) );
+            subfoldersParams.stream().forEach(path -> inserted.add(insertDocumentDDS(params, path, file).with("remi", new Entity() )));
         }
-
+        // TODO ha senso come controllo ?
+        // if ( inserted.size() != (remis.size() * subfoldersParams.size()) &&
+        // remis.size() > 0 ){
+        // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "something went
+        // wrong while creating document/s");
+        // }
+        //@formatter:off
+        List<DocumentSQL> docsSQL = inserted.stream()
+                .map(e -> new DocumentSQL()
+                        .withId(e.id())
+                        .withFolder(e.getAsListString("folders").get(0).split("/")[1])
+                        .withSubfolder(e.getAsListString("folders").get(0).split("/")[2])
+                        .withLinea(e.getAsEntity("remi").getAsString("linea"))
+                        .withRemi(e.getAsEntity("remi").getAsString("remi"))
+                        .withStatus("active"))
+                .collect(Collectors.toList());
+        //@formatter:on
+        summer.insertDocuments(docsSQL);
+        List<String> docIds = inserted.stream().map(e -> e.getAsString("id")).collect(Collectors.toList());
         return list(new IdSearch().withIds(docIds));
     }
 
-    private String insertDocument(DocumentCreate params, String path, MultipartFile file, String remi) {
+    private Entity insertDocumentDDS(DocumentCreate params, String path, MultipartFile file) {
         Entity ddsPayload = toDDSPayload(params, this.os, path);
         List<Entity> sseStream = postDocumentToDDS(ddsPayload, file);
         if (!sseSuccess(sseStream)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, sseFailReason(sseStream));
         }
-        // TODO come trovo la linea ?
-        summer.insertDocument(path, ddsPayload.id(), remi, "linea");
-        return ddsPayload.id();
+        return ddsPayload;
     }
 
     private List<Entity> postDocumentToDDS(Entity ddsPayload, MultipartFile file) {
@@ -212,8 +220,11 @@ public class DDSDocument extends DDSEntity {
         return stream.get(stream.size() - 1).getAsEntity("data").getAsString("reason");
     }
 
-    private List<String> getRemis(DocumentCreate params){
-        return params.getInfo().stream().filter(e -> e.containsKey("remi")).map(x -> x.getAsString("remi")).collect(Collectors.toList());
+    private List<Entity> getRemis(DocumentCreate params){
+        return params.getInfo()
+            .stream()
+            .filter(e -> e.containsKey("remi"))
+            .collect(Collectors.toList());
     }
 
     private Entity merge(Entity doc, Entity dds) {
@@ -236,15 +247,19 @@ public class DDSDocument extends DDSEntity {
         //@formatter:on
     }
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     public Entity put(String document_id, DocumentUpdate params) {
-        // TODO validate document update DTO infos other than remi ?
-        Entity remi = params.getInfo().stream().filter(e -> e.containsKey("remi")).findFirst().orElse(null);
-        if (remi != null) {
-            summer.get(remi.getAsString("remi"));
-        }
         //@formatter:off
+        String remi = params.getInfo().stream()
+                .filter(e -> e.containsKey("remi"))
+                .findFirst()
+                .orElse(Entity.build("remi", null)
+                )
+            .getAsString("remi");
+        if (remi != null) {
+            summer.get(remi);
+        }
         List<Entity> ddsList = rest.getDocumentBySQL()
                 .withParam("OS", this.os)
                 .withParam("select", listOf("*"))
@@ -266,12 +281,17 @@ public class DDSDocument extends DDSEntity {
         if (res != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, res);
         }
-        if (remi != null) {
-            int rows = summer.updateDocument(document_id, remi.getAsString("remi"));
-            if (rows <= 0)
-                handleSQLfail(document_id, "Update document failed");
-        }
+        int rows = summer.updateDocument(document_id, remi);
+        if (rows <= 0)
+            handleSQLfail(document_id, "Update document failed");
+
         return get(document_id);
+    }
+
+    private void handleSQLfail(String document_id, String message) {
+        delete(document_id);
+        // TODO delete ? non so se è corretto
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
     // --------------------------------------------------------------------
@@ -281,7 +301,7 @@ public class DDSDocument extends DDSEntity {
         rest.logicalDeleteDocument()
             .withParam("id", document_id)
             .withParam("OS", this.os)
-            .withParam("deleteAllVersion", true)
+            .withParam("deleteAllVersion", false)
             .postForString();
         //@formatter:on
 
@@ -307,14 +327,14 @@ public class DDSDocument extends DDSEntity {
         return c.getAsString("contentsName");
     }
 
-    // private List<String> getContentNames(String document_id){
+    // private List<String> getAllContent(String document_id){
     // Entity dds = rest.getDocumentBySQL()
     // .withParam("OS", this.os )
     // .withParam("select", listOf("*"))
     // .withParam("where", "_id = '" + document_id + "'")
     // .postForList().get(0);
 
-    // return dds.getAsListEntity("contents").stream()
+    // return dds.getAsList("contents").stream()
     // .map(e -> e.getAsString("ContentsName") )
     // .collect(Collectors.toList());
     // }
@@ -323,24 +343,8 @@ public class DDSDocument extends DDSEntity {
         return list.stream().filter(e -> id.equals(e.getAsString("_id"))).findFirst().orElse(null);
     }
 
-
-
     private String link(Entity dds) {
         return "/documents/" + dds.getAsString("_id") + "/content";
-    }
-
-    private void folderExist(String subfolder_id) {
-        try {
-            subfolderService.getFolderBySubfolder(subfolder_id);
-        } catch (ResponseStatusException e) {
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(e.getStatus(), e.getMessage());
-        }
-    }
-
-    private void handleSQLfail(String document_id, String message) {
-        delete(document_id);
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
     @Override
@@ -352,6 +356,7 @@ public class DDSDocument extends DDSEntity {
     protected List<String> clauses(Pagination p) {
         DocumentSearch params = (DocumentSearch) p;
         String notDeleted = clause("isLogicalDeleted", "inactive".equalsIgnoreCase(params.getStatus()));
+        // String id_in = clause("_id", idSearch.getIds().toArray(new String[0]), "in");
         String inSubfolder = params.getFolder() != null && params.getSubfolder() != null
                 ? clause("foldersParents", "/" + params.getFolder() + "/" + params.getSubfolder(), "=")
                 : "";

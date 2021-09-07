@@ -9,10 +9,10 @@ public class Subfolder {
     public String status;
     public String description;
     public String source;
-    //TODO array di sistemi dove va mandato i documenti all'interno della cartella
     public List<String> send_to = new ArrayList<>();
     public String folder;
     public Long document_count = 0L;
+    public List<Permission> fields;
     public SubfolderPermission permission ;
 
     public Subfolder(String id, String status, String description, String source, List<String> send_to, String folder) {

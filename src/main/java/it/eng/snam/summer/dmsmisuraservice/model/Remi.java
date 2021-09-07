@@ -5,6 +5,7 @@ public class Remi {
 
     private String id ;
     private String description ;
+    private String linea ;
 
     public Remi withId(String id ){
         this.id = id ;
@@ -13,6 +14,12 @@ public class Remi {
 
     public Remi withDescription( String description ) {
         this.description = description ;
+         return this;
+    }
+
+
+    public Remi withLinea( String linea ) {
+        this.linea = linea ;
          return this;
     }
 
@@ -28,6 +35,15 @@ public class Remi {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getLinea() {
+        return linea;
+    }
+
+    public void setLinea(String linea) {
+        this.linea = linea;
+    }
+
 
 
 

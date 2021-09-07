@@ -11,6 +11,7 @@ import static it.eng.snam.summer.dmsmisuraservice.util.Utility.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProvider;
@@ -129,6 +130,12 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
     public List<Entity> getDocuments(List<String> ids) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void insertDocuments(List<DocumentSQL> list) {
+        // nop
+
     }
 
 

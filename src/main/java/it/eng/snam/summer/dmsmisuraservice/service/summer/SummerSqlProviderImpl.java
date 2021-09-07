@@ -1,22 +1,22 @@
 package it.eng.snam.summer.dmsmisuraservice.service.summer;
 
+import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSQLpayload;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toSQLpayload;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
-import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
+import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentCount;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.search.IdSearch;
-import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSFolder;
-import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSSubfolder;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 import it.eng.snam.summer.dmsmisuraservice.util.SnamSQLClient;
 
@@ -26,8 +26,6 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
     @Autowired
     private NamedParameterJdbcOperations template;
 
-    @Autowired
-    private DDSFolder folderService;
 
     public Long getDocumentCount(String folder_id, String subfolder_id) {
         return new SnamSQLClient(template).withTable("documenti").withParams(new DocumentCount(folder_id, subfolder_id))
@@ -77,12 +75,21 @@ public class SummerSqlProviderImpl implements SummerSqlProvider {
     }
 
 
+    @Transactional //TODO va bene qui?
+    @Override
+    public void insertDocuments( List<DocumentSQL> list){
+        new SnamSQLClient(template)
+            .withTable("documenti")
+            .insert( list.stream().map(e -> toSQLpayload(e)).collect(Collectors.toList() )  )
+        ;
+    }
+
+
     public int updateDocument( String document_id , String remi ){
         return new SnamSQLClient(template)
         .withTable("documenti")
         .update(Entity.build("c_remi_ass", remi ), document_id);
     }
-
 
 
     public List<String> getDocumentiByRemi(List<String> listaRemi) {

@@ -140,8 +140,13 @@ public class SnamSQLClient {
             System.out.println(entity);
             System.out.println("affected " + rows + " rows");
         }
-        // return find(entity.id());
         return rows;
+    }
+
+    public void insert(List<Entity> list ){
+        list.stream().forEach(
+            e -> insert(e)
+        );
     }
 
     public int update(Entity entity, String id ) {
