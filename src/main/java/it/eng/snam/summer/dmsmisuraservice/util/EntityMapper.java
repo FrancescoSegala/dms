@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
 import it.eng.snam.summer.dmsmisuraservice.model.Folder;
+import it.eng.snam.summer.dmsmisuraservice.model.Permission;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.Subfolder;
 import it.eng.snam.summer.dmsmisuraservice.model.SubfolderPermission;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.security.JwtConstants;
-import it.eng.snam.summer.dmsmisuraservice.service.dds.DDSSubfolder;
 
 public class EntityMapper {
 
@@ -65,13 +64,7 @@ public class EntityMapper {
             .withSubfolder(e.getAsString("subfolder"))
             .withPublishedAt(""+e.get("data_entrata_esercizio"))
             .withName(e.getAsString("name"))
-            .withNotes(e.getAsString("notes"))
-            .withStatus(e.getAsString("status"))
-            .withUpdatedAt(e.getAsString("updated_at"))
-            .withUpdatedBy(e.getAsString("updated_by"))
             .withLink(e.getAsString("link"))
-            .withCreatedAt(e.getAsString("created_at"))
-            .withCreatedBy(e.getAsString("created_by"))
             .withInfo( Entity.build("remi", e.getAsString("remi")) )
             .withInfo( Entity.build("linea", e.getAsString("linea")) )
             .withInfo( Entity.build("codice_centro", e.getAsString("codice_centro")))
@@ -170,5 +163,18 @@ public class EntityMapper {
             .with("folderClass", "dms_DMSFolder").with("createFolderIfNotExist", false);
         //@formatter:on
     }
+
+
+    public static Permission toPermission(Entity e ){
+        return new Permission()
+            .withName(e.getAsString("nome"))
+            .withType(e.getAsString("tipo"))
+            .withMaxLength(  (Number)  e.get("lunghezza"))
+            .withSingle(  "s".equals(e.getAsString("singolo")) )
+            .withMandatory("s".equals(e.getAsString("obbligatorio")))
+            ;
+    }
+
+
 
 }

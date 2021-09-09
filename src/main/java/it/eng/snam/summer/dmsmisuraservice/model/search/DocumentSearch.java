@@ -1,10 +1,17 @@
 package it.eng.snam.summer.dmsmisuraservice.model.search;
 
+import java.util.List;
+
 import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
 
 public class DocumentSearch extends Pagination {
+
+
+    public String id ;
+
+    public List<String> id_in ;
 
     @ApiModelProperty("name of the document")
     public String name;
@@ -86,6 +93,13 @@ public class DocumentSearch extends Pagination {
     @ApiModelProperty("the list of 'linea' to include the research")
     public String[] linea_in;
 
+
+    public DocumentSearch withId( String id ) {
+        this.id = id ;
+         return this;
+    }
+
+
     public DocumentSearch withFolder(String folder) {
         this.folder = folder;
         return this;
@@ -113,6 +127,41 @@ public class DocumentSearch extends Pagination {
         this.linea_in = linea;
         return this;
     }
+
+
+    public List<String> getIds() {
+        return id_in;
+    }
+
+    public void setIds(List<String> ids) {
+        this.id_in = ids;
+    }
+
+
+    public DocumentSearch withIds( List<String> ids ) {
+        this.id_in = ids ;
+         return this;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<String> getId_in() {
+        return id_in;
+    }
+
+
+    public void setId_in(List<String> id_in) {
+        this.id_in = id_in;
+    }
+
 
     public String[] getLinea_in() {
         return linea_in;

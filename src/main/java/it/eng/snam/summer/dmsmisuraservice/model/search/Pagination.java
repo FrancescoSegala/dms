@@ -33,6 +33,9 @@ public class Pagination {
     @ApiModelProperty("the offset from where start giving the result, must be an integer greater than 0")
     private Long offset = 0L;
 
+    private boolean count = false ;
+
+
     public Pagination() {
     }
 
@@ -47,6 +50,7 @@ public class Pagination {
     public String getSort() {
         return sort;
     }
+
 
     public void setSort(String sort) {
         this.sort = sort;
@@ -74,6 +78,24 @@ public class Pagination {
 
     public void setOffset(Long offset) {
         this.offset = offset;
+    }
+
+    public Pagination withLimit( Long limit ) {
+        this.limit = limit ;
+         return this;
+    }
+
+    public Pagination withOffset( Long offset ) {
+        this.offset = offset ;
+         return this;
+    }
+
+    public boolean isCount() {
+        return count;
+    }
+
+    public void setCount(boolean count) {
+        this.count = count;
     }
 
     public String stringfy() {

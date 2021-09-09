@@ -1,16 +1,28 @@
 package it.eng.snam.summer.dmsmisuraservice.controller;
 
+import static it.eng.snam.summer.dmsmisuraservice.util.Utility.mapOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.date;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.listOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.number;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.required;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.singleOf;
+import static it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidators.stringOf;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,6 +46,10 @@ import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.model.update.AttachmentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.model.update.DocumentUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
+import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
+import it.eng.snam.summer.dmsmisuraservice.util.Entity;
+import it.eng.snam.summer.dmsmisuraservice.util.validation.InfoValidator;
+import it.eng.snam.summer.dmsmisuraservice.util.validation.RemiInfoValidator;
 
 @RestController
 @CrossOrigin
@@ -42,13 +58,24 @@ public class DocumentController {
     @Autowired
     DDS dds;
 
+    @Autowired
+    Summer summer;
+
     @GetMapping("/documents")
-    public List<Document> list(@Valid DocumentSearch params) {
-        //TODO a che serve ?
+    public ResponseEntity<List<Document>> list(@Valid DocumentSearch params) {
+        // TODO a che serve ?
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		//da authentication èpossibile recujperare il Profilo (tramite la proprietà Principale)
-		//e la lista delle funzionalità (proprietà authorioties) cui l'utente loggato è abilitato
-    	return dds.listDocuments(params);
+        // da authentication èpossibile recujperare il Profilo (tramite la proprietà
+        // Principale)
+        // e la lista delle funzionalità (proprietà authorioties) cui l'utente loggato è
+        // abilitato
+        HttpHeaders headers = new HttpHeaders();
+        if (params.isCount()) {
+            headers.add("count", "" + summer.countDocuments(params));
+        }
+        return new ResponseEntity<>(summer.listDocuments(params), headers, HttpStatus.OK);
+
+        // return summer.listDocuments(params);
     }
 
     @GetMapping("/documents/{document_id}")
@@ -57,8 +84,8 @@ public class DocumentController {
     }
 
     @GetMapping("/documents/{document_id}/content")
-    public void getContent( HttpServletResponse response, @PathVariable String document_id) {
-        byte[] content = dds.getContent(document_id );
+    public void getContent(HttpServletResponse response, @PathVariable String document_id) {
+        byte[] content = dds.getContent(document_id);
         try {
             response.getOutputStream().write(content);
         } catch (IOException e) {
@@ -66,86 +93,96 @@ public class DocumentController {
         }
     }
 
-
-    //TODO
+    // TODO
     @PutMapping("/documents/{document_id}/content")
-    public void putContent(@PathVariable String document_id , MultipartFile file, HttpServletResponse response){
+    public void putContent(@PathVariable String document_id, MultipartFile file, HttpServletResponse response) {
 
     }
 
-    //TODO
+    // TODO
     @GetMapping("/documents/{document_id}/attachments")
-    public List<Attachment> listAttachment(@Valid AttachmentSearch params ){
-        return null ;
+    public List<Attachment> listAttachment(@Valid AttachmentSearch params) {
+        return null;
     }
 
-    //TODO
+    // TODO
     @PostMapping("/documents/{document_id}/attachments")
-    public Attachment postAttachment( @RequestBody @Valid AttachmentCreate[] params,  MultipartFile[] file ){
-        return null ;
+    public Attachment postAttachment(@RequestBody @Valid AttachmentCreate[] params, MultipartFile[] file) {
+        return null;
     }
 
-    //TODO
+    // TODO
     @GetMapping("/documents/{document_id}/attachments/{attachment_id}")
-    public Attachment getAttachment( @PathVariable String document_id, @PathVariable String attachment_id ){
-        return null ;
+    public Attachment getAttachment(@PathVariable String document_id, @PathVariable String attachment_id) {
+        return null;
     }
 
-    //TODO
+    // TODO
     @PutMapping("/documents/{document_id}/attachments/{attachment_id}")
-    public Attachment putAttachment(@PathVariable String document_id, @PathVariable String attachment_id ,  @RequestBody @Valid AttachmentUpdate body ){
-        return null ;
+    public Attachment putAttachment(@PathVariable String document_id, @PathVariable String attachment_id,
+            @RequestBody @Valid AttachmentUpdate body) {
+        return null;
     }
 
-    //TODO
+    // TODO
     @DeleteMapping("/documents/{document_id}/attachments/{attachment_id}")
-    public void deleteAttachment(@PathVariable String document_id, @PathVariable String attachment_id){
-        //nop
+    public void deleteAttachment(@PathVariable String document_id, @PathVariable String attachment_id) {
+        // nop
     }
 
-    //TODO
+    // TODO
     @GetMapping("/documents/{document_id}/attachments/{attachment_id}/content")
-    public void getAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,HttpServletResponse response){
-        //nop
+    public void getAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,
+            HttpServletResponse response) {
+        // nop
     }
 
-    //TODO
+    // TODO
     @PutMapping("/documents/{document_id}/attachments/{attachment_id}/content")
-    public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id, MultipartFile file, HttpServletResponse response){
-        //nop
+    public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,
+            MultipartFile file, HttpServletResponse response) {
+        // nop
+    }
+
+
+    private void validate(DocumentCreate o) {
+        //@formatter:off
+        Set<String> errors = o.getSubfolders().stream()
+                .map(subfolder -> summer.validation(subfolder)) // summer.validation() -> lista di entity per la validazione della sottocartella
+                .flatMap(e -> e.stream()) // fa uno stream soltanto di tutte le liste che c'erano : Stream<Entity>
+                .map(e -> toValidator(e)).flatMap(e -> e.stream()) // lista di tutti i validatori da applicare a tutti gli info per la sottocartella <subfolder>
+                .map(e -> o.getInfo().stream().map(x -> e.apply(x))).flatMap(e -> e).filter(e -> e != null) // apply dei validator su ognina delle info
+                .collect(Collectors.toSet());
+        //@formatter:on
+        if (errors.size() > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Entity.stringfy(errors));
+        }
     }
 
     @Autowired
-    Validator validator ;
-
-    private void validate(Object o){
-        List<String> errors = validator.validate(o)
-        .stream()
-        .map(x -> x.getMessage())
-        .collect(Collectors.toList());
-        if (errors.size() > 0)  {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errors.toString()); }
+    RemiInfoValidator remiValidator ;
+    private List<InfoValidator> toValidator(Entity e) {
+        List<InfoValidator> list = new ArrayList<>();
+        String nome = e.getAsString("nome");
+        String tipo = e.getAsString("tipo");
+        //@formatter:off
+        Map<String, InfoValidator> type = mapOf(
+                "testo", stringOf(nome, (Number) e.get("lunghezza")),
+                "numero", number(nome),
+                "data", date(nome),
+                "remi", remiValidator.withField(nome) );
+        list.add("s".equals(e.getAsString("obbligatorio")) ? required(nome) : null);
+        list.add("s".equals(e.getAsString("singolo")) ? singleOf(nome, type.get(tipo)) : listOf(nome, type.get(tipo)));
+        //@formatter:off
+        return list.stream().filter(x -> x != null).collect(Collectors.toList());
     }
-
-    // TODO parte dei validatori per le classi documentali questa va nel controller o in generale prima dell'esecuzione della logica business
-    // private static List<InfoValidator> base = listOf(stringOf("StatoDocumento",
-    // 64), stringOf("Note", 1024),
-    // stringOf("Tag", 64), stringOf("CreatoDa", 64));
-    // private static Entity validators = new Entity().with("INTE", concat(base,
-    // listOf(stringOf("CodiceRemi", 32))));
-
-
-    // List<InfoValidator> v = validators.getAsList(params.getSubfolders());
-        // v.stream().map(e -> e.apply(params.getInfo())).filter(e -> e !=
-        // null).findAny().ifPresent(e -> {
-        // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e);
-        // });
 
     @PostMapping(path = "/documents", consumes = { MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
     public List<Document> post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {
         DocumentCreate dc = DocumentCreate.parseJson(document);
         validate(dc);
-        return dds.createDocument( dc, file);
+        return dds.createDocument(dc, file);
     }
 
     @PutMapping("/documents/{document_id}")

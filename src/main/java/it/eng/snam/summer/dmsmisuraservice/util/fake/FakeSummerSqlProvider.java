@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
 import it.eng.snam.summer.dmsmisuraservice.model.create.DocumentCreate;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
+import it.eng.snam.summer.dmsmisuraservice.model.search.RemiSearch;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.SummerSqlProvider;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
@@ -51,10 +52,6 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
         return res;
     }
 
-    @Override
-    public List<Entity> getDocuments(DocumentSearch params) {
-        return v_docments.subList(  params.getOffset().intValue(), params.getOffset().intValue() + params.getLimit().intValue()  )  ;
-    }
 
     @Override
     public Entity getDocument(String document_id) {
@@ -126,16 +123,42 @@ public class FakeSummerSqlProvider implements SummerSqlProvider {
         //Nop
     }
 
-    @Override
-    public List<Entity> getDocuments(List<String> ids) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 
     @Override
     public void insertDocuments(List<DocumentSQL> list) {
         // nop
 
+    }
+
+    @Override
+    public List<Entity> listDocuments(DocumentSearch params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Entity getRemi(String remi) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Long countDocuments(DocumentSearch params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Entity> listRemi(RemiSearch params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Entity> listValidations(String subfolder) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

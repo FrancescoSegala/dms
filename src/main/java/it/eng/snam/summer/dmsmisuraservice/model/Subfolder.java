@@ -67,6 +67,10 @@ public class Subfolder {
          return this;
     }
 
+    public Subfolder withFields( List<Permission> fields ) {
+        this.fields = fields ;
+         return this;
+    }
 
 
     @Override

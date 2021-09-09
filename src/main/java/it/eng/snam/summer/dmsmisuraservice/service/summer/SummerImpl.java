@@ -3,13 +3,17 @@ import static it.eng.snam.summer.dmsmisuraservice.util.EntityMapper.toRemi;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import it.eng.snam.summer.dmsmisuraservice.model.Document;
 import it.eng.snam.summer.dmsmisuraservice.model.DocumentSQL;
+import it.eng.snam.summer.dmsmisuraservice.model.Permission;
 import it.eng.snam.summer.dmsmisuraservice.model.Remi;
 import it.eng.snam.summer.dmsmisuraservice.model.search.DocumentSearch;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
+import it.eng.snam.summer.dmsmisuraservice.util.EntityMapper;
 
 public class SummerImpl implements Summer  {
 
@@ -44,13 +48,16 @@ public class SummerImpl implements Summer  {
     }
 
     @Override
-    public List<Entity> getDocuments(DocumentSearch params) {
-        return sql.getDocuments(params);
+    public List<Document> listDocuments(DocumentSearch params) {
+        return sql.listDocuments(params)
+        .stream()
+        .map(EntityMapper::toDocument)
+        .collect(Collectors.toList());
     }
 
     @Override
-    public Entity getDocument(String document_id) {
-        return sql.getDocument(document_id);
+    public Document getDocument(String document_id) {
+        return EntityMapper.toDocument(  sql.getDocument(document_id) ) ;
     }
 
     @Override
@@ -74,13 +81,24 @@ public class SummerImpl implements Summer  {
 		return remi.getRemiByAreaTecnica(areaTecnica);
 	}
 
-    @Override
-    public List<Entity> getDocuments(List<String> ids) {
-        return sql.getDocuments(ids);
-    }
 
     @Override
     public void insertDocuments(List<DocumentSQL> list) {
           sql.insertDocuments(list);
+    }
+
+    @Override
+    public Long countDocuments(DocumentSearch params) {
+        return sql.countDocuments(params);
+    }
+
+    @Override
+    public List<Entity> validation(String subfolder) {
+        return sql.listValidations(subfolder);
+    }
+
+    @Override
+    public List<Entity> getPermissionBySubfolder(String subfolder_id) {
+        return sql.listValidations(subfolder_id);
     }
 }

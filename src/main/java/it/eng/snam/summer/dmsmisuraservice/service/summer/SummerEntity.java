@@ -9,7 +9,8 @@ public abstract class SummerEntity {
     SummerRestProvider rest ;
 
 
-
+    @Autowired
+    SummerSqlProvider sql ;
 
 
 }

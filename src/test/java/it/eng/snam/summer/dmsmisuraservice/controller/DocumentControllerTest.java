@@ -38,45 +38,45 @@ public class DocumentControllerTest  {
         assertNotNull(controller);
     }
 
-    @Test
-    public void testGetDocuments(){
-        List<Document> list = controller.list(new DocumentSearch());
-        assertNotNull(list);
-    }
+    // @Test
+    // public void testGetDocuments(){
+    //     List<Document> list = controller.list(new DocumentSearch());
+    //     assertNotNull(list);
+    // }
 
-    @Test
-    public void testGetDocumentsWithParams(){
-        //todo iterate over single param
-        DocumentSearch params = new DocumentSearch()
-            .withFolder("COMM")
-            .withSubfolder("COMM")
-            .withLinea(Arrays.array("1", "2", "3"))
-            .withRemi("remi")
-            ;
-        List<Document> list = controller.list(params);
-        assertNotNull(list);
-    }
+    // @Test
+    // public void testGetDocumentsWithParams(){
+    //     //todo iterate over single param
+    //     DocumentSearch params = new DocumentSearch()
+    //         .withFolder("COMM")
+    //         .withSubfolder("COMM")
+    //         .withLinea(Arrays.array("1", "2", "3"))
+    //         .withRemi("remi")
+    //         ;
+    //     List<Document> list = controller.list(params);
+    //     assertNotNull(list);
+    // }
 
 
-    @Test
-    public void testFailGetDocuments(){
-        //TODO iterate over param
-        DocumentSearch params = new DocumentSearch()
-            .withFolder("COMMA")
-            .withSubfolder("COMMA")
-            .withLinea(Arrays.array("1", "2", "3"))
-            .withRemi("remi!!//")
-        ;
-        try {
-            List<Document> l =  controller.list(params);
-        } catch (ResponseStatusException e) {
-            assertEquals(HttpStatus.BAD_REQUEST , e.getStatus());
-            return ;
-            //assertEquals(e.getMessage(), actual);
-        }
-        fail("Exception not thrown");
+    // @Test
+    // public void testFailGetDocuments(){
+    //     //TODO iterate over param
+    //     DocumentSearch params = new DocumentSearch()
+    //         .withFolder("COMMA")
+    //         .withSubfolder("COMMA")
+    //         .withLinea(Arrays.array("1", "2", "3"))
+    //         .withRemi("remi!!//")
+    //     ;
+    //     try {
+    //         List<Document> l =  controller.list(params);
+    //     } catch (ResponseStatusException e) {
+    //         assertEquals(HttpStatus.BAD_REQUEST , e.getStatus());
+    //         return ;
+    //         //assertEquals(e.getMessage(), actual);
+    //     }
+    //     fail("Exception not thrown");
 
-    }
+    // }
 
 
     @Test

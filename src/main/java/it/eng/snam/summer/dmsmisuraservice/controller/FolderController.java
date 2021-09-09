@@ -28,6 +28,7 @@ import it.eng.snam.summer.dmsmisuraservice.model.update.SubfolderUpdate;
 import it.eng.snam.summer.dmsmisuraservice.service.dds.DDS;
 import it.eng.snam.summer.dmsmisuraservice.service.summer.Summer;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
+import it.eng.snam.summer.dmsmisuraservice.util.EntityMapper;
 
 @RestController
 @CrossOrigin
@@ -77,8 +78,7 @@ public class FolderController {
 
          return dds.listSubfolders(folder_id, params)
             .stream()
-            //.peek( e -> System.out.println(e))
-            .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[e.id.split("/").length-1], 0L))) //TODO 2? o e.id.split("/").length-1
+            .map(e -> e.withDocumentCount(countMap.getOrDefault(e.id.split("/")[ e.id.split("/").length-1 ], 0L)))
             .collect(Collectors.toList());
         //@formatter:on
     }
@@ -89,7 +89,11 @@ public class FolderController {
         return dds.getSubfolder(folder_id, subfolder_id)
             .withDocumentCount(
                 summer.getDocumentCount(folder_id, subfolder_id)
-            );
+            )
+            .withFields(
+                summer.getPermissionBySubfolder(subfolder_id).stream().map(EntityMapper::toPermission).collect(Collectors.toList())
+            )
+            ;
         //@formatter:on
     }
 
@@ -117,14 +121,14 @@ public class FolderController {
     public List<Document> listDocumentsInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id, @Valid DocumentSearch params) {
         params.setFolder(folder_id);
         params.setSubfolder(subfolder_id);
-        return dds.listDocuments(params);
+        return summer.listDocuments(params);
     }
 
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}")
     public Document getDocumentInSubfolder(@PathVariable String folder_id, @PathVariable String subfolder_id,
             @PathVariable String document_id) {
-        return dds.getDocument(document_id, folder_id, subfolder_id);
+        return dds.getDocument(document_id);
     }
 
     @GetMapping("/folders/{folder_id}/subfolders/{subfolder_id}/documents/{document_id}/content")

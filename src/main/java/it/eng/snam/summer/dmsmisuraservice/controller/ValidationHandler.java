@@ -1,7 +1,10 @@
 package it.eng.snam.summer.dmsmisuraservice.controller;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static it.eng.snam.summer.dmsmisuraservice.util.Utility.mapOf;
 
@@ -15,6 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
@@ -43,11 +47,17 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(Entity.parseJson(ex.getResponseBodyAsString()), ex.getStatusCode());
     }
 
-    @ExceptionHandler(value = { Exception.class })
+    @ExceptionHandler(value = { ResponseStatusException.class })
     protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
-        //System.out.println("EX");
-        //ex.printStackTrace();
-        return new ResponseEntity<>(mapOf("message", ex.getMessage()), HttpStatus.BAD_REQUEST);
+        ResponseStatusException e = (ResponseStatusException) ex ;
+        Object msg = e.getReason();
+        try {
+            msg = new ObjectMapper().readValue( msg.toString() , Object.class);
+        } catch (Exception exception) {
+            System.out.println(exception);
+        }
+        return new ResponseEntity<>( mapOf("message",  msg  , "timestamp", Instant.now().toString() , "status", e.getStatus().getReasonPhrase() )  , e.getStatus());
+        //return ResponseEntity.badRequest().body(  e.getReason() );
     }
 
 }

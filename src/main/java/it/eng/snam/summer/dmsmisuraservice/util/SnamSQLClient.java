@@ -29,7 +29,7 @@ public class SnamSQLClient {
     private String table;
     private Pagination pagination;
 
-    private static Map<String, String> operators = new Entity().with("_eq", "=").with("_ge", ">=").with("_le", "<=")
+    private static Map<String, String> operators = new Entity().with("_eq", "=").with("_ge", ">=").with("_le", "<=").with("_lt", "<").with("_gt", ">")
             .with("_like", "like").with("_in", "in").toMap();
 
     public SnamSQLClient(NamedParameterJdbcOperations template) {
@@ -45,6 +45,8 @@ public class SnamSQLClient {
         this.pagination = p;
         return this;
     }
+
+
 
     public List<Entity> list() {
         String where = "from " + table + " where 1=1 " + conditions();

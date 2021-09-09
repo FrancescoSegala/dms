@@ -47,9 +47,7 @@ public interface DDS {
 
     public Document getDocument(String document_id);
 
-    public Document getDocument(String document_id, String folder, String subfolder);
-
-    public List<Document> listDocuments(DocumentSearch params);
+    // public Document getDocument(String document_id, String folder, String subfolder);
 
     public List<Document> createDocument(DocumentCreate params, MultipartFile file );
 

@@ -1,9 +1,12 @@
 package it.eng.snam.summer.dmsmisuraservice.service.summer;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.eng.snam.summer.dmsmisuraservice.model.search.RemiSearch;
 import it.eng.snam.summer.dmsmisuraservice.util.Entity;
 
 @Component
@@ -28,6 +31,10 @@ public class SummerRemi extends SummerEntity {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "area tecnica per userId " + userId + " not found");
         }
         return r;
+    }
+
+    public List<Entity> list(RemiSearch params){
+        return null ;
     }
 
 

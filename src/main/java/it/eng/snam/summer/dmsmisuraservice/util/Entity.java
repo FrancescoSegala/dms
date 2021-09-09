@@ -149,13 +149,18 @@ public class Entity extends HashMap<String, Object> {
     }
 
     public String stringfy() {
+        return stringfy(this);
+    }
+
+    public static String stringfy(Object o ){
         ObjectMapper om = new ObjectMapper();
         try {
-            return om.writeValueAsString(this);
+            return om.writeValueAsString(o);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public String toString() {

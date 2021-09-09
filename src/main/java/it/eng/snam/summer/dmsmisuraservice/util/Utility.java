@@ -38,6 +38,31 @@ public class Utility {
         return map;
     }
 
+    public static <T> Map<String, T> mapOf( String k1 , T v1 , String k2 , T v2  ){
+        Map<String, T> map = mapOf(k1, v1 );
+        map.put(k2, v2);
+        return map ;
+    }
+
+    public static <T> Map<String, T> mapOf( String k1 , T v1 , String k2 , T v2 , String k3 , T v3  ){
+        Map<String, T> map = mapOf(k1, v1, k2 , v2  );
+        map.put(k3, v3);
+        return map ;
+    }
+
+
+    public static <T> Map<String, T> mapOf( String k1 , T v1 , String k2 , T v2 , String k3 , T v3 , String k4 , T v4  ){
+        Map<String, T> map = mapOf(k1, v1, k2 , v2, k3 , v3   );
+        map.put(k4, v4);
+        return map ;
+    }
+
+    public static <T> Map<String, T> mapOf( String k1 , T v1 , String k2 , T v2 , String k3 , T v3 , String k4 , T v4 , String k5 , T v5  ){
+        Map<String, T> map = mapOf(k1, v1, k2 , v2, k3 , v3, k4 , v4   );
+        map.put(k5, v5);
+        return map ;
+    }
+
     public static Map<String, Entity> mapOf(String k, Entity v) {
         HashMap<String, Entity> map = new HashMap<>();
         map.put(k, v);

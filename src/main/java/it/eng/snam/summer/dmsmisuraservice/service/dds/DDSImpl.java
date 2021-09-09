@@ -95,26 +95,17 @@ public class DDSImpl implements DDS {
 
     // -------------------------- Documents --------------------------
 
-    @Override
-    public List<Document> listDocuments(DocumentSearch params) {
-        //@formatter:off
-        return ddsDocument
-            .list(params)
-            .stream()
-            .map(EntityMapper::toDocument)
-            .collect(toList());
-        //@formatter:on
-    }
+
 
     @Override
     public Document getDocument(String document_id) {
         return toDocument(ddsDocument.get(document_id));
     }
 
-    @Override
-    public Document getDocument(String document_id, String folder, String subfodler) {
-        return toDocument(ddsDocument.get(document_id, folder , subfodler));
-    }
+    // @Override
+    // public Document getDocument(String document_id, String folder, String subfodler) {
+    //     return toDocument(ddsDocument.get(document_id, folder , subfodler));
+    // }
 
     @Override
     public List<Document> createDocument(DocumentCreate params, MultipartFile file ) {
