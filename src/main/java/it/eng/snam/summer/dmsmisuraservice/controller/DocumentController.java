@@ -145,12 +145,13 @@ public class DocumentController {
     }
 
 
-    private void validate(DocumentCreate o) {
+    private void validatePost(DocumentCreate o) {
         //@formatter:off
         Set<String> errors = o.getSubfolders().stream()
                 .map(subfolder -> summer.validation(subfolder)) // summer.validation() -> lista di entity per la validazione della sottocartella
                 .flatMap(e -> e.stream()) // fa uno stream soltanto di tutte le liste che c'erano : Stream<Entity>
-                .map(e -> toValidator(e)).flatMap(e -> e.stream()) // lista di tutti i validatori da applicare a tutti gli info per la sottocartella <subfolder>
+                .map(e -> toValidator(e))
+                .flatMap(e -> e.stream()) // lista di tutti i validatori da applicare a tutti gli info per la sottocartella <subfolder>
                 .map(e -> o.getInfo().stream().map(x -> e.apply(x))).flatMap(e -> e).filter(e -> e != null) // apply dei validator su ognina delle info
                 .collect(Collectors.toSet());
         //@formatter:on
@@ -181,7 +182,7 @@ public class DocumentController {
             MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_MIXED_VALUE })
     public List<Document> post(@RequestPart("document") String document, @RequestPart("file") MultipartFile file) {
         DocumentCreate dc = DocumentCreate.parseJson(document);
-        validate(dc);
+        validatePost(dc);
         return dds.createDocument(dc, file);
     }
 

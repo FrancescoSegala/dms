@@ -21,7 +21,7 @@ public class InfoValidators {
     }
 
     public static InfoValidator required( String field  ){
-        return ( context ) -> value(context, field ) != null ? null : "Field '" + field + "' is required";
+        return ( context ) -> value(context, field ) != null ? null : "Field '" + field + "' is required" + (context.id() != null ? " for "+ context.id() : "");
     }
 
     public static InfoValidator trueOrFalse( String field ){
