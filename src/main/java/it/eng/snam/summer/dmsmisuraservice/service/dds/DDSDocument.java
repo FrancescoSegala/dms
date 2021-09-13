@@ -99,10 +99,10 @@ public class DDSDocument extends DDSEntity {
         // get remis from sql
         List<String> remisFromInfo = params.getInfo().stream().map(e -> e.getAsString("remi"))
                 .collect(Collectors.toList());
-        List<Entity> remisFromSQL = summerSql.listRemi(new RemiSearch(remisFromInfo));
 
-        if (remisFromSQL.size() > 0) {
+        if (remisFromInfo.size() > 0) {
             //@formatter:off
+            List<Entity> remisFromSQL = summerSql.listRemi(new RemiSearch(remisFromInfo));
             remisFromSQL.stream()
             .forEach(remi ->
                 paramsPaths.stream()
@@ -122,7 +122,7 @@ public class DDSDocument extends DDSEntity {
                 .map(e -> new DocumentSQL()
                         .withId(e.id())
                         .withFolder(e.getAsListString("folders").get(0).split("/")[1])
-                        .withSubfolder(e.getAsListString("folders").get(0).split("/")[2])
+                        .withSubfolder(   e.getAsListString("folders").get(0).split("/")[ e.getAsListString("folders").get(0).split("/").length - 1  ] )
                         .withLinea(e.getAsEntity("remi").getAsString("linea"))
                         .withRemi(e.getAsEntity("remi").getAsString("c_remi_ass"))
                         .withStatus("active"))
@@ -281,7 +281,6 @@ public class DDSDocument extends DDSEntity {
     // .findFirst()
     // .orElse(null);
     // }
-
 
     @Override
     protected String sortField(String field) {

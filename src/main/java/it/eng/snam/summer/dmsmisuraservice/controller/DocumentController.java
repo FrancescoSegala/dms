@@ -96,63 +96,65 @@ public class DocumentController {
     // TODO
     @PutMapping("/documents/{document_id}/content")
     public void putContent(@PathVariable String document_id, MultipartFile file, HttpServletResponse response) {
-
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @GetMapping("/documents/{document_id}/attachments")
-    public List<Attachment> listAttachment(@Valid AttachmentSearch params) {
-        return null;
+    public List<Attachment> listAttachment(@PathVariable String document_id, @Valid AttachmentSearch params) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @PostMapping("/documents/{document_id}/attachments")
-    public Attachment postAttachment(@RequestBody @Valid AttachmentCreate[] params, MultipartFile[] file) {
-        return null;
+    public Attachment postAttachment(@PathVariable String document_id, @RequestBody @Valid AttachmentCreate[] params, MultipartFile[] file) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @GetMapping("/documents/{document_id}/attachments/{attachment_id}")
     public Attachment getAttachment(@PathVariable String document_id, @PathVariable String attachment_id) {
-        return null;
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @PutMapping("/documents/{document_id}/attachments/{attachment_id}")
     public Attachment putAttachment(@PathVariable String document_id, @PathVariable String attachment_id,
             @RequestBody @Valid AttachmentUpdate body) {
-        return null;
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @DeleteMapping("/documents/{document_id}/attachments/{attachment_id}")
     public void deleteAttachment(@PathVariable String document_id, @PathVariable String attachment_id) {
-        // nop
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @GetMapping("/documents/{document_id}/attachments/{attachment_id}/content")
     public void getAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,
             HttpServletResponse response) {
-        // nop
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     // TODO
     @PutMapping("/documents/{document_id}/attachments/{attachment_id}/content")
     public void putAttachmentContent(@PathVariable String document_id, @PathVariable String attachment_id,
             MultipartFile file, HttpServletResponse response) {
-        // nop
+                throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    private void validatePost(DocumentCreate o) {
+    private void validatePost(DocumentCreate dc) {
         //@formatter:off
-        Set<String> errors = o.getSubfolders().stream()
+        Set<String> errors = dc.getSubfolders().stream()
                 .map(subfolder -> summer.validation(subfolder)) // summer.validation() -> lista di entity per la validazione della sottocartella
                 .flatMap(e -> e.stream()) // fa uno stream soltanto di tutte le liste che c'erano : Stream<Entity>
                 .map(e -> toValidator(e))
                 .flatMap(e -> e.stream()) // lista di tutti i validatori da applicare a tutti gli info per la sottocartella <subfolder>
-                .map(e -> o.getInfo().stream().map(x -> e.apply(x))).flatMap(e -> e).filter(e -> e != null) // apply dei validator su ognina delle info
+                .map(e -> dc.getInfo().stream().map(info -> e.apply(info)))
+                .flatMap(e -> e)
+                .filter(e -> e != null) // apply dei validator su ognina delle info
                 .collect(Collectors.toSet());
         //@formatter:on
         if (errors.size() > 0) {
