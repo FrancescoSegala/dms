@@ -47,7 +47,7 @@ public class DDSRestProvider {
             Entity precall = rest.build(precallUrl).get();
             // Entity precall = CACHED_PRECALL.apply(precallUrl);
             // Entity precall = rest(precallUrl).get();
-            return precall().withUrl(precall.getAsString(fn) + "/" + method)
+            return precall == null ? precall() :  precall().withUrl(precall.getAsString(fn) + "/" + method)
                     .withAccessToken(accessToken(precall.getAsString("SSOUrl")));
         } finally {
             Long end = Instant.now().toEpochMilli();

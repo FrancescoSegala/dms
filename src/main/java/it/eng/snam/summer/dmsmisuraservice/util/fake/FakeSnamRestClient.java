@@ -2,6 +2,7 @@ package it.eng.snam.summer.dmsmisuraservice.util.fake;
 
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import it.eng.snam.summer.dmsmisuraservice.model.DDSDoc;
@@ -10,15 +11,22 @@ import it.eng.snam.summer.dmsmisuraservice.util.SnamRestClient;
 
 public class FakeSnamRestClient implements SnamRestClient {
 
+
+    private Entity params = new Entity();
+    private MediaType contentType;
+    private HttpHeaders headers = new HttpHeaders();
+    private String url = "";
+
+
     @Override
     public SnamRestClient withHeader(String k, String v) {
-        // TODO Auto-generated method stub
-        return null;
+        this.headers.add(k, v);
+        return this;
     }
 
     @Override
     public SnamRestClient withParam(String k, Object v) {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
@@ -36,13 +44,14 @@ public class FakeSnamRestClient implements SnamRestClient {
 
     @Override
     public Entity get() {
-        // TODO Auto-generated method stub
-        return null;
+        //TODO vai nel fake datasource e fai la get con i parametri
+        Entity e = new Entity().with("id","1");
+        return e;
     }
 
     @Override
     public String getString() {
-        // TODO Auto-generated method stub
+        //TODO vai nel fake datasource e fai la get con i parametri
         return null;
     }
 
