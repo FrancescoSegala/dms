@@ -26,8 +26,8 @@ public class FakeSnamRestClient implements SnamRestClient {
 
     @Override
     public SnamRestClient withParam(String k, Object v) {
-
-        return null;
+        this.params.with(k, v);
+        return this;
     }
 
     @Override
@@ -44,9 +44,8 @@ public class FakeSnamRestClient implements SnamRestClient {
 
     @Override
     public Entity get() {
-        //TODO vai nel fake datasource e fai la get con i parametri
-        Entity e = new Entity().with("id","1");
-        return e;
+        //TODO vai nel fake datasource e fai la get con i parametri sulla url
+        return new FakeDataLoader().folders().get(1);
     }
 
     @Override

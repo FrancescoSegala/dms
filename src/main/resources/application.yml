@@ -62,7 +62,7 @@ logging:
 
 external:
     dds:
-        fake: false
+        fake: true
         OS: DMSMIS
         folder_precall_url: https://dds-folder-t.snam.it/precall
         document_read_precall_url: https://dds-doc-read-t.snam.it/precall
@@ -71,7 +71,7 @@ external:
         client_secret: 4eb4ca2b54bfc5fa7f7c539afe950637
         cache_expire: 10000
     summer:
-        fake: false
+        fake: true
         jwt_url: https://summer-gs.snam.it/anagrafica-remi-service/anagrafica-remi/secure/token?rie=RI00674
         remi_url: https://summer-gs.snam.it/anagrafica-remi-service/anagrafica-remi
         user_url: http://summer-gs-services.snam.it/editable-fields-service/anagraficaUtenti/getProfiloUtente

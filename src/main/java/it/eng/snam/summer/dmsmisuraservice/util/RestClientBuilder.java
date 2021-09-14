@@ -12,7 +12,9 @@ public class RestClientBuilder {
     @Value("${external.dds.fake:false}")
     boolean fake ;
 
-
+    public boolean isFake(){
+        return fake;
+    }
     //TODO gestione url fake client
 
     public SnamRestClient build(String url) {
